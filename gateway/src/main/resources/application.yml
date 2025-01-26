@@ -13,6 +13,12 @@ spring:
         locator:
           enabled: false
       routes:
+        - id: quiz-session-route
+          uri:  lb://quiz-session-service
+          predicates:
+            - Path=/quiz-session/**
+          filters:
+              - StripPrefix=1
         - id: frontend-route
           uri: lb://frontend
           predicates:
