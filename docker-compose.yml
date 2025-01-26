@@ -10,6 +10,16 @@ services:
     networks:
       - 50Fragen
 
+  quiz-session:
+    container_name: quiz-session
+    build:
+      context: quiz-session
+      dockerfile: Dockerfile
+    ports:
+      - 4000:4000
+    networks:
+      - 50Fragen
+
   frontend:
     container_name: frontend
     build:
@@ -35,4 +45,4 @@ services:
 
 networks:
   50Fragen:
-    driver: bridg
+    driver: bridge

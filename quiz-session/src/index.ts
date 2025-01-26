@@ -4,15 +4,27 @@ import { Server } from "socket.io";
 import dotenv from "dotenv";
 import { Eureka } from "eureka-js-client";
 
+dotenv.config();
+
+const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
+    cors: {
+        origin: "*", // TODO change this later
+        methods: ["GET", "POST"],
+    },
+});
+const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 4000;
+
 const eurekaClient = new Eureka({
     instance: {
         app: "quiz-session",
-        instanceId: "quiz-session:4000",
+        instanceId: `quiz-session:${PORT}`,
         hostName: "localhost",
         ipAddr: "127.0.0.1",
-        statusPageUrl: "http://localhost:4000",
+        statusPageUrl: `http://localhost:${PORT}`,
         port: {
-            $: 4000,
+            $: PORT,
             "@enabled": true,
         },
         vipAddress: "quiz-session",
@@ -22,8 +34,8 @@ const eurekaClient = new Eureka({
         },
     },
     eureka: {
-        host: "localhost",
-        port: 8761,
+        host: process.env.EUREKA_HOST || "localhost",
+        port: process.env.EUREKA_PORT ? parseInt(process.env.EUREKA_PORT, 10) : 8761,
         servicePath: "/eureka/apps/",
     },
 });
@@ -36,20 +48,7 @@ eurekaClient.start((error: Error) => {
     }
 });
 
-dotenv.config();
-
-const app = express();
-const server = http.createServer(app);
-const io = new Server(server, {
-    cors: {
-        origin: "*", // TODO change this later
-        methods: ["GET", "POST"],
-    },
-});
-
 app.use(express.json());
-
-const PORT = process.env.PORT || 4000;
 
 app.get("/", (req: Request, res: Response) => {
     res.send("Session Service is Running!");

@@ -16,6 +16,22 @@ services:
       - 8081:8081
     networks:
       - 50Fragen
+    environment:
+      - EUREKA_SERVER=http://eureka:8761/eureka
+
+  quiz-session:
+    image: simon1999/50fragen:quiz-session-dev
+    build:
+      context: quiz-session
+      dockerfile: Dockerfile
+    ports:
+      - 4000:4000
+    environment:
+      - PORT=4000
+      - EUREKA_HOST=eureka
+      - EUREKA_PORT=8761
+    networks:
+      - 50Fragen
 
   gateway:
     image: simon1999/50fragen:gateway-dev
@@ -23,10 +39,12 @@ services:
       - 8080:8080
     networks:
       - 50Fragen
+    environment:
+      - EUREKA_SERVER=http://eureka:8761/eureka
     depends_on:
       - eureka
 
 
 networks:
   50Fragen:
-    driver: bridg
+    driver: bridge
