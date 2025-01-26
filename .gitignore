@@ -1,2 +1,5 @@
 /frontend/src/main/resources/static/
 /quiz-session/.env
+.private_README.md
+github-actions-key
+github-actions-key.pub

@@ -1,0 +1,60 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "dev", "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build images (no push)
+        run: |
+          docker compose build
+      # TODO: Add tests here
+
+
+  deploy-dev:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/dev'
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push image to Docker Hub
+        run: |
+          docker build -f eureka/Dockerfile -t simon1999/50fragen:eureka-dev eureka
+          docker push simon1999/50fragen:eureka-dev
+          docker build -f frontend/Dockerfile -t simon1999/50fragen:frontend-dev frontend
+          docker push simon1999/50fragen:frontend-dev
+          docker build -f gateway/Dockerfile -t simon1999/50fragen:gateway-dev gateway
+          docker push simon1999/50fragen:gateway-dev
+          docker build -f quiz-session/Dockerfile -t simon1999/50fragen:quiz-session-dev quiz-session
+          docker push simon1999/50fragen:quiz-session-dev
+
+      - name: Add SSH Key
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY_DEV }}
+
+      - name: Deploy to Dev environment
+        run: |
+          echo "Deploying to Dev environment..."
+          ssh ubuntu@130.162.220.7 << EOF
+            cd /home/ubuntu/50Fragen
+            docker compose pull
+            docker compose up -d
+          EOF

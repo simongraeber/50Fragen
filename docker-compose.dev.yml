@@ -1,0 +1,32 @@
+services:
+
+  eureka:
+    image: simon1999/50fragen:eureka-dev
+    ports:
+      - 8761:8761
+    networks:
+      - 50Fragen
+
+  frontend:
+    image: simon1999/50fragen:frontend-dev
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    ports:
+      - 8081:8081
+    networks:
+      - 50Fragen
+
+  gateway:
+    image: simon1999/50fragen:gateway-dev
+    ports:
+      - 8080:8080
+    networks:
+      - 50Fragen
+    depends_on:
+      - eureka
+
+
+networks:
+  50Fragen:
+    driver: bridg

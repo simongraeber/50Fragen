@@ -1,0 +1,38 @@
+services:
+
+  eureka:
+    container_name: eureka
+    build:
+      context: eureka
+      dockerfile: Dockerfile
+    ports:
+      - 8761:8761
+    networks:
+      - 50Fragen
+
+  frontend:
+    container_name: frontend
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    ports:
+      - 8081:8081
+    networks:
+      - 50Fragen
+
+  gateway:
+    container_name: gateway
+    build:
+      context: gateway
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    networks:
+      - 50Fragen
+    depends_on:
+      - eureka
+
+
+networks:
+  50Fragen:
+    driver: bridg
