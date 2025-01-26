@@ -48,7 +48,7 @@ jobs:
       - name: Add server to known_hosts
         run: |
           mkdir -p ~/.ssh
-          ssh-keyscan -H 138.2.180.231 >> ~/.ssh/known_hosts
+          ssh-keyscan -H 138.2.180.231 >> ~/.ssh/known_hosts || true
       - name: Add SSH Key
         uses: webfactory/ssh-agent@v0.5.3
         with:

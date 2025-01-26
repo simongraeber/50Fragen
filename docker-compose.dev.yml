@@ -2,8 +2,6 @@ services:
 
   eureka:
     image: simon1999/50fragen:eureka-dev
-    ports:
-      - 8761:8761
     networks:
       - 50Fragen
 
@@ -12,8 +10,6 @@ services:
     build:
       context: frontend
       dockerfile: Dockerfile
-    ports:
-      - 8081:8081
     networks:
       - 50Fragen
     environment:
@@ -24,8 +20,6 @@ services:
     build:
       context: quiz-session
       dockerfile: Dockerfile
-    ports:
-      - 4000:4000
     environment:
       - PORT=4000
       - EUREKA_HOST=eureka
