@@ -49,6 +49,10 @@ jobs:
         uses: webfactory/ssh-agent@v0.5.3
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY_DEV }}
+      - name: Add server to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H 130.162.220.7 >> ~/.ssh/known_hosts
 
       - name: Deploy to Dev environment
         run: |
