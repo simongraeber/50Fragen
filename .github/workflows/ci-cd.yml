@@ -58,9 +58,9 @@ jobs:
         run: |
           echo "Deploying to Dev environment..."
           scp docker-compose.dev.yml \
-              ${{ secrets.DEV_SERVER_USER }}@${{ secrets.DEV_SERVER_ADDRESS }}:/root/50Fragen/docker-compose.yml
+              ${{ secrets.DEV_SERVER_USER }}@${{ secrets.DEV_SERVER_ADDRESS }}:${{ secrets.DEV_SERVER_PROJECT_PATH }}/docker-compose.yml
           ssh ${{ secrets.DEV_SERVER_USER }}@${{ secrets.DEV_SERVER_ADDRESS }} << EOF
-            cd /root/50Fragen
+            cd ${{ secrets.DEV_SERVER_PROJECT_PATH }}
             docker compose pull
             docker compose up -d
           EOF
