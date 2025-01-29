@@ -7,9 +7,6 @@ services:
 
   frontend:
     image: simon1999/50fragen:frontend-dev
-    build:
-      context: frontend
-      dockerfile: Dockerfile
     networks:
       - 50Fragen
     environment:
@@ -17,9 +14,6 @@ services:
 
   quiz-session:
     image: simon1999/50fragen:quiz-session-dev
-    build:
-      context: quiz-session
-      dockerfile: Dockerfile
     environment:
       - PORT=4000
       - EUREKA_HOST=eureka
