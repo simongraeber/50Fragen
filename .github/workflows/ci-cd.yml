@@ -48,7 +48,7 @@ jobs:
       - name: Add server to known_hosts
         run: |
           mkdir -p ~/.ssh
-          ssh-keyscan -H 138.2.180.231 >> ~/.ssh/known_hosts || true
+          ssh-keyscan -H ${{ secrets.DEV_SERVER_ADDRESS }} >> ~/.ssh/known_hosts || true
       - name: Add SSH Key
         uses: webfactory/ssh-agent@v0.5.3
         with:
@@ -57,7 +57,7 @@ jobs:
       - name: Deploy to Dev environment
         run: |
           echo "Deploying to Dev environment..."
-          ssh ubuntu@138.2.180.231 << EOF
+          ssh ${{ secrets.DEV_SERVER_USER }}@${{ secrets.DEV_SERVER_ADDRESS }} << EOF
             cd /home/ubuntu/50Fragen
             docker compose pull
             docker compose up -d
