@@ -1,4 +1,5 @@
 import {Link} from "react-router-dom"
+import DiscordLogInButton from "@/components/shared/DiscordLogInButton.tsx"
 
 function NavBar() {
     return (
@@ -12,9 +13,7 @@ function NavBar() {
                     />
                 </Link>
             </div>
-            <div className="flex justify-end space-x-4 mr-4">
-                Login
-            </div>
+          <DiscordLogInButton/>
         </div>
     )
 }

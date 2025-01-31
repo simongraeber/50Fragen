@@ -11,7 +11,6 @@ function App() {
       <Router>
         <div className="flex flex-col h-full">
           <NavBar/>
-          hallo
           <div className="flex-grow overflow-auto">
             <RoutesComponent/>
           </div>
