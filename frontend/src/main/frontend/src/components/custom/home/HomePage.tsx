@@ -1,5 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { useNavigate } from "react-router-dom"
+import { Card, CardContent, CardTitle } from "@/components/ui/card.tsx"
+import Round3DButton from "@/components/custom/quiz_session_play/BuzzerButton"
 
 function HomePage() {
   const navigate = useNavigate()
@@ -13,6 +15,19 @@ function HomePage() {
       >
         See your Quizzes
       </Button>
+      <Card
+        className="m-8"
+        >
+        <CardTitle>
+          Buzzer Demo
+        </CardTitle>
+        <CardContent>
+          <Round3DButton onClick={function(): void {
+                     console.log("Clicked")
+                  } } />
+        </CardContent>
+
+      </Card>
     </div>
   )
 }
