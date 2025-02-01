@@ -1,0 +1,1 @@
+docker run -p 5432:5432 -e POSTGRES_PASSWORD=test -e POSTGRES_USER=admin -e POSTGRES_DB=my_db -d postgres:15-alpine

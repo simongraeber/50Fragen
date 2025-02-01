@@ -19,6 +19,12 @@ spring:
             - Path=/quiz-session/**
           filters:
               - StripPrefix=1
+        - id: quiz-database-route
+          uri: lb://quiz-database
+          predicates:
+              - Path=/quiz-database/**
+          filters:
+              - StripPrefix=1
         - id: frontend-route
           uri: lb://frontend
           predicates:

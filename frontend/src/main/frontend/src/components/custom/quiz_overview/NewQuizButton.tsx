@@ -11,7 +11,9 @@ function NewQuizButton() {
   const create_new = async () => {
     setLoading(true)
     try {
-      const new_quiz = await createQuiz()
+      const new_quiz = await createQuiz(
+        { name: "New Quiz" }
+      )
       navigate(`/editor/${new_quiz.id}`)
     } catch (error) {
       console.error("Quiz creation failed", error)

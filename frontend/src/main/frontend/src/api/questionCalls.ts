@@ -7,7 +7,7 @@ import { PUT, POST, DELETE } from "@/lib/http"
  * @returns the newly created question with id
  */
 export const createQuestion = async (question: Partial<QuizQuestion>) => {
-  return await POST<QuizQuestion, Partial<QuizQuestion>>("/question", question)
+  return await POST<QuizQuestion, Partial<QuizQuestion>>(`/quiz-database/quizzes/${question.quizId}/questions`, question)
 }
 
 /**
@@ -16,13 +16,13 @@ export const createQuestion = async (question: Partial<QuizQuestion>) => {
  * @returns the updated question
  */
 export const updateQuestion = async (question: Partial<QuizQuestion>) => {
-  return await PUT<QuizQuestion, Partial<QuizQuestion>>(`/question/${question.id}`, question)
+  return await PUT<QuizQuestion, Partial<QuizQuestion>>(`/quiz-database/quizzes/${question.quizId}/questions/${question.id}`, question)
 }
 
 /**
  * deletes a question with the given id
- * @param questionId the id of the question
+ * @param question the question to be deleted
  */
-export const deleteQuestion = async (questionId: string) => {
-  return await DELETE(`/question/${questionId}`)
+export const deleteQuestion = async (question: Partial<QuizQuestion>) => {
+  return await DELETE(`/quiz-database/quizzes/${question.quizId}/questions/${question.id}`)
 }

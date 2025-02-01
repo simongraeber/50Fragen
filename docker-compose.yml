@@ -30,6 +30,19 @@ services:
     networks:
       - 50Fragen
 
+  quiz-database:
+    container_name: quiz-database
+    build:
+      context: quiz-database
+      dockerfile: Dockerfile
+    networks:
+        - 50Fragen
+    environment:
+        - SPRING_DATASOURCE_URL=jdbc:postgresql://quiz-database:5432/quiz
+        - SPRING_DATASOURCE_USERNAME=user_name
+        - SPRING_DATASOURCE_PASSWORD=password
+        - EUREKA_SERVER=http://eureka:8761/eureka
+
   gateway:
     container_name: gateway
     build:

@@ -6,32 +6,29 @@ import { Input } from "@/components/ui/input.tsx"
 import { Separator } from "@/components/ui/separator.tsx"
 
 import useQuizIdFromUrl from "@/hooks/useQuizIdFromUrl"
-import { getQuiz } from "@/api/quizCalls.ts"
+import { getQuiz, updateQuiz } from "@/api/quizCalls.ts"
 import { createQuestion } from "@/api/questionCalls.ts"
 import { Quiz } from "@/types/Quiz.ts"
 import { QuizQuestion, QuizQuestionType } from "@/types/QuizQuestion.ts"
 import QuestionEdit from "@/components/custom/quiz_edit/QuestionEdit.tsx"
 import LoadingButton from "@/components/ui/LoadingButton.tsx"
+import { toast } from "@/hooks/use-toast.ts"
 
 function QuizEditPage() {
   const quizId = useQuizIdFromUrl()
   const [loading, setLoading] = useState(true)
   const [addQuestionLoading, setAddQuestionLoading] = useState(false)
   const [quiz, setQuiz] = useState<Quiz | null>(null)
-  // State for questions of type QuizQuestion[]
   const [questions, setQuestions] = useState<QuizQuestion[]>([])
   const [error, setError] = useState<Error | null>(null)
 
   useEffect(() => {
     getQuiz(quizId)
       .then((data) => {
-        // Transform questions from the API response so that the type field matches QuizQuestionType.
         const mappedQuestions = data.questions.map((q) => ({
           ...q,
-          // Explicitly cast the type, or perform any conversion if necessary.
           type: q.type as QuizQuestionType,
         }))
-        // Create a new Quiz object that conforms to the expected interface.
         const quizData: Quiz = { ...data, questions: mappedQuestions }
         setQuiz(quizData)
         setQuestions(mappedQuestions)
@@ -45,7 +42,7 @@ function QuizEditPage() {
   }, [quizId])
 
   // Type the onDragEnd parameter as DropResult.
-  const onDragEnd = (result: DropResult): void => {
+  const onDragEnd = async (result: DropResult) => {
     if (!result.destination) return
     const reordered = Array.from(questions)
     // Remove the dragged item from its source index.
@@ -53,12 +50,42 @@ function QuizEditPage() {
     // Insert the dragged item at its destination index.
     reordered.splice(result.destination.index, 0, movedItem)
     setQuestions(reordered)
-    // TODO save the new order to the API
+    await updateQuiz({ ...quiz, questions: reordered })
+    toast({
+      title: "Question order updated",
+      description: "Question order updated",
+    })
+  }
+
+  const updateQuizName = async (name: string) => {
+    if (!quiz) return
+    const updatedQuiz = { ...quiz, name }
+    await updateQuiz(updatedQuiz)
+    toast({
+      title: "Quiz name updated",
+      description: `Quiz name updated to: ${name}`,
+    })
+  }
+
+  const updateQuestion = (updatedQuestion: QuizQuestion) => {
+    const updatedQuestions = questions.map((q) => {
+      if (q.id === updatedQuestion.id) {
+        return updatedQuestion
+      }
+      return q
+    })
+    setQuestions(updatedQuestions)
+  }
+
+  const removeQuestion = (questionId: string) => {
+    const updatedQuestions = questions.filter((q) => q.id !== questionId)
+    setQuestions(updatedQuestions)
   }
 
   const addQuestion = () => {
     const newQuestion: Partial<QuizQuestion> = {
       question: "New question",
+      answer: "New answer",
       type: "buzzerquestion",
       quizId: quizId,
     }
@@ -93,6 +120,7 @@ function QuizEditPage() {
             placeholder="Enter quiz name"
             defaultValue={quiz?.name}
             className="mt-2"
+            onBlur={(e) => updateQuizName(e.target.value)}
           />
         </CardTitle>
         <Separator />
@@ -106,25 +134,18 @@ function QuizEditPage() {
                       <div
                         ref={provided.innerRef}
                         {...provided.draggableProps}
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          padding: "8px",
-                          marginBottom: "4px",
-                          background: "#f8f9fa",
-                          borderRadius: "4px",
-                          ...provided.draggableProps.style,
-                        }}
+                        className="flex bg-card center justify-between p-1 mt-2 ml-2 mr-2 border rounded-lg"
                       >
-                        {/* Drag handle: Only this area initiates the drag */}
                         <div
                           {...provided.dragHandleProps}
-                          style={{ cursor: "grab", padding: "0 8px" }}
+                          className="cursor-pointer text-lg mt-1 ml-2"
                         >
                           &#x2630;
                         </div>
-                        {/* Custom component; button clicks inside here will not trigger drags */}
-                        <QuestionEdit question={question} />
+                        <QuestionEdit
+                          updateQuestion={updateQuestion}
+                          removeQuestion={removeQuestion}
+                          question={question} quizId={quiz?.id || ""} />
                       </div>
                     )}
                   </Draggable>

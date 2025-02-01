@@ -30,13 +30,18 @@ import { updateQuestion, deleteQuestion } from "@/api/questionCalls.ts"
 
 interface QuestionEditProps {
   question: QuizQuestion
+  quizId: string
+  updateQuestion: (updatedQuestion: QuizQuestion) => void
+  removeQuestion: (questionId: string) => void
 }
 
-export function QuestionEdit({ question }: QuestionEditProps) {
-  const [editedQuestion, setEditedQuestion] = useState<string>(question.question)
-  const [editedAnswer, setEditedAnswer] = useState<string>(question.answer)
-  const [editedType, setEditedType] = useState<QuizQuestion["type"]>(question.type)
+export function QuestionEdit(input: QuestionEditProps) {
+
+  const [editedAnswer, setEditedAnswer] = useState<string>(input.question.answer)
+  const [editedType, setEditedType] = useState<QuizQuestion["type"]>(input.question.type)
   const [loading, setLoading] = useState(false)
+  const [editedQuestion, setEditedQuestion] = useState<string>(input.question.question)
+  const [dialogOpen, setDialogOpen] = useState(false)
 
   const handleUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -44,13 +49,15 @@ export function QuestionEdit({ question }: QuestionEditProps) {
     try {
       // Combine the updated fields into the question object
       const updatedQuestion = {
-        ...question,
+        ...input.question,
         question: editedQuestion,
         answer: editedAnswer,
         type: editedType,
+        quizId: input.quizId,
       }
-      await updateQuestion(updatedQuestion)
-      // Optionally, provide a notification or update the parent state here.
+      const new_question = await updateQuestion(updatedQuestion)
+      input.updateQuestion(new_question)
+      setDialogOpen(false)
     } catch (error) {
       console.error("Error updating question:", error)
     } finally {
@@ -62,8 +69,8 @@ export function QuestionEdit({ question }: QuestionEditProps) {
     if (window.confirm("Are you sure you want to delete this question?")) {
       setLoading(true)
       try {
-        await deleteQuestion(question.id)
-        // Optionally, remove the question from your list or notify the user after deletion.
+        await deleteQuestion({ id: input.question.id, quizId: input.question.quizId })
+        setDialogOpen(false)
       } catch (error) {
         console.error("Error deleting question:", error)
       } finally {
@@ -75,12 +82,13 @@ export function QuestionEdit({ question }: QuestionEditProps) {
   return (
     <div>
         <span>
-          {question.question}
+          {input.question.question}
         </span>
       <Badge className="ml-2 mr-2">
-        {question.type}
+        {input.question.type}
       </Badge>
-      <Dialog>
+      <Dialog open={dialogOpen}
+              onOpenChange={setDialogOpen}>
         <DialogTrigger asChild>
           <Button variant="outline">
             <MdEdit className="mr-2" />

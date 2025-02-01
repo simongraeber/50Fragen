@@ -21,6 +21,16 @@ services:
     networks:
       - 50Fragen
 
+  quiz-database:
+    image: simon1999/50fragen:quiz-database-dev
+    networks:
+      - 50Fragen
+    environment:
+      - EUREKA_SERVER=http://eureka:8761/eureka
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://quiz-database:5432/quiz
+      - SPRING_DATASOURCE_USERNAME=user_name
+      - SPRING_DATASOURCE_PASSWORD=password
+
   gateway:
     image: simon1999/50fragen:gateway-dev
     ports:
