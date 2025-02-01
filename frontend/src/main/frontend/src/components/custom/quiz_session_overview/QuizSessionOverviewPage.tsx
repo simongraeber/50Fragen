@@ -1,37 +1,14 @@
 import { useEffect, useState } from "react"
-import { QuizQuestionSession } from "@/types/QuizQuestionSession"
+import { Quiz } from "@/types/Quiz.ts"
 import QuizSessionOverviewTable from "./QuizSessionOverviewTable"
 import { Card, CardContent, CardHeader } from "@/components/ui/card.tsx"
-
-async function getSessions(): Promise<QuizQuestionSession[]> {
-  // Placeholder data — in a real app you'd fetch from your backend or similar
-  return [
-    {
-      id: "session1",
-      name: "Sample Session 1",
-      questions: [],
-      lastModified: new Date("2024-01-01T10:00:00Z"),
-    },
-    {
-      id: "session2",
-      name: "Sample Session 2",
-      questions: [],
-      lastModified: new Date("2023-07-15T15:30:00Z"),
-    },
-    {
-      id: "session3",
-      name: "Sample Session 3",
-      questions: [],
-      lastModified: new Date("2025-12-25T09:00:00Z"),
-    },
-  ]
-}
+import { getAllQuizzes } from "@/api/quizCalls.ts"
 
 function QuizSessionOverviewPage() {
-  const [sessions, setSessions] = useState<QuizQuestionSession[] | null>(null)
+  const [sessions, setSessions] = useState<Quiz[] | null>(null)
 
   useEffect(() => {
-    getSessions()
+    getAllQuizzes()
       .then((data) => setSessions(data))
       .catch((err) => {
         console.error(err)

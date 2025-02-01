@@ -10,13 +10,13 @@ import { Button } from "@/components/ui/button.tsx"
 import { MoreHorizontal } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 
-import { QuizQuestionSession } from "@/types/QuizQuestionSession.ts"
+import { Quiz } from "@/types/Quiz.ts"
 
 import { MdEdit } from "react-icons/md"
 import { FaPlay } from "react-icons/fa"
 
 
-export function QuizSessionOptions({ QuizQuestionSession: session }: { QuizQuestionSession: QuizQuestionSession }) {
+export function QuizSessionOptions({ QuizQuestionSession: session }: { QuizQuestionSession: Quiz }) {
   const navigate = useNavigate()
   return (
     <DropdownMenu>

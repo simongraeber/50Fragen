@@ -1,6 +1,6 @@
 import { QuizQuestion } from "@/types/QuizQuestion"
 
-export type QuizQuestionSession = {
+export type Quiz = {
   id: string
   name: string
   questions: QuizQuestion[]

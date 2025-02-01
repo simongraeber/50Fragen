@@ -20,17 +20,17 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 
-import { QuizQuestionSession } from "@/types/QuizQuestionSession"
+import { Quiz } from "@/types/Quiz.ts"
 import QuizSessionOptions from "@/components/custom/quiz_session_overview/QuizSessionOptions.tsx"
 
 interface QuizSessionOverviewTableProps {
-  data: QuizQuestionSession[]
+  data: Quiz[]
 }
 
 export default function QuizSessionOverviewTable({ data }: QuizSessionOverviewTableProps) {
   const navigate = useNavigate()
 
-  const columns: ColumnDef<QuizQuestionSession>[] = [
+  const columns: ColumnDef<Quiz>[] = [
     {
       accessorKey: "name",
       header: ({ column }) => (
