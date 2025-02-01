@@ -44,6 +44,8 @@ jobs:
           docker push simon1999/50fragen:gateway-dev
           docker build -f quiz-session/Dockerfile -t simon1999/50fragen:quiz-session-dev quiz-session
           docker push simon1999/50fragen:quiz-session-dev
+          docker build -f quiz-database/Dockerfile -t simon1999/50fragen:quiz-database-dev quiz-database
+          docker push simon1999/50fragen:quiz-database-dev
 
       - name: Add server to known_hosts
         run: |
