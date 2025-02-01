@@ -1,5 +1,5 @@
 import { Quiz } from "@/types/Quiz.ts"
-import { GET, PUT } from "@/lib/http"
+import { GET, PUT, DELETE} from "@/lib/http"
 
 /**
  * returns the quiz with the given id
@@ -7,12 +7,25 @@ import { GET, PUT } from "@/lib/http"
  * @param quizId the id of the quiz
  */
 export const getQuiz = async (quizId: string) => {
-  await new Promise(resolve => setTimeout(resolve, 3000));
+  await new Promise(resolve => setTimeout(resolve, 3000))
   if (quizId === "new-quiz") {
     return {
       id: "new-quiz",
       name: "New Quiz",
-      questions: [],
+      questions: [
+        {
+          id: "question1",
+          question: "What is the capital of Germany?",
+          answer: "Berlin",
+          type: "estimationquestion",
+        },
+        {
+          id: "question2",
+          question: "What is the capital of France?",
+          answer: "Paris",
+          type: "estimationquestion",
+        },
+      ],
       lastModified: new Date(),
     }
   }
@@ -25,7 +38,7 @@ export const getQuiz = async (quizId: string) => {
  * @returns all quizzes
  */
 export const getAllQuizzes = async () => {
-  await new Promise(resolve => setTimeout(resolve, 3000));
+  await new Promise(resolve => setTimeout(resolve, 3000))
   return [
     {
       id: "session1",
@@ -54,7 +67,7 @@ export const getAllQuizzes = async () => {
  * @returns the newly created quiz with id
  */
 export const createQuiz = async () => {
-  await new Promise(resolve => setTimeout(resolve, 3000));
+  await new Promise(resolve => setTimeout(resolve, 3000))
   return {
     id: "new-quiz",
     name: "New Quiz",
@@ -68,6 +81,14 @@ export const createQuiz = async () => {
  */
 export const updateQuiz = async (quiz: Partial<Quiz>) => {
   return await PUT<Quiz, Partial<Quiz>>(`/quiz/${quiz.id}`, quiz)
+}
+
+/**
+ * deletes the quiz with the given id
+ * @param quizId the id of the quiz
+ */
+export const deleteQuiz = async (quizId: string) => {
+  return await DELETE(`/quiz/${quizId}`)
 }
 
 

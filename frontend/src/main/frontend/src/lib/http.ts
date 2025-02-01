@@ -1,6 +1,7 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios"
 import { toast } from "@/components/ui/use-toast.ts"
-const baseURL = window.location.origin;
+
+const baseURL = window.location.origin
 
 const axiosInstance = axios.create({
   baseURL: baseURL,
@@ -19,7 +20,7 @@ const handleResponse = <T>(response: AxiosResponse<T>) => response.data
  */
 const handleError = (
   error: unknown,
-  expectedHTTPErrors?: Record<number, (err: AxiosError) => void>
+  expectedHTTPErrors?: Record<number, (err: AxiosError) => void>,
 ) => {
   if (error instanceof AxiosError) {
     const errorStatus = error.response?.status
@@ -45,7 +46,7 @@ const handleError = (
 
 export const GET = <T>(
   url: string,
-  config?: AxiosRequestConfig
+  config?: AxiosRequestConfig,
 ): Promise<T> => {
   return axiosInstance
     .get<T>(url, config)
@@ -57,7 +58,7 @@ export const POST = <T, U>(
   url: string,
   data: U,
   config?: AxiosRequestConfig,
-  expectedHTTPErrors?: Record<number, (err: AxiosError) => void>
+  expectedHTTPErrors?: Record<number, (err: AxiosError) => void>,
 ): Promise<T> => {
   return axiosInstance
     .post<T>(url, data, config)
@@ -68,7 +69,7 @@ export const POST = <T, U>(
 export const PUT = <T, U>(
   url: string,
   data: U,
-  config?: AxiosRequestConfig
+  config?: AxiosRequestConfig,
 ): Promise<T> => {
   return axiosInstance
     .put<T>(url, data, config)
@@ -78,7 +79,7 @@ export const PUT = <T, U>(
 
 export const DELETE = <T>(
   url: string,
-  config?: AxiosRequestConfig
+  config?: AxiosRequestConfig,
 ): Promise<T> => {
   return axiosInstance
     .delete<T>(url, config)

@@ -11,7 +11,7 @@ function HomePage() {
         Wow this is the Home Page my be the first page you see :)
       </p>
       <Button className="m-8"
-        onClick={() => navigate("/sessions")}
+              onClick={() => navigate("/quizzes")}
       >
         See your Quizzes
       </Button>

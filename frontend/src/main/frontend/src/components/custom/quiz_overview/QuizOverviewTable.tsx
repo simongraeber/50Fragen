@@ -27,6 +27,7 @@ import NewQuizButton from "@/components/custom/quiz_overview/NewQuizButton.tsx"
 
 interface QuizSessionOverviewTableProps {
   data: Quiz[]
+  loading?: boolean
 }
 
 export default function QuizOverviewTable({ data, loading = false }: QuizSessionOverviewTableProps) {
@@ -67,7 +68,7 @@ export default function QuizOverviewTable({ data, loading = false }: QuizSession
     },
     {
       id: "edit",
-      header: <span className="pl-4">Edit</span>,
+      header: () => <span className="pl-4">Edit</span>,
       cell: ({ row }) => (
         <Button variant="outline" onClick={() => navigate(`/editor/${row.original.id}`)}>
           <MdEdit className="mr-2" />
@@ -77,7 +78,7 @@ export default function QuizOverviewTable({ data, loading = false }: QuizSession
     },
     {
       id: "start",
-      header: <span className="pl-4">Start</span>,
+      header: () => <span className="pl-4">Start</span>,
       cell: ({ row }) => (
         <Button variant="outline" onClick={() => navigate(`/play/${row.original.id}`)}>
           <FaPlay className="mr-2" />
@@ -184,9 +185,9 @@ export default function QuizOverviewTable({ data, loading = false }: QuizSession
             ) : (
               <TableRow>
                 {loading ? (
-                    <TableCell colSpan={columns.length} className="h-24 text-center">
-                      <Skeleton className="h-24 -m-4" />
-                    </TableCell>
+                  <TableCell colSpan={columns.length} className="h-24 text-center">
+                    <Skeleton className="h-24 -m-4" />
+                  </TableCell>
                 ) : (
                   <TableCell colSpan={columns.length} className="h-24 text-center">
                     No sessions found.

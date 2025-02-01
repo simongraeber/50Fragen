@@ -5,6 +5,7 @@ import ImprintPage from "@/components/custom/legal/ImprintPage.tsx"
 import PrivacyPage from "@/components/custom/legal/PrivacyPage.tsx"
 import TermsOfServicePage from "@/components/custom/legal/TermsOfServicePage.tsx"
 import QuizOverviewPage from "@/components/custom/quiz_overview/QuizOverviewPage.tsx"
+import QuizEditPage from "@/components/custom/quiz_edit/QuizEditPage.tsx"
 
 const RoutesComponent = () => {
   return (
@@ -12,7 +13,10 @@ const RoutesComponent = () => {
       <Route path="/" element={<HomePage />} />
 
       {/* Quiz creation*/}
-      <Route path="/sessions" element={<QuizOverviewPage />} />
+      <Route path="/quizzes" element={<QuizOverviewPage />} />
+
+      {/* Quiz editing */}
+      <Route path="/editor/:id" element={<QuizEditPage />} />
 
       {/* Legal Stuff */}
       <Route path="/imprint" element={<ImprintPage />} />

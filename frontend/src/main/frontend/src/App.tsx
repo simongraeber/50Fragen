@@ -1,5 +1,5 @@
-import NavBar from "./components/shared/Navbar.tsx";
-import {BrowserRouter as Router} from "react-router-dom"
+import NavBar from "./components/shared/Navbar.tsx"
+import { BrowserRouter as Router } from "react-router-dom"
 import RoutesComponent from "@/components/shared/Routes"
 import { Toaster } from "@/components/ui/toaster"
 
@@ -10,13 +10,13 @@ function App() {
     <div className="bg-white h-screen w-full">
       <Router>
         <div className="flex flex-col h-full">
-          <NavBar/>
+          <NavBar />
           <div className="flex-grow overflow-auto">
-            <RoutesComponent/>
+            <RoutesComponent />
           </div>
         </div>
       </Router>
-      <Toaster/>
+      <Toaster />
     </div>
   )
 }

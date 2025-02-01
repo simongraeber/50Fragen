@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from "react"
 
 interface Round3DButtonProps {
   label?: string;
@@ -7,13 +7,13 @@ interface Round3DButtonProps {
 
 const Round3DButton: React.FC<Round3DButtonProps> = ({
                                                        label = "",
-                                                       onClick
+                                                       onClick,
                                                      }) => {
-  const [isHovered, setIsHovered] = useState(false);
-  const [isActive, setIsActive] = useState(false);
+  const [isHovered, setIsHovered] = useState(false)
+  const [isActive, setIsActive] = useState(false)
 
   // Dimensions and shape
-  const size = 80;
+  const size = 80
 
   // Top-level button (“pushable”) styles
   const buttonStyle: React.CSSProperties = {
@@ -29,21 +29,21 @@ const Round3DButton: React.FC<Round3DButtonProps> = ({
     height: `${size}px`,
     borderRadius: "50%",
     // No filter here, so it won’t brighten or blur the whole page
-  };
+  }
 
   /*
     To animate the shadow, edge, and front independently,
     we compute their Y-positions and filters based on hover/active state.
   */
   // Shadow
-  const shadowBaseY = 2;
-  const shadowHoverY = 4;
-  const shadowActiveY = 1;
+  const shadowBaseY = 2
+  const shadowHoverY = 4
+  const shadowActiveY = 1
   const shadowTranslateY = isActive
     ? shadowActiveY
     : isHovered
       ? shadowHoverY
-      : shadowBaseY;
+      : shadowBaseY
 
   const shadowStyle: React.CSSProperties = {
     position: "absolute",
@@ -61,8 +61,8 @@ const Round3DButton: React.FC<Round3DButtonProps> = ({
     // Apply blur (always) and brightness (only on hover) without affecting the page
     filter: isHovered
       ? "blur(4px) brightness(1.1)"
-      : "blur(4px)"
-  };
+      : "blur(4px)",
+  }
 
   // Edge (the “middle” rim of the button)
   const edgeStyle: React.CSSProperties = {
@@ -84,18 +84,18 @@ const Round3DButton: React.FC<Round3DButtonProps> = ({
     willChange: "filter",
     // Slight brightness bump on hover
     filter: isHovered ? "brightness(1.1)" : "none",
-    transition: "filter 250ms"
-  };
+    transition: "filter 250ms",
+  }
 
   // Front (the top face)
-  const frontBaseY = -4;
-  const frontHoverY = -6;
-  const frontActiveY = -2;
+  const frontBaseY = -4
+  const frontHoverY = -6
+  const frontActiveY = -2
   const frontTranslateY = isActive
     ? frontActiveY
     : isHovered
       ? frontHoverY
-      : frontBaseY;
+      : frontBaseY
 
   const frontStyle: React.CSSProperties = {
     display: "block",
@@ -115,17 +115,17 @@ const Round3DButton: React.FC<Round3DButtonProps> = ({
     alignItems: "center",
     justifyContent: "center",
     // Slight brightness on hover
-    filter: isHovered ? "brightness(1.1)" : "none"
-  };
+    filter: isHovered ? "brightness(1.1)" : "none",
+  }
 
   // Handlers for pointer states
-  const handleMouseEnter = () => setIsHovered(true);
+  const handleMouseEnter = () => setIsHovered(true)
   const handleMouseLeave = () => {
-    setIsHovered(false);
-    setIsActive(false);
-  };
-  const handleMouseDown = () => setIsActive(true);
-  const handleMouseUp = () => setIsActive(false);
+    setIsHovered(false)
+    setIsActive(false)
+  }
+  const handleMouseDown = () => setIsActive(true)
+  const handleMouseUp = () => setIsActive(false)
 
   return (
     <button
@@ -146,7 +146,7 @@ const Round3DButton: React.FC<Round3DButtonProps> = ({
         {label}
       </span>
     </button>
-  );
-};
+  )
+}
 
-export default Round3DButton;
+export default Round3DButton
