@@ -7,6 +7,15 @@ import { GET, PUT } from "@/lib/http"
  * @param quizId the id of the quiz
  */
 export const getQuiz = async (quizId: string) => {
+  await new Promise(resolve => setTimeout(resolve, 3000));
+  if (quizId === "new-quiz") {
+    return {
+      id: "new-quiz",
+      name: "New Quiz",
+      questions: [],
+      lastModified: new Date(),
+    }
+  }
   return await GET<Quiz>(`/quiz/${quizId}`)
 }
 
@@ -16,6 +25,7 @@ export const getQuiz = async (quizId: string) => {
  * @returns all quizzes
  */
 export const getAllQuizzes = async () => {
+  await new Promise(resolve => setTimeout(resolve, 3000));
   return [
     {
       id: "session1",
@@ -41,10 +51,15 @@ export const getAllQuizzes = async () => {
 
 /**
  * creates a new empty quiz
- * @returns the newly created quiz
+ * @returns the newly created quiz with id
  */
 export const createQuiz = async () => {
-  return await PUT<Quiz, undefined>("/quiz", undefined)
+  await new Promise(resolve => setTimeout(resolve, 3000));
+  return {
+    id: "new-quiz",
+    name: "New Quiz",
+  }
+  return await PUT<Partial<Quiz>, undefined>("/quiz", undefined)
 }
 
 /**

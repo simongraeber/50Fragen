@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { useNavigate } from "react-router-dom"
 import { Card, CardContent, CardTitle } from "@/components/ui/card.tsx"
-import Round3DButton from "@/components/custom/quiz_session_play/BuzzerButton"
+import Round3DButton from "@/components/custom/quiz_play/BuzzerButton"
 
 function HomePage() {
   const navigate = useNavigate()

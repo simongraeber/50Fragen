@@ -16,7 +16,7 @@ import { MdEdit } from "react-icons/md"
 import { FaPlay } from "react-icons/fa"
 
 
-export function QuizSessionOptions({ QuizQuestionSession: session }: { QuizQuestionSession: Quiz }) {
+export function QuizOptions({ QuizQuestionSession: session }: { QuizQuestionSession: Quiz }) {
   const navigate = useNavigate()
   return (
     <DropdownMenu>
@@ -53,4 +53,4 @@ export function QuizSessionOptions({ QuizQuestionSession: session }: { QuizQuest
   )
 }
 
-export default QuizSessionOptions
+export default QuizOptions

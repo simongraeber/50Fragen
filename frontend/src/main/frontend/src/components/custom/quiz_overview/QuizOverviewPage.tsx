@@ -1,24 +1,20 @@
 import { useEffect, useState } from "react"
 import { Quiz } from "@/types/Quiz.ts"
-import QuizSessionOverviewTable from "./QuizSessionOverviewTable"
+import QuizOverviewTable from "./QuizOverviewTable.tsx"
 import { Card, CardContent, CardHeader } from "@/components/ui/card.tsx"
 import { getAllQuizzes } from "@/api/quizCalls.ts"
 
-function QuizSessionOverviewPage() {
-  const [sessions, setSessions] = useState<Quiz[] | null>(null)
+function QuizOverviewPage() {
+  const [quizzes, setQuizzes] = useState<Quiz[] | null>(null)
 
   useEffect(() => {
     getAllQuizzes()
-      .then((data) => setSessions(data))
+      .then((data) => setQuizzes(data))
       .catch((err) => {
         console.error(err)
-        setSessions([])
+        setQuizzes([])
       })
   }, [])
-
-  if (!sessions) {
-    return <div>Loading...</div>
-  }
 
   return (
     <div className="flex-col h-full justify-center pb-32">
@@ -27,11 +23,14 @@ function QuizSessionOverviewPage() {
           <h1 className="mb-4 text-xl">Quiz Overview</h1>
         </CardHeader>
         <CardContent>
-          <QuizSessionOverviewTable data={sessions} />
+          {quizzes ?
+            <QuizOverviewTable data={quizzes} />
+            : <QuizOverviewTable data={[]} loading={true} />
+          }
         </CardContent>
       </Card>
     </div>
   )
 }
 
-export default QuizSessionOverviewPage
+export default QuizOverviewPage

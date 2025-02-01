@@ -18,16 +18,18 @@ import { FaPlay } from "react-icons/fa"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Skeleton } from "@/components/ui/skeleton"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 
 import { Quiz } from "@/types/Quiz.ts"
-import QuizSessionOptions from "@/components/custom/quiz_session_overview/QuizSessionOptions.tsx"
+import QuizOptions from "@/components/custom/quiz_overview/QuizOptions.tsx"
+import NewQuizButton from "@/components/custom/quiz_overview/NewQuizButton.tsx"
 
 interface QuizSessionOverviewTableProps {
   data: Quiz[]
 }
 
-export default function QuizSessionOverviewTable({ data }: QuizSessionOverviewTableProps) {
+export default function QuizOverviewTable({ data, loading = false }: QuizSessionOverviewTableProps) {
   const navigate = useNavigate()
 
   const columns: ColumnDef<Quiz>[] = [
@@ -65,7 +67,7 @@ export default function QuizSessionOverviewTable({ data }: QuizSessionOverviewTa
     },
     {
       id: "edit",
-      header: "Edit",
+      header: <span className="pl-4">Edit</span>,
       cell: ({ row }) => (
         <Button variant="outline" onClick={() => navigate(`/editor/${row.original.id}`)}>
           <MdEdit className="mr-2" />
@@ -75,7 +77,7 @@ export default function QuizSessionOverviewTable({ data }: QuizSessionOverviewTa
     },
     {
       id: "start",
-      header: "Start",
+      header: <span className="pl-4">Start</span>,
       cell: ({ row }) => (
         <Button variant="outline" onClick={() => navigate(`/play/${row.original.id}`)}>
           <FaPlay className="mr-2" />
@@ -88,7 +90,7 @@ export default function QuizSessionOverviewTable({ data }: QuizSessionOverviewTa
       header: "Actions",
       cell: ({ row }) => {
         const session = row.original
-        return <QuizSessionOptions QuizQuestionSession={session} />
+        return <QuizOptions QuizQuestionSession={session} />
       },
     },
   ]
@@ -123,9 +125,7 @@ export default function QuizSessionOverviewTable({ data }: QuizSessionOverviewTa
           className="max-w-sm"
           autoComplete="off"
         />
-        <Button className="ml-auto" onClick={() => navigate("/editor")}>
-          New Quiz
-        </Button>
+        <NewQuizButton />
       </div>
 
       <div className="rounded-md border">
@@ -151,7 +151,7 @@ export default function QuizSessionOverviewTable({ data }: QuizSessionOverviewTa
                         ? null
                         : flexRender(
                           header.column.columnDef.header,
-                          header.getContext()
+                          header.getContext(),
                         )}
                     </TableHead>
                   )
@@ -183,9 +183,15 @@ export default function QuizSessionOverviewTable({ data }: QuizSessionOverviewTa
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
-                  No sessions found.
-                </TableCell>
+                {loading ? (
+                    <TableCell colSpan={columns.length} className="h-24 text-center">
+                      <Skeleton className="h-24 -m-4" />
+                    </TableCell>
+                ) : (
+                  <TableCell colSpan={columns.length} className="h-24 text-center">
+                    No sessions found.
+                  </TableCell>
+                )}
               </TableRow>
             )}
           </TableBody>
