@@ -1,5 +1,5 @@
 import { Quiz } from "@/types/Quiz.ts"
-import { GET, PUT, DELETE} from "@/lib/http"
+import { GET, PUT, DELETE, POST } from "@/lib/http"
 
 /**
  * returns the quiz with the given id
@@ -66,13 +66,13 @@ export const getAllQuizzes = async () => {
  * creates a new empty quiz
  * @returns the newly created quiz with id
  */
-export const createQuiz = async () => {
+export const createQuiz = async (quiz: Partial<Quiz>) => {
   await new Promise(resolve => setTimeout(resolve, 3000))
   return {
     id: "new-quiz",
     name: "New Quiz",
   }
-  return await PUT<Partial<Quiz>, undefined>("/quiz", undefined)
+  return await POST<Quiz, Partial<Quiz>>("/quiz", quiz)
 }
 
 /**

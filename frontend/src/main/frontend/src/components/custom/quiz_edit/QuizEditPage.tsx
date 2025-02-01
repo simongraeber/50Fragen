@@ -1,19 +1,22 @@
 import { useEffect, useState } from "react"
 import { DragDropContext, Droppable, Draggable, DropResult } from "react-beautiful-dnd"
 
-import { Card, CardTitle } from "@/components/ui/card"
+import { Card, CardFooter, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input.tsx"
 import { Separator } from "@/components/ui/separator.tsx"
 
 import useQuizIdFromUrl from "@/hooks/useQuizIdFromUrl"
 import { getQuiz } from "@/api/quizCalls.ts"
+import { createQuestion } from "@/api/questionCalls.ts"
 import { Quiz } from "@/types/Quiz.ts"
 import { QuizQuestion, QuizQuestionType } from "@/types/QuizQuestion.ts"
 import QuestionEdit from "@/components/custom/quiz_edit/QuestionEdit.tsx"
+import LoadingButton from "@/components/ui/LoadingButton.tsx"
 
 function QuizEditPage() {
   const quizId = useQuizIdFromUrl()
   const [loading, setLoading] = useState(true)
+  const [addQuestionLoading, setAddQuestionLoading] = useState(false)
   const [quiz, setQuiz] = useState<Quiz | null>(null)
   // State for questions of type QuizQuestion[]
   const [questions, setQuestions] = useState<QuizQuestion[]>([])
@@ -50,6 +53,26 @@ function QuizEditPage() {
     // Insert the dragged item at its destination index.
     reordered.splice(result.destination.index, 0, movedItem)
     setQuestions(reordered)
+    // TODO save the new order to the API
+  }
+
+  const addQuestion = () => {
+    const newQuestion: Partial<QuizQuestion> = {
+      question: "New question",
+      type: "buzzerquestion",
+      quizId: quizId,
+    }
+    setAddQuestionLoading(true)
+    createQuestion(newQuestion)
+      .then((newQuestion) => {
+        setQuestions([...questions, newQuestion])
+        setAddQuestionLoading(false)
+      })
+      .catch((err) => {
+        console.error("Error adding question:", err)
+        setAddQuestionLoading(false)
+      })
+
   }
 
   if (error) {
@@ -111,6 +134,14 @@ function QuizEditPage() {
             )}
           </Droppable>
         </DragDropContext>
+        <CardFooter className="flex justify-end pt-2">
+          <LoadingButton
+            onClick={addQuestion}
+            loading={addQuestionLoading}
+          >
+            Add Question
+          </LoadingButton>
+        </CardFooter>
       </Card>
     </div>
   )
