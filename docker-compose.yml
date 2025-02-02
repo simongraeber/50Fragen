@@ -1,24 +1,18 @@
 services:
-
   eureka:
     container_name: eureka
     build:
       context: eureka
       dockerfile: Dockerfile
     ports:
-      - 8761:8761
+      - "8761:8761"
     networks:
       - 50Fragen
-
-  quiz-session:
-    container_name: quiz-session
-    build:
-      context: quiz-session
-      dockerfile: Dockerfile
-    ports:
-      - 4000:4000
-    networks:
-      - 50Fragen
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8761/eureka/apps/ || (echo 'Health check failed' && exit 1)"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   frontend:
     container_name: frontend
@@ -26,9 +20,63 @@ services:
       context: frontend
       dockerfile: Dockerfile
     ports:
-      - 8081:8081
+      - "8081:8081"
     networks:
       - 50Fragen
+    environment:
+      - EUREKA_SERVER=http://eureka:8761/eureka
+      - SERVER_PORT=8081
+    depends_on:
+      eureka:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8081/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  quiz-session:
+    container_name: quiz-session
+    build:
+      context: quiz-session
+      dockerfile: Dockerfile
+    ports:
+      - "4000:4000"
+    networks:
+      - 50Fragen
+    environment:
+      - PORT=4000
+      - HOST_IP=quiz-session
+      - EUREKA_HOST=eureka
+      - EUREKA_PORT=8761
+    depends_on:
+      eureka:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:4000/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  postgres:
+    container_name: postgres
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: "user_name"
+      POSTGRES_PASSWORD: "password"
+      POSTGRES_DB: "quiz"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - 50Fragen
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user_name"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
   quiz-database:
     container_name: quiz-database
@@ -36,12 +84,25 @@ services:
       context: quiz-database
       dockerfile: Dockerfile
     networks:
-        - 50Fragen
+      - 50Fragen
     environment:
-        - SPRING_DATASOURCE_URL=jdbc:postgresql://quiz-database:5432/quiz
-        - SPRING_DATASOURCE_USERNAME=user_name
-        - SPRING_DATASOURCE_PASSWORD=password
-        - EUREKA_SERVER=http://eureka:8761/eureka
+      - SERVER_PORT=8083
+      - EUREKA_SERVER=http://eureka:8761/eureka
+      - SPRING_PROFILES_ACTIVE=prod
+      - DB_URL=jdbc:postgresql://postgres:5432/quiz
+      - DB_USERNAME=user_name
+      - DB_PASSWORD=password
+    depends_on:
+      eureka:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8083 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   gateway:
     container_name: gateway
@@ -49,12 +110,27 @@ services:
       context: gateway
       dockerfile: Dockerfile
     ports:
-      - 8080:8080
+      - "8080:8080"
     networks:
       - 50Fragen
+    environment:
+      - EUREKA_SERVER=http://eureka:8761/eureka
     depends_on:
-      - eureka
+      eureka:
+        condition: service_healthy
+      frontend:
+        condition: service_healthy
+      quiz-session:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
+volumes:
+  postgres_data:
 
 networks:
   50Fragen:
