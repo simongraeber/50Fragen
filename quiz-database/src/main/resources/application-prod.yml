@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://quiz-postgres:5432/quiz
+    username: user_name
+    password: password
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update  # or none/validate/your choice
+  profiles:
+    active: prod
+
+server:
+  port: 8083
