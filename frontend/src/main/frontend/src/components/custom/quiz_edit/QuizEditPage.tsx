@@ -59,7 +59,7 @@ function QuizEditPage() {
 
   const updateQuizName = async (name: string) => {
     if (!quiz) return
-    const updatedQuiz = { ...quiz, name }
+    const updatedQuiz = { ...quiz, name , questions }
     await updateQuiz(updatedQuiz)
     toast({
       title: "Quiz name updated",

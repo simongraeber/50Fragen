@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.util.List;
 import java.util.UUID;
 
@@ -23,8 +22,9 @@ public class QuizQuestionService {
     @Autowired
     private QuizRepository quizRepository;
 
+    // Return questions sorted by questionOrder
     public List<QuizQuestion> getQuestionsByQuizId(UUID quizId) {
-        return questionRepository.findByQuizId(quizId);
+        return questionRepository.findByQuizIdOrderByQuestionOrderAsc(quizId);
     }
 
     public QuizQuestion createQuestion(UUID quizId, CreateQuestionRequest request) {
@@ -39,6 +39,11 @@ public class QuizQuestionService {
         }
 
         QuizQuestion question = new QuizQuestion(request.getQuestion(), request.getAnswer(), type, quiz);
+
+        // Set the new question order to be the last position.
+        List<QuizQuestion> existingQuestions = questionRepository.findByQuizIdOrderByQuestionOrderAsc(quizId);
+        question.setQuestionOrder(existingQuestions.size());
+
         return questionRepository.save(question);
     }
 
@@ -53,6 +58,7 @@ public class QuizQuestionService {
         QuizQuestion existingQuestion = questionRepository.findById(questionId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Question not found"));
 
+        // Update text, answer, and question type – leave questionOrder untouched.
         existingQuestion.setQuestion(request.getQuestion());
         existingQuestion.setAnswer(request.getAnswer());
         try {

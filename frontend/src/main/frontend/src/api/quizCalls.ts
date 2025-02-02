@@ -7,6 +7,9 @@ import { GET, PUT, DELETE, POST } from "@/lib/http"
  * @param quizId the id of the quiz
  */
 export const getQuiz = async (quizId: string) => {
+  const value = await GET<Quiz>(`/quiz-database/quizzes/${quizId}`)
+  console.log(value)
+  return value
   return await GET<Quiz>(`/quiz-database/quizzes/${quizId}`)
 }
 

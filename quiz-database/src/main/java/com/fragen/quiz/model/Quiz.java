@@ -21,6 +21,7 @@ public class Quiz {
 
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
+    @OrderBy("questionOrder ASC")  // ensures questions are returned in the saved order
     private List<QuizQuestion> questions;
 
     public Quiz() { }
@@ -30,18 +31,7 @@ public class Quiz {
         this.lastModified = LocalDateTime.now();
     }
 
-    // getters and setters omitted for brevity
-
-    public void addQuestion(QuizQuestion question) {
-        questions.add(question);
-        question.setQuiz(this);
-    }
-
-    public void removeQuestion(QuizQuestion question) {
-        questions.remove(question);
-        question.setQuiz(null);
-    }
-
+    // Getters and Setters
     public UUID getId() {
         return id;
     }
@@ -72,5 +62,15 @@ public class Quiz {
 
     public void setQuestions(List<QuizQuestion> questions) {
         this.questions = questions;
+    }
+
+    public void addQuestion(QuizQuestion question) {
+        questions.add(question);
+        question.setQuiz(this);
+    }
+
+    public void removeQuestion(QuizQuestion question) {
+        questions.remove(question);
+        question.setQuiz(null);
     }
 }

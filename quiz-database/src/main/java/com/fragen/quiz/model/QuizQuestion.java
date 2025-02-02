@@ -2,7 +2,6 @@ package com.fragen.quiz.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-
 import java.util.UUID;
 
 @Entity
@@ -23,6 +22,10 @@ public class QuizQuestion {
     @Enumerated(EnumType.STRING)
     private QuizQuestionType type;
 
+    // New field to store the order of the question
+    @Column(nullable = false)
+    private int questionOrder;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "quiz_id", nullable = false)
     @JsonBackReference
@@ -38,7 +41,7 @@ public class QuizQuestion {
         this.quiz = quiz;
     }
 
-
+    // Getters and Setters
     public UUID getId() {
         return id;
     }
@@ -77,5 +80,13 @@ public class QuizQuestion {
 
     public void setQuiz(Quiz quiz) {
         this.quiz = quiz;
+    }
+
+    public int getQuestionOrder() {
+        return questionOrder;
+    }
+
+    public void setQuestionOrder(int questionOrder) {
+        this.questionOrder = questionOrder;
     }
 }

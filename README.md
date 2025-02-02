@@ -68,3 +68,7 @@ sudo systemctl restart nginx
 Now you can access the server via https://dev.50fragen.com or your domain.
 
 ## Development
+run docker-compose with the development file:
+```bash
+docker-compose -f docker-compose.yml up -d
+```
