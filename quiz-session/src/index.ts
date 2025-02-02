@@ -51,7 +51,11 @@ eurekaClient.start((error: Error) => {
 app.use(express.json());
 
 app.get("/", (req: Request, res: Response) => {
-    res.send("Session Service is Running!");
+    res.send("Session Service is Running! 🚀 \n"
+        + "Eureka configuration: \n"
+        + `Eureka host: ${process.env.EUREKA_HOST || "localhost"} \n`
+        + `Eureka port: ${process.env.EUREKA_PORT || 8761} \n`
+        + `Session service port: ${PORT}`);
 });
 
 io.on("connection", (socket) => {
