@@ -21,5 +21,11 @@ public class ReactController {
     public String redirectEditor(@PathVariable String path) {
         return "forward:/index.html";
     }
+
+    // to allow for edirot urls like .../editor/test_123
+    @RequestMapping(value = "/play/{path:[^\\.]*}", method = RequestMethod.GET)
+    public String redirectPlay(@PathVariable String path) {
+        return "forward:/index.html";
+    }
 }
 
