@@ -14,7 +14,7 @@ spring:
           enabled: false
       routes:
         - id: quiz-session-route
-          uri:  lb://quiz-session-service
+          uri:  lb://quiz-session
           predicates:
             - Path=/quiz-session/**
           filters:
