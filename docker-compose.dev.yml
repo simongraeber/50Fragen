@@ -8,9 +8,8 @@ services:
     healthcheck:
       test: [ "CMD-SHELL", "curl -f http://localhost:8761/eureka/apps/ || (echo 'Health check failed'; exit 1)" ]
       interval: 10s
-      timeout: 10s
-      retries: 10
-      start_period: 60s
+      timeout: 5s
+      retries: 5
 
   frontend:
     image: simon1999/50fragen:frontend-dev
