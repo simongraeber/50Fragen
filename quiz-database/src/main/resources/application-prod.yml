@@ -1,12 +1,15 @@
 spring:
   datasource:
-    url: jdbc:postgresql://quiz-postgres:5432/quiz
-    username: user_name
-    password: password
-    driver-class-name: org.postgresql.Driver
-  jpa:
-    hibernate:
-      ddl-auto: update  # or none/validate/your choice
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/my_db}
+    username: ${DB_USERNAME:admin}
+    password: ${DB_PASSWORD:test}
 
-server:
-  port: 8083
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc:
+          lob:
+            non_contextual_creation: true
+    hibernate:
+      ddl-auto: update
