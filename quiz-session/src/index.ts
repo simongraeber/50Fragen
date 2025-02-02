@@ -16,13 +16,14 @@ const io = new Server(server, {
 });
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 4000;
 
+const host = process.env.HOST_IP || 'localhost';
 const eurekaClient = new Eureka({
     instance: {
         app: "quiz-session",
         instanceId: `quiz-session:${PORT}`,
-        hostName: "localhost",
-        ipAddr: "127.0.0.1",
-        statusPageUrl: `http://localhost:${PORT}`,
+        hostName: host,
+        ipAddr: host,  // adjust if needed to a real IP address
+        statusPageUrl: `http://${host}:${PORT}`,
         port: {
             $: PORT,
             "@enabled": true,

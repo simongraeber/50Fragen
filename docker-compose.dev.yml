@@ -23,6 +23,7 @@ services:
     image: simon1999/50fragen:quiz-session-dev
     environment:
       - PORT=8082
+      - HOST_IP=quiz-session
       - EUREKA_HOST=http://eureka
       - EUREKA_PORT=8761
     networks:
