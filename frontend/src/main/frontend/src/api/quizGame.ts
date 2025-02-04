@@ -20,16 +20,6 @@ const _joinQuizRoom = (quizID: string): void => {
  */
 export const connectToGame = async (quizID: string): Promise<QuizState> => {
   _joinQuizRoom(quizID)
-  try {
-    const response = await fetch(`http://localhost:4000/quiz/${quizID}`)
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
-    }
-    return await response.json() as QuizState
-  } catch (error) {
-    console.error("Error fetching data:", error)
-    throw error
-  }
   return await GET<QuizState>(`${socketServerURL}/quiz/${quizID}`)
 }
 
@@ -93,7 +83,7 @@ export const playerScoreUpdated = (
 }
 
 export const switchedToActiveOrInactive = (
-  callback: (data: QuizState) => void): void => {
+  callback: (data: GameState) => void): void => {
   onEvent("switchedToActiveOrInactive", (gameState: GameState) => {
     console.log("Received game state change io:", gameState)
       callback(gameState)

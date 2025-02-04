@@ -41,8 +41,8 @@ io.on("connection", (socket) => {
 
     // Set quiz to inactive and notify room.
     quiz.active = false;
-    io.to(quizID).emit("buzz", { playerId: playerID, quizId: quizID });
-    io.to(quizID).emit("switchedToActiveOrInactive", { active: false, quizId: quizID });
+    io.to(quizID).emit("buzz", { userId: playerID, quizId: quizID });
+    //io.to(quizID).emit("switchedToActiveOrInactive", { active: false, quizId: quizID });
   });
 
   socket.on("setGameActive", (quizID: string) => {

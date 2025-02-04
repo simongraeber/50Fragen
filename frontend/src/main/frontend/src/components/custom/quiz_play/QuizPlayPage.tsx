@@ -11,7 +11,7 @@ import EstimationQuestionAnswers from "@/components/custom/quiz_play/EstimationQ
 import { RootState } from "@/lib/store.ts";
 import { useSelector } from "react-redux";
 import { hitBuzz } from "@/api/quizGame.ts";
-import { GameProvider, useGame } from "@/providers/GameProvider.tsx";
+import { GameProvider, useGame} from "@/providers/GameProvider.tsx";
 
 function QuizPlayContent() {
   const quizId = useQuizIdFromUrl();

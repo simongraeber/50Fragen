@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useReducer } from "react";
+import React, { createContext, useContext, useEffect, useReducer, useRef } from "react";
 import { initializeSocket } from "@/api/socket.ts";
 import { buzz, switchedToActiveOrInactive, connectToGame, playerScoreUpdated } from "@/api/quizGame.ts";
 import { Buzz } from "@/types/gamePlay/buzz.ts";
@@ -17,8 +17,7 @@ const initialState: GameStateData = {
 
 type Action =
   | { type: "SET_BUZZ_DATA"; payload: Buzz | null }
-  | { type: "SET_QUIZ_STATE"; payload: QuizState | null }
-  | { type: "UPDATE_PLAYER_SCORE"; payload: { quizID: string; playerID: string; score: number } };
+  | { type: "SET_QUIZ_STATE"; payload: QuizState | null };
 
 function gameReducer(state: GameStateData, action: Action): GameStateData {
   switch (action.type) {
@@ -26,21 +25,6 @@ function gameReducer(state: GameStateData, action: Action): GameStateData {
       return { ...state, buzzData: action.payload };
     case "SET_QUIZ_STATE":
       return { ...state, quizState: action.payload };
-    case "UPDATE_PLAYER_SCORE":
-      if (!state.quizState) return state;
-      return {
-        ...state,
-        quizState: {
-          ...state.quizState,
-          participantsScores: state.quizState.participantsScores.map(player => {
-            if (player.user.id === action.payload.playerID) {
-              return { ...player, score: action.payload.score };
-            }
-            return player;
-          }),
-          id: state.quizState.id,
-        },
-      };
     default:
       return state;
   }
@@ -61,29 +45,57 @@ interface GameProviderProps {
 export const GameProvider = ({ quizId, children }: GameProviderProps) => {
   const [state, dispatch] = useReducer(gameReducer, initialState);
 
+  // REF TO ALWAYS HAVE THE LATEST STATE
+  const stateRef = useRef(state);
   useEffect(() => {
-    // Initialize socket connection once on mount.
+    stateRef.current = state;
+  }, [state]);
+
+  useEffect(() => {
+    // Initialize socket connection on mount.
     initializeSocket();
 
-    // Listen for buzz events and update state if they are meant for our quiz.
+    // Listen for buzz events.
     buzz((data: Buzz) => {
       if (data.quizId === quizId) {
         console.log("Buzz event received:", data);
-        dispatch({ type: "SET_BUZZ_DATA", payload: data });
+        dispatch({ type: "SET_BUZZ_DATA", payload: {
+          quizId: data.quizId,
+            userId: data.userId,
+          } });
       }
     });
 
-    // Listen to player score updates.
+    // Listen for player score updates.
     playerScoreUpdated((data: { quizID: string; playerID: string; score: number }) => {
       console.log("Player score update received:", data);
-      // Dispatch an action that updates the player score without relying on stale state.
-      dispatch({ type: "UPDATE_PLAYER_SCORE", payload: data });
+      // Use stateRef.current to get the latest quizState:
+      if (stateRef.current.quizState) {
+        dispatch({
+          type: "SET_QUIZ_STATE",
+          payload: {
+            ...stateRef.current.quizState,
+            participantsScores: stateRef.current.quizState.participantsScores.map((player) => {
+              if (player.user.id === data.playerID) {
+                return { ...player, score: data.score };
+              }
+              return player;
+            }),
+            id: stateRef.current.quizState.id,
+          },
+        });
+      }
     });
 
     // Listen for active/inactive game state changes.
     switchedToActiveOrInactive((data: GameState) => {
       console.log("Game state update received:", data);
-      dispatch({ type: "SET_QUIZ_STATE", payload: data });
+      dispatch({ type: "SET_QUIZ_STATE", payload: {
+          ...stateRef.current.quizState,
+          active: data.active,
+          id: stateRef.current.quizState?.id || "",
+        } as QuizState
+      });
     });
 
     // Get the initial state from the server.
