@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useReducer, useRef } from "react";
-import { initializeSocket } from "@/api/socket.ts";
+import { initializeSocket, onEvent, offEvent } from "@/api/socket.ts";
 import { buzz, switchedToActiveOrInactive, connectToGame, userScoreUpdated } from "@/api/quizGame.ts";
 import { Buzz } from "@/types/gamePlay/buzz.ts";
 import { QuizState } from "@/types/gamePlay/QuizState.ts";
@@ -52,24 +52,44 @@ export const GameProvider = ({ quizId, children }: GameProviderProps) => {
   }, [state]);
 
   useEffect(() => {
-    // Initialize socket connection on mount.
+    // Initialize the socket connection on mount.
     initializeSocket();
+
+    // Define the initialization function so we can use it both initially and on reconnection.
+    const initializeGameState = async () => {
+      const fetchedState = await connectToGame(quizId);
+      dispatch({ type: "SET_QUIZ_STATE", payload: fetchedState });
+    };
+
+    // First time initialization.
+    initializeGameState();
+
+    // Reinitialize game state when socket reconnects.
+    const handleSocketConnect = () => {
+      console.log("Socket reconnected, reinitializing game state");
+      initializeGameState();
+    };
+
+    // Start listening on reconnections.
+    onEvent("connect", handleSocketConnect);
 
     // Listen for buzz events.
     buzz((data: Buzz) => {
       if (data.quizId === quizId) {
         console.log("Buzz event received:", data);
-        dispatch({ type: "SET_BUZZ_DATA", payload: {
-          quizId: data.quizId,
+        dispatch({
+          type: "SET_BUZZ_DATA",
+          payload: {
+            quizId: data.quizId,
             userId: data.userId,
-          } });
+          },
+        });
       }
     });
 
     // Listen for player score updates.
     userScoreUpdated((data: { quizID: string; userID: string; score: number }) => {
       console.log("Player score update received:", data);
-      // Use stateRef.current to get the latest quizState:
       if (stateRef.current.quizState) {
         dispatch({
           type: "SET_QUIZ_STATE",
@@ -90,21 +110,20 @@ export const GameProvider = ({ quizId, children }: GameProviderProps) => {
     // Listen for active/inactive game state changes.
     switchedToActiveOrInactive((data: GameState) => {
       console.log("Game state update received:", data);
-      dispatch({ type: "SET_QUIZ_STATE", payload: {
+      dispatch({
+        type: "SET_QUIZ_STATE",
+        payload: {
           ...stateRef.current.quizState,
           active: data.active,
           id: stateRef.current.quizState?.id || "",
-        } as QuizState
+        } as QuizState,
       });
     });
 
-    // Get the initial state from the server.
-    const initializeGameState = async () => {
-      const fetchedState = await connectToGame(quizId);
-      dispatch({ type: "SET_QUIZ_STATE", payload: fetchedState });
+    // Clean up the event listener on unmount.
+    return () => {
+      offEvent("connect");
     };
-
-    initializeGameState();
   }, [quizId]);
 
   return (

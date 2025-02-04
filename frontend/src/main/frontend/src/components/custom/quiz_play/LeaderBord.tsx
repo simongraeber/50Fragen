@@ -124,20 +124,26 @@ const ScoreRow: React.FC<ScoreRowProps> = ({ userScore, canEdit }) => {
 
 const EditScorePopover: React.FC<{ userScore: UserScore }> = ({ userScore }) => {
   const [inputValue, setInputValue] = useState(String(userScore.score));
+  const [isOpen, setIsOpen] = useState(false);
   const { updateScore } = useScore();
 
   const handleSave = () => {
     const newScore = Number(inputValue);
     if (!isNaN(newScore)) {
       updateScore(userScore.user.id, newScore);
-      console.log(`Score updated for ${userScore.user.name}: ${newScore}`);
+      setIsOpen(false);
     }
   };
 
   return (
-    <Popover>
+    <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline">Edit</Button>
+        <Button
+          variant="outline"
+          onClick={() => setIsOpen(true)}
+        >
+          Edit
+        </Button>
       </PopoverTrigger>
       <PopoverContent className="w-80">
         <div className="grid gap-4">
@@ -155,6 +161,7 @@ const EditScorePopover: React.FC<{ userScore: UserScore }> = ({ userScore }) => 
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 className="col-span-2 h-8"
+                onKeyDown={(e) => e.key === "Enter" && handleSave()}
               />
             </div>
             <div className="flex justify-end">

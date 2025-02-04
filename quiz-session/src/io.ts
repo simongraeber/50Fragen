@@ -57,13 +57,9 @@ io.on("connection", (socket) => {
     io.to(quizID).emit("switchedToActiveOrInactive", { active: false, quizId: quizID });
   });
 
-  socket.on("updateUserScore", (data: { quizID: string; userID: string; score: number }) => {
-    console.log("updateUserScore", data);
+  const updateUserScore = (data: { quizID: string; userID: string; score: number }) => {
     const { quizID, userID, score } = data;
 
-    console.log(`Updating score for user ${userID} in quiz ${quizID} to ${score}`);
-
-    // Ensure the quiz state exists.
     if (!quizStates[quizID]) {
       quizStates[quizID] = getDefaultQuizState(quizID);
     }
@@ -91,6 +87,19 @@ io.on("connection", (socket) => {
 
     // Emit the updated score to all clients in the quiz room.
     io.to(quizID).emit("userScoreUpdated", { quizID, userID, score });
+  }
+
+  socket.on("updateUserScore", (data: { quizID: string; userID: string; score: number }) => {
+    updateUserScore(data)
+  });
+
+  socket.on("updateUserScores", async (data: { quizID: string; userID: string; score: number }[]) => {
+    console.log("update Points", data);
+    for (const item of data) {
+      console.log("update Points", item);
+      updateUserScore(item);
+      await new Promise(resolve => setTimeout(resolve, 10));
+    }
   });
 
   socket.on("disconnect", () => {

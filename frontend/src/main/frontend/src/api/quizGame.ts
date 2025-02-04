@@ -80,6 +80,11 @@ export const updateUserScore = (quizID: string, userID: string, score: number): 
   emitEvent<{ quizID: string; userID: string; score: number }>("updateUserScore", { quizID, userID, score })
 }
 
+export const updateUserScores = (scores: {quizID: string, userID: string; score: number }[]): void => {
+  console.log("updateUserScores: ", scores)
+  emitEvent<{ quizID: string; userID: string; score: number }[]>("updateUserScores", scores)
+}
+
 /**
  * Sets up a listener for receiving user score update events from the server.
  * @param {(data: { quizID: string; userID: string; score: number }) => void} callback - The callback function to handle the score update event.

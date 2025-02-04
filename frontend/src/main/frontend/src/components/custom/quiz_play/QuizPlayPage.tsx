@@ -139,6 +139,7 @@ function QuizPlayContent() {
             },
           ]}
           canEdit={true}
+          quizId={quizId}
         />
       </div>
     </div>
