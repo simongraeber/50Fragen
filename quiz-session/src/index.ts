@@ -1,11 +1,9 @@
-import dotenv from "dotenv";
-dotenv.config();
-
-import express, { Request, Response } from "express";
-import http from "http";
-import cors from "cors";
-import { startEurekaClient } from "./eurekaConnection";
-import { quizStates, getDefaultQuizState } from "./state";
+import express, { Request, Response } from "express"
+import http from "http"
+import dotenv from "dotenv"
+import cors from "cors"
+import { startEurekaClient } from "./eurekaConnection"
+import { quizStates, getDefaultQuizState } from "./state"
 
 dotenv.config()
 

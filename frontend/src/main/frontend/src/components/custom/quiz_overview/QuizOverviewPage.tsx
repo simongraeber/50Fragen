@@ -10,6 +10,7 @@ function QuizOverviewPage() {
   useEffect(() => {
     getAllQuizzes()
       .then((data) => setQuizzes(data))
+      .then(() => console.log("Quizzes fetched" + quizzes))
       .catch((err) => {
         console.error(err)
         setQuizzes([])

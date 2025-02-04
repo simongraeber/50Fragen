@@ -1,5 +1,9 @@
-import { Eureka } from "eureka-js-client"
-import { PORT } from "./index"
+import { Eureka } from "eureka-js-client";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 4000;
 
 
 const host = process.env.HOST_IP || "localhost"
