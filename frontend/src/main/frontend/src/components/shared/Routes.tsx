@@ -8,6 +8,7 @@ import QuizOverviewPage from "@/components/custom/quiz_overview/QuizOverviewPage
 import QuizEditPage from "@/components/custom/quiz_edit/QuizEditPage.tsx"
 import QuizPlayPage from "@/components/custom/quiz_play/QuizPlayPage.tsx"
 import { GameProvider } from "@/providers/GameProvider.tsx"
+import { useParams } from "react-router-dom";
 
 const RoutesComponent = () => {
   return (
@@ -21,11 +22,9 @@ const RoutesComponent = () => {
       <Route path="/editor/:id" element={<QuizEditPage />} />
 
       {/* Quiz playing */}
-        <Route path="/play/:id" element={
-          <GameProvider>
-            <QuizPlayPage />
-          </GameProvider>
-        } />
+      <Route path="/play/:id" element={
+        <QuizPlayWrapper />
+      } />
 
       {/* Legal Stuff */}
       <Route path="/imprint" element={<ImprintPage />} />
@@ -38,4 +37,16 @@ const RoutesComponent = () => {
   )
 }
 
-export default RoutesComponent
+const QuizPlayWrapper = () => {
+  const { id } = useParams<{ id: string }>();
+  if (!id) {
+    return <NotFound />;
+  }
+  return (
+    <GameProvider quizId={id}>
+      <QuizPlayPage />
+    </GameProvider>
+  );
+}
+
+export default RoutesComponent;
