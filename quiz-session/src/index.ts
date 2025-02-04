@@ -1,4 +1,3 @@
-// quiz-session/src/index.ts
 import express, { Request, Response } from "express"
 import http from "http"
 import dotenv from "dotenv"
@@ -18,7 +17,7 @@ import "./io"
 
 // TODO remove in production
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: "*",
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
 }))
 

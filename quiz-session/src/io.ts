@@ -4,7 +4,7 @@ import { quizStates, getDefaultQuizState } from "./state";
 
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173", // update this as needed in production
+    origin: "*",
     methods: ["GET", "POST"],
   },
 });
@@ -25,9 +25,9 @@ io.on("connection", (socket) => {
     socket.emit("quizState", quizStates[quizID]);
   });
 
-  socket.on("buzz", (data: { quizID: string; playerID: string }) => {
-    const { quizID, playerID } = data;
-    console.log(`Received buzz from player ${playerID} in quiz ${quizID}`);
+  socket.on("buzz", (data: { quizID: string; userID: string }) => {
+    const { quizID, userID } = data;
+    console.log(`Received buzz from user ${userID} in quiz ${quizID}`);
 
     const quiz = quizStates[quizID];
     if (!quiz) {
@@ -35,14 +35,13 @@ io.on("connection", (socket) => {
       return;
     }
     if (!quiz.active) {
-      console.log(`Quiz ${quizID} is not active. Ignoring buzz from player ${playerID}`);
+      console.log(`Quiz ${quizID} is not active. Ignoring buzz from user ${userID}`);
       return;
     }
 
-    // Set quiz to inactive and notify room.
+    // Set quiz to inactive and notify the room.
     quiz.active = false;
-    io.to(quizID).emit("buzz", { userId: playerID, quizId: quizID });
-    //io.to(quizID).emit("switchedToActiveOrInactive", { active: false, quizId: quizID });
+    io.to(quizID).emit("buzz", { userId: userID, quizId: quizID });
   });
 
   socket.on("setGameActive", (quizID: string) => {
@@ -63,9 +62,9 @@ io.on("connection", (socket) => {
     io.to(quizID).emit("switchedToActiveOrInactive", { active: false, quizId: quizID });
   });
 
-  socket.on("updatePlayerScore", (data: { quizID: string; playerID: string; score: number }) => {
-    const { quizID, playerID, score } = data;
-    console.log(`Updating score for player ${playerID} in quiz ${quizID} to ${score}`);
+  socket.on("updateUserScore", (data: { quizID: string; userID: string; score: number }) => {
+    const { quizID, userID, score } = data;
+    console.log(`Updating score for user ${userID} in quiz ${quizID} to ${score}`);
 
     // Ensure the quiz state exists.
     if (!quizStates[quizID]) {
@@ -74,20 +73,20 @@ io.on("connection", (socket) => {
     }
 
     const quiz = quizStates[quizID];
-    // Look for the participant in the participantsScores array.
+    // Look for the user in the participantsScores array.
     const participantIndex = quiz.participantsScores.findIndex(
-      (participant) => participant.user.id === playerID
+      (participant) => participant.user.id === userID
     );
 
     if (participantIndex !== -1) {
-      // Update score for the existing participant.
+      // Update score for the existing user.
       quiz.participantsScores[participantIndex].score = score;
     } else {
-      // Participant not found: add a new entry with a default name and empty image.
+      // User not found: add a new entry with a default name and an empty image.
       quiz.participantsScores.push({
         user: {
-          id: playerID,
-          name: `Player ${playerID}`, // Adjust or fetch the actual name as needed.
+          id: userID,
+          name: `User ${userID}`, // Adjust or fetch the actual name as needed.
           image: "", // Set a default image URL or leave empty.
         },
         score: score,
@@ -95,7 +94,7 @@ io.on("connection", (socket) => {
     }
 
     // Emit the updated score to all clients in the quiz room.
-    io.to(quizID).emit("playerScoreUpdated", { quizID, playerID, score });
+    io.to(quizID).emit("userScoreUpdated", { quizID, userID, score });
   });
 
   socket.on("disconnect", () => {
