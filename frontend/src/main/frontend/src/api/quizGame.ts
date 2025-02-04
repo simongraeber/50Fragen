@@ -80,6 +80,15 @@ export const updateUserScore = (quizID: string, userID: string, score: number): 
   emitEvent<{ quizID: string; userID: string; score: number }>("updateUserScore", { quizID, userID, score })
 }
 
+/**
+ * Updates the scores of multiple users.
+ * @param {{quizID: string, userID: string; score: number }[]} scores - An array of objects containing the quizID, userID, and score.
+ * @example
+ * updateUserScores([
+ *  { quizID: "quiz-1", userID: "user-1", score: 10 },
+ *  { quizID: "quiz-1", userID: "user-2", score: 20 },
+ *  ]);
+ */
 export const updateUserScores = (scores: {quizID: string, userID: string; score: number }[]): void => {
   console.log("updateUserScores: ", scores)
   emitEvent<{ quizID: string; userID: string; score: number }[]>("updateUserScores", scores)
@@ -116,5 +125,44 @@ export const switchedToActiveOrInactive = (
   onEvent("switchedToActiveOrInactive", (gameState: GameState) => {
     console.log("Received game state change io:", gameState)
     callback(gameState)
+  })
+}
+
+/**
+ * Shows a question to all users.
+ * @param {string} quizID
+ * @param {string} question
+ * @example
+ * showQuestion("quiz-1", "What is the capital of France?");
+ */
+export const showQuestion = (quizID: string, question: string): void => {
+  console.log("showQuestion: ", quizID, question)
+  emitEvent<{ quizID: string; question: string }>("showQuestion", { quizID, question })
+}
+
+/**
+ * Sets up a listener for when a question is shown to all users.
+ * @param {(data: { quizID: string; question: string }) => void} callback - The callback function to handle the question event.
+ * @example
+ * onShowQuestion((data) => {
+ *  console.log("Received question:", data);
+ *  });
+ */
+export const onShowQuestion = (callback: (data: { quizID: string; question: string }) => void): void => {
+  onEvent("questionShown", (data: { quizID: string; question: string }) => {
+    console.log("questionShown: ", data)
+    callback(data)
+  })
+}
+
+export const newQuestion = (quizID: string, questionType: string): void => {
+  console.log("newQuestion: ", quizID, questionType)
+  emitEvent<{ quizID: string; questionType: string }>("newQuestion", { quizID, questionType })
+}
+
+export const onNewQuestion = (callback: (data: { quizID: string; questionType: string }) => void): void => {
+  onEvent("newQuestion", (data: { quizID: string; questionType: string }) => {
+    console.log("onNewQuestion: ", data)
+    callback(data)
   })
 }

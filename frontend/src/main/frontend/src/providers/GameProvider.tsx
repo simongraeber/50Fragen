@@ -1,6 +1,13 @@
 import React, { createContext, useContext, useEffect, useReducer, useRef } from "react";
 import { initializeSocket, onEvent, offEvent } from "@/api/socket.ts";
-import { buzz, switchedToActiveOrInactive, connectToGame, userScoreUpdated } from "@/api/quizGame.ts";
+import {
+  buzz,
+  switchedToActiveOrInactive,
+  connectToGame,
+  userScoreUpdated,
+  onShowQuestion,
+  onNewQuestion,
+} from "@/api/quizGame.ts"
 import { Buzz } from "@/types/gamePlay/buzz.ts";
 import { QuizState } from "@/types/gamePlay/QuizState.ts";
 import { GameState } from "@/types/gamePlay/gameState.ts";
@@ -118,6 +125,35 @@ export const GameProvider = ({ quizId, children }: GameProviderProps) => {
           id: stateRef.current.quizState?.id || "",
         } as QuizState,
       });
+    });
+
+    // if the question is shown to all users
+    onShowQuestion((data) => {
+      if (stateRef.current.quizState) {
+        dispatch({
+          type: "SET_QUIZ_STATE",
+          payload: {
+            ...stateRef.current.quizState,
+            currentQuestion: data.question,
+            id: stateRef.current.quizState.id,
+          },
+        });
+      }
+    });
+
+    // on new question update the questionType
+    onNewQuestion((data) => {
+      if (stateRef.current.quizState) {
+        dispatch({
+          type: "SET_QUIZ_STATE",
+          payload: {
+            ...stateRef.current.quizState,
+            currentQuestionType: data.questionType,
+            currentQuestion: "",
+            id: stateRef.current.quizState.id,
+          },
+        });
+      }
     });
 
     // Clean up the event listener on unmount.

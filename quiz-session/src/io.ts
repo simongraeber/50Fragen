@@ -102,6 +102,26 @@ io.on("connection", (socket) => {
     }
   });
 
+  socket.on("showQuestion", (data: { quizID: string; question: string }) => {
+    console.log("showQuestion", data);
+    const { quizID, question } = data;
+    if (!quizStates[quizID]) {
+      quizStates[quizID] = getDefaultQuizState(quizID);
+    }
+    quizStates[quizID].currentQuestion = question;
+
+    io.to(quizID).emit("questionShown", { quizID, question });
+  });
+
+  socket.on("newQuestion", (data: { quizID: string; questionType: string }) => {
+    const { quizID, questionType } = data;
+    if (!quizStates[quizID]) {
+      quizStates[quizID] = getDefaultQuizState(quizID);
+    }
+    quizStates[quizID].currentQuestionType = questionType;
+    io.to(quizID).emit("newQuestion", { quizID, questionType });
+  });
+
   socket.on("disconnect", () => {
     console.log(`User disconnected: ${socket.id}`);
     // TODO clean up the quiz state

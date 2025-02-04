@@ -10,6 +10,7 @@ import {
 import { MdNavigateNext, MdNavigateBefore } from "react-icons/md";
 import { Quiz } from "@/types/Quiz.ts";
 import QuestionCard from "@/components/custom/quiz_play/QuestionCard.tsx";
+import { newQuestion, showQuestion } from "@/api/quizGame.ts"
 
 interface GameMasterControlsProps {
   quiz: Quiz;
@@ -17,37 +18,34 @@ interface GameMasterControlsProps {
 
 function GameMasterControls({ quiz }: GameMasterControlsProps) {
   const [carouselApi, setCarouselApi] = React.useState<CarouselApi | null>(null);
-  // Maintain a separate state for the current index.
   const [currentIndex, setCurrentIndex] = React.useState(0);
 
   React.useEffect(() => {
     if (carouselApi) {
-      // Define a handler to update currentIndex when the carousel selection changes.
       const onSelect = () => {
-        setCurrentIndex(carouselApi.selectedScrollSnap());
+        const newIndex = carouselApi.selectedScrollSnap();
+        setCurrentIndex(newIndex);
+        onNewQuestion(newIndex); // Pass the new index to onNewQuestion
       };
 
-      // Subscribe to the carousel's select event.
       carouselApi.on("select", onSelect);
-      // Initialize the index.
       onSelect();
 
-      // Cleanup the event when the carouselApi changes or the component unmounts.
       return () => {
         carouselApi.off("select", onSelect);
       };
     }
   }, [carouselApi]);
 
-  const showQuestion = () => {
-    if (!carouselApi) {
-      console.log("Carousel API not ready");
-      return;
+  const onShowQuestion = () => {
+    if (carouselApi) {
+      showQuestion(quiz.id, quiz.questions[currentIndex].question);
     }
-    // Use the currentIndex from state for consistency.
-    console.log("Show Question for:", quiz.questions[currentIndex]);
-    // Further logic can be added here to display or process the question.
   };
+
+  const onNewQuestion = (index: number) => {
+    newQuestion(quiz.id, quiz.questions[index].type);
+  }
 
   return (
     <Card>
@@ -69,7 +67,7 @@ function GameMasterControls({ quiz }: GameMasterControlsProps) {
         >
           <MdNavigateBefore />
         </Button>
-        <Button onClick={showQuestion}>
+        <Button onClick={onShowQuestion}>
           Show Question
         </Button>
         <Button

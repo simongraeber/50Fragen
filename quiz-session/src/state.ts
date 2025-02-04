@@ -6,7 +6,7 @@ export function getDefaultQuizState(quizID: string): QuizState {
   return {
     id: quizID,
     name: `Quiz placeholder ${quizID}`,
-    currentQuestion: "Default Question",
+    currentQuestion: "",
     participantsScores: [
       {
         user: {

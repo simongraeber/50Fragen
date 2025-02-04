@@ -1,45 +1,46 @@
-import { useEffect, useState } from "react";
-import useQuizIdFromUrl from "@/hooks/useQuizIdFromUrl";
-import Round3DButton from "@/components/custom/quiz_play/BuzzerButton.tsx";
-import { Separator } from "@/components/ui/separator.tsx";
-import LeaderBord from "@/components/custom/quiz_play/LeaderBord.tsx";
-import TextSubmission from "@/components/custom/quiz_play/TextSubmission.tsx";
-import ButtonClickedDialog from "@/components/custom/quiz_play/ButtonClickedDialog.tsx";
-import GameMasterControls from "@/components/custom/quiz_play/GameMasterControls.tsx";
-import { Badge } from "@/components/ui/badge.tsx";
-import EstimationQuestionAnswers from "@/components/custom/quiz_play/EstimationQuestionAnswers.tsx";
-import { RootState } from "@/lib/store.ts";
-import { useSelector } from "react-redux";
+import { useEffect, useState } from "react"
+import useQuizIdFromUrl from "@/hooks/useQuizIdFromUrl"
+import Round3DButton from "@/components/custom/quiz_play/BuzzerButton.tsx"
+import { Separator } from "@/components/ui/separator.tsx"
+import LeaderBord from "@/components/custom/quiz_play/LeaderBord.tsx"
+import TextSubmission from "@/components/custom/quiz_play/TextSubmission.tsx"
+import ButtonClickedDialog from "@/components/custom/quiz_play/ButtonClickedDialog.tsx"
+import GameMasterControls from "@/components/custom/quiz_play/GameMasterControls.tsx"
+import { Badge } from "@/components/ui/badge.tsx"
+import EstimationQuestionAnswers from "@/components/custom/quiz_play/EstimationQuestionAnswers.tsx"
+import { RootState } from "@/lib/store.ts"
+import { useSelector } from "react-redux"
 import { hitBuzz, setGameActive, setGameInactive } from "@/api/quizGame.ts"
-import { GameProvider, useGame} from "@/providers/GameProvider.tsx";
+import { GameProvider, useGame } from "@/providers/GameProvider.tsx"
 import { Button } from "@/components/ui/button.tsx"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card.tsx"
 
 function QuizPlayContent() {
-  const quizId = useQuizIdFromUrl();
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const isOnline = useSelector((state: RootState) => state.onlineStatus.isOnline);
+  const quizId = useQuizIdFromUrl()
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const isOnline = useSelector((state: RootState) => state.onlineStatus.isOnline)
 
   // Consume global game state here.
-  const { state } = useGame();
-  const { buzzData, quizState } = state;
+  const { state } = useGame()
+  const { buzzData, quizState } = state
 
   // When a buzz event is received, show the dialog.
   useEffect(() => {
     if (buzzData && buzzData.quizId === quizId) {
-      console.log("Buzz event for current quiz:", buzzData);
-      setDialogOpen(true);
+      console.log("Buzz event for current quiz:", buzzData)
+      setDialogOpen(true)
     }
-  }, [buzzData, quizId]);
+  }, [buzzData, quizId])
 
   // When the game becomes active, close the dialog, etc.
   useEffect(() => {
     if (quizState) {
-      console.log("Global game state updated:", quizState);
+      console.log("Global game state updated:", quizState)
       if (quizState.active) {
-        setDialogOpen(false);
+        setDialogOpen(false)
       }
     }
-  }, [quizState]);
+  }, [quizState])
 
   return (
     <div className="h-full pb-32 p-4">
@@ -47,20 +48,45 @@ function QuizPlayContent() {
         {isOnline ? "Online" : "Offline"}
       </Badge>
       <p className="mb-4">Play page for quiz ID: {quizId}</p>
-      <Round3DButton
-        isActiv={quizState?.active || false}
-        onClick={() => {
-          console.log("Buzz button clicked");
-          hitBuzz(quizId, "SomeUserId");
-        }}
-      />
+
+      <Separator />
+      {state.quizState?.currentQuestion !== "" && (
+        <Card>
+          <CardHeader>
+            <CardTitle>
+              Question
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {state.quizState?.currentQuestion}
+          </CardContent>
+        </Card>
+      )}
+
+      <Separator />
+      {
+        state.quizState?.currentQuestionType === "estimationquestion" ? (
+          <div className="p-4 max-w-[400px]">
+            <TextSubmission active={quizState?.active || false} />
+          </div>
+        ) : (
+          <Round3DButton
+            isActiv={quizState?.active || false}
+            onClick={() => {
+              console.log("Buzz button clicked")
+              hitBuzz(quizId, "SomeUserId")
+            }}
+          />
+        )
+
+      }
       <Separator />
       <Button
         onClick={() => {
-          if(quizState?.active) {
-            setGameInactive(quizId);
+          if (quizState?.active) {
+            setGameInactive(quizId)
           } else {
-            setGameActive(quizId);
+            setGameActive(quizId)
           }
         }}>
         Set {quizState?.active ? "inactive" : "active"}
@@ -72,9 +98,6 @@ function QuizPlayContent() {
         />
       </div>
       <Separator />
-      <div className="p-4 max-w-[400px]">
-        <TextSubmission active={quizState?.active || false} />
-      </div>
       <ButtonClickedDialog
         open={dialogOpen}
         canEdit={true}
@@ -97,7 +120,7 @@ function QuizPlayContent() {
                 id: "1",
                 question: "Test question",
                 answer: "Test answer",
-                type: "buzzerquestion",
+                type: "estimationquestion",
               },
               {
                 id: "2",
@@ -143,15 +166,15 @@ function QuizPlayContent() {
         />
       </div>
     </div>
-  );
+  )
 }
 
 export default function QuizPlayPage() {
-  const quizId = useQuizIdFromUrl();
+  const quizId = useQuizIdFromUrl()
 
   return (
     <GameProvider quizId={quizId}>
       <QuizPlayContent />
     </GameProvider>
-  );
+  )
 }
