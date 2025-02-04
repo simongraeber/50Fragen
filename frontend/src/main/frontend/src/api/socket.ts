@@ -4,7 +4,7 @@ import { setOnline, setOffline } from "@/reducers/onlineStatusReducer";
 import { toast } from "@/components/ui/use-toast.ts";
 import { baseURL } from "@/lib/http";
 
-export const socketServerURL = baseURL + "/quiz-session"; //"http://localhost:4000"// TODO use baseURL + "/quiz-session";
+export const socketServerURL = baseURL; //"http://localhost:4000"// TODO use baseURL + "/quiz-session";
 
 let socket: Socket | null = null;
 let eventQueue: { event: string; callback?: (...args: any[]) => void }[] = [];
@@ -31,7 +31,9 @@ const handleError = (errorMessage: unknown) => {
 export const initializeSocket = (): void => {
   console.log("Initializing socket");
   if (!socket) {
-    socket = io(socketServerURL);
+    socket = io(socketServerURL, {
+      path: "/quiz-session",
+    });
 
     socket.on("connect", () => {
       store.dispatch(setOnline());

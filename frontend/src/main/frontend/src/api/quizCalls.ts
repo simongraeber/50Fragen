@@ -1,7 +1,7 @@
 import { Quiz } from "@/types/Quiz.ts"
 import { GET, PUT, DELETE, POST } from "@/lib/http"
 
-export const quizBasePath = 'quizzes' // TODO use "/quiz-database/quizzes/"
+export const quizBasePath = '/quiz-database' // TODO use "/quiz-database/quizzes/"
 
 /**
  * returns the quiz with the given id
