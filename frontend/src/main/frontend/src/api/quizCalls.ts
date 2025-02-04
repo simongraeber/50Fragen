@@ -21,6 +21,9 @@ export const getQuiz = async (quizId: string) => {
  * @returns all quizzes
  */
 export const getAllQuizzes = async () => {
+  const quizzes = await GET<Quiz[]>(quizBasePath)
+  console.log(quizzes)
+  return quizzes
   return await GET<Quiz[]>(quizBasePath)
 }
 
