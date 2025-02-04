@@ -4,6 +4,7 @@ import { QuizState } from "@/types/gamePlay/QuizState.ts"
 import { GameState } from "@/types/gamePlay/gameState.ts"
 import { Buzz } from "@/types/gamePlay/buzz.ts"
 
+
 /**
  * Joins a quiz room.
  * @param {string} quizID - The quiz identifier.
@@ -20,6 +21,17 @@ const _joinQuizRoom = (quizID: string): void => {
  */
 export const connectToGame = async (quizID: string): Promise<QuizState> => {
   _joinQuizRoom(quizID)
+  // TODO replace
+  try {
+    const response = await fetch(`http://localhost:4000/quiz/${quizID}`)
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+    return await response.json() as QuizState
+  } catch (error) {
+    console.error("Error fetching data:", error)
+    throw error
+  }
   return await GET<QuizState>(`${socketServerURL}/quiz/${quizID}`)
 }
 
