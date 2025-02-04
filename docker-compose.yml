@@ -34,7 +34,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 30s
 
   quiz-session:
     container_name: quiz-session
@@ -58,7 +57,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 30s
 
   postgres:
     container_name: postgres
@@ -76,7 +74,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 10s
 
   quiz-database:
     container_name: quiz-database
@@ -102,7 +99,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 30s
+    ports:
+      - "8083:8083"
 
   gateway:
     container_name: gateway
@@ -127,7 +125,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 30s
 
 volumes:
   postgres_data:
