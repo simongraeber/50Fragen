@@ -1,8 +1,7 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios"
 import { toast } from "@/hooks/use-toast.ts"
 
-export const baseURL = window.location.origin // "http://localhost:8010"
-  //TODO use window.location.origin
+export const baseURL = window.location.origin;
 
 const axiosInstance = axios.create({
   baseURL: baseURL,

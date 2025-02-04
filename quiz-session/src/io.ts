@@ -2,24 +2,22 @@ import { Server } from "socket.io";
 import { server } from "./index";
 import { quizStates, getDefaultQuizState } from "./state";
 
+// Create a namespace explicitly for '/quiz-session'
 const io = new Server(server, {
   cors: {
     origin: "*",
     methods: ["GET", "POST"],
   },
-});
+  path: "/quiz-session/socket.io"
+}).of("/quiz-session");
 
 io.on("connection", (socket) => {
-  console.log(`User connected: ${socket.id}`);
 
   socket.on("joinGame", (quizID: string) => {
     socket.join(quizID);
-    console.log(`Socket ${socket.id} joined quiz ${quizID}`);
 
-    // Initialize quiz state if not already present.
     if (!quizStates[quizID]) {
       quizStates[quizID] = getDefaultQuizState(quizID);
-      console.log(`Created new quiz state for quiz ${quizID}`);
     }
 
     socket.emit("quizState", quizStates[quizID]);
@@ -27,21 +25,19 @@ io.on("connection", (socket) => {
 
   socket.on("buzz", (data: { quizID: string; userID: string }) => {
     const { quizID, userID } = data;
-    console.log(`Received buzz from user ${userID} in quiz ${quizID}`);
 
     const quiz = quizStates[quizID];
     if (!quiz) {
-      console.log(`Quiz state not found for quiz ID: ${quizID}`);
       return;
     }
     if (!quiz.active) {
-      console.log(`Quiz ${quizID} is not active. Ignoring buzz from user ${userID}`);
       return;
     }
 
     // Set quiz to inactive and notify the room.
     quiz.active = false;
     io.to(quizID).emit("buzz", { userId: userID, quizId: quizID });
+    io.to(quizID).emit("switchedToActiveOrInactive", { active: false, quizId: quizID });
   });
 
   socket.on("setGameActive", (quizID: string) => {
@@ -54,7 +50,6 @@ io.on("connection", (socket) => {
   });
 
   socket.on("setGameInactive", (quizID: string) => {
-    console.log(`Setting quiz ${quizID} to inactive`);
     if (!quizStates[quizID]) {
       quizStates[quizID] = getDefaultQuizState(quizID);
     }
@@ -64,12 +59,10 @@ io.on("connection", (socket) => {
 
   socket.on("updateUserScore", (data: { quizID: string; userID: string; score: number }) => {
     const { quizID, userID, score } = data;
-    console.log(`Updating score for user ${userID} in quiz ${quizID} to ${score}`);
 
     // Ensure the quiz state exists.
     if (!quizStates[quizID]) {
       quizStates[quizID] = getDefaultQuizState(quizID);
-      console.log(`Quiz state not found for quiz ${quizID}. Initialized new quiz state.`);
     }
 
     const quiz = quizStates[quizID];
@@ -99,6 +92,6 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     console.log(`User disconnected: ${socket.id}`);
-    // Optionally, clean up the quiz state if needed.
+    // TODO clean up the quiz state
   });
 });

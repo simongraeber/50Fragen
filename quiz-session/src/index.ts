@@ -12,7 +12,6 @@ export const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 4000
 const app = express()
 export const server = http.createServer(app)
 
-// Import the Socket.IO server setup.
 import "./io"
 
 // TODO remove in production
@@ -30,12 +29,11 @@ app.get("/", (req: Request, res: Response) => {
 })
 
 // GET endpoint to fetch the current quiz state.
-app.get("/quiz/:quizID", (req: Request, res: Response) => {
+app.get("/quiz-session/quiz/:quizID", (req: Request, res: Response) => {
   const quizID = req.params.quizID
   if (!quizStates[quizID]) {
     quizStates[quizID] = getDefaultQuizState(quizID)
   }
-  console.log(`Sending quiz state for quiz ${quizID}: ${JSON.stringify(quizStates[quizID])}`)
   res.json(quizStates[quizID])
 })
 

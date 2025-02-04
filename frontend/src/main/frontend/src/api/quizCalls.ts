@@ -1,7 +1,7 @@
 import { Quiz } from "@/types/Quiz.ts"
 import { GET, PUT, DELETE, POST } from "@/lib/http"
 
-export const quizBasePath = '/quiz-database/quizzes/' // TODO use "/quiz-database/quizzes/"
+export const quizBasePath = '/quiz-database/quizzes'
 
 /**
  * returns the quiz with the given id
@@ -9,9 +9,6 @@ export const quizBasePath = '/quiz-database/quizzes/' // TODO use "/quiz-databas
  * @param quizId the id of the quiz
  */
 export const getQuiz = async (quizId: string) => {
-  const value = await GET<Quiz>(`${quizBasePath}/${quizId}`)
-  console.log("Quiz Get:" + value)
-  return value
   return await GET<Quiz>(`${quizBasePath}/${quizId}`)
 }
 
@@ -21,10 +18,6 @@ export const getQuiz = async (quizId: string) => {
  * @returns all quizzes
  */
 export const getAllQuizzes = async () => {
-  const quizzes = await GET<Quiz[]>(quizBasePath)
-  console.log("Quizzes Get:" + quizzes)
-  console.log("Quizzes Get:" + quizBasePath)
-  return quizzes
   return await GET<Quiz[]>(quizBasePath)
 }
 

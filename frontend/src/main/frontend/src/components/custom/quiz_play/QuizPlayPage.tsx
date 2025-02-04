@@ -58,9 +58,9 @@ function QuizPlayContent() {
       <Button
         onClick={() => {
           if(quizState?.active) {
-            setGameActive(quizId);
-          } else {
             setGameInactive(quizId);
+          } else {
+            setGameActive(quizId);
           }
         }}>
         Set {quizState?.active ? "inactive" : "active"}

@@ -1,19 +1,21 @@
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogContent,
-} from "@/components/ui/dialog"
-import { User } from "@/types/User.ts"
-import { Avatar } from "@/components/ui/avatar.tsx"
-import { AvatarImage } from "@radix-ui/react-avatar"
-import { CardFooter } from "@/components/ui/card.tsx"
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogFooter,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
+import { User } from "@/types/User";
+import { Avatar } from "@/components/ui/avatar";
+import { AvatarImage } from "@radix-ui/react-avatar";
 
 import { FaCheck } from "react-icons/fa";
 import { ImCross } from "react-icons/im";
 import { FaUndoAlt } from "react-icons/fa";
-import { setGameActive } from "@/api/quizGame.ts"
-import useQuizIdFromUrl from "@/hooks/useQuizIdFromUrl.ts"
-
+import { setGameActive } from "@/api/quizGame";
+import useQuizIdFromUrl from "@/hooks/useQuizIdFromUrl";
 
 export interface ButtonClickedDialogProps {
   user: User;
@@ -21,51 +23,48 @@ export interface ButtonClickedDialogProps {
   open: boolean;
 }
 
-export function ButtonClickedDialog(
-  { user,  canEdit, open}: ButtonClickedDialogProps
-) {
-  const quizId = useQuizIdFromUrl()
+export function ButtonClickedDialog({ user, canEdit, open }: ButtonClickedDialogProps) {
+  const quizId = useQuizIdFromUrl();
 
   const onReset = () => {
-    // reset the trigger
-    console.log("Resetting")
-    setGameActive(quizId)
-  }
+    console.log("Resetting");
+    setGameActive(quizId);
+  };
 
   return (
-    <Dialog
-      open={open}
-    >
-      <DialogContent
-        className="sm:max-w-[425px]">
+    <AlertDialog open={open}>
+      <AlertDialogContent className="sm:max-w-[425px]">
+        <AlertDialogHeader>
+          <AlertDialogTitle>{user.name} buzzed in!</AlertDialogTitle>
+        </AlertDialogHeader>
         <div className="flex items-center gap-4 py-4">
           <Avatar className="h-16 w-16">
             <AvatarImage src={user.image} alt={user.name} />
           </Avatar>
-          <h1 className="text-2xl font-bold">
-            {user.name} buzzed in!
-          </h1>
         </div>
         {canEdit && (
-          <CardFooter
-            className={`flex justify-end gap-4`}
-          >
-            <Button variant="outline"
+          <AlertDialogFooter>
+            <AlertDialogAction asChild>
+              <Button variant="outline">
+                <FaCheck className="text-green-700" />
+              </Button>
+            </AlertDialogAction>
+            <AlertDialogAction asChild>
+              <Button variant="outline">
+                <ImCross className="text-red-700" />
+              </Button>
+            </AlertDialogAction>
+            <Button
+              variant="outline"
+              onClick={onReset}
             >
-              <FaCheck className="text-green-700" />
-            </Button>
-            <Button variant="outline">
-              <ImCross className="text-red-700" />
-            </Button>
-            <Button variant="outline"
-              onClick={onReset}>
               <FaUndoAlt />
             </Button>
-          </CardFooter>
+          </AlertDialogFooter>
         )}
-      </DialogContent>
-    </Dialog>
-  )
+      </AlertDialogContent>
+    </AlertDialog>
+  );
 }
 
-export default ButtonClickedDialog
+export default ButtonClickedDialog;
