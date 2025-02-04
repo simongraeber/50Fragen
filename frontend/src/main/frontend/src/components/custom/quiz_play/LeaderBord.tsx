@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { updatePlayerScore } from "@/api/quizGame.ts";
-import "@/styles/LeaderBord.css";
+import "@/styles/leaderBord.css";
 
 export interface UserScore {
   user: User;
