@@ -1,5 +1,6 @@
 import { QuizQuestion } from "@/types/QuizQuestion.ts"
 import { PUT, POST, DELETE } from "@/lib/http"
+import { quizBasePath } from "@/api/quizCalls"
 
 /**
  * creates a new question for a quiz
@@ -7,7 +8,7 @@ import { PUT, POST, DELETE } from "@/lib/http"
  * @returns the newly created question with id
  */
 export const createQuestion = async (question: Partial<QuizQuestion>) => {
-  return await POST<QuizQuestion, Partial<QuizQuestion>>(`/quiz-database/quizzes/${question.quizId}/questions`, question)
+  return await POST<QuizQuestion, Partial<QuizQuestion>>(`${quizBasePath}/${question.quizId}/questions`, question)
 }
 
 /**
@@ -16,7 +17,7 @@ export const createQuestion = async (question: Partial<QuizQuestion>) => {
  * @returns the updated question
  */
 export const updateQuestion = async (question: Partial<QuizQuestion>) => {
-  return await PUT<QuizQuestion, Partial<QuizQuestion>>(`/quiz-database/quizzes/${question.quizId}/questions/${question.id}`, question)
+  return await PUT<QuizQuestion, Partial<QuizQuestion>>(`${quizBasePath}/${question.quizId}/questions/${question.id}`, question)
 }
 
 /**
@@ -24,5 +25,5 @@ export const updateQuestion = async (question: Partial<QuizQuestion>) => {
  * @param question the question to be deleted
  */
 export const deleteQuestion = async (question: Partial<QuizQuestion>) => {
-  return await DELETE(`/quiz-database/quizzes/${question.quizId}/questions/${question.id}`)
+  return await DELETE(`${quizBasePath}/${question.quizId}/questions/${question.id}`)
 }

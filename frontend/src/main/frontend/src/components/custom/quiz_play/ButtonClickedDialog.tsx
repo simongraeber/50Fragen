@@ -11,6 +11,8 @@ import { CardFooter } from "@/components/ui/card.tsx"
 import { FaCheck } from "react-icons/fa";
 import { ImCross } from "react-icons/im";
 import { FaUndoAlt } from "react-icons/fa";
+import { setGameActive } from "@/api/quizGame.ts"
+import useQuizIdFromUrl from "@/hooks/useQuizIdFromUrl.ts"
 
 
 export interface ButtonClickedDialogProps {
@@ -22,6 +24,14 @@ export interface ButtonClickedDialogProps {
 export function ButtonClickedDialog(
   { user,  canEdit, open}: ButtonClickedDialogProps
 ) {
+  const quizId = useQuizIdFromUrl()
+
+  const onReset = () => {
+    // reset the trigger
+    console.log("Resetting")
+    setGameActive(quizId)
+  }
+
   return (
     <Dialog
       open={open}
@@ -40,13 +50,15 @@ export function ButtonClickedDialog(
           <CardFooter
             className={`flex justify-end gap-4`}
           >
-            <Button variant="outline">
+            <Button variant="outline"
+            >
               <FaCheck className="text-green-700" />
             </Button>
             <Button variant="outline">
               <ImCross className="text-red-700" />
             </Button>
-            <Button variant="outline">
+            <Button variant="outline"
+              onClick={onReset}>
               <FaUndoAlt />
             </Button>
           </CardFooter>

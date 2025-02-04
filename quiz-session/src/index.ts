@@ -1,81 +1,45 @@
-import express, { Request, Response } from "express";
-import http from "http";
-import { Server } from "socket.io";
-import dotenv from "dotenv";
-import { Eureka } from "eureka-js-client";
+// quiz-session/src/index.ts
+import express, { Request, Response } from "express"
+import http from "http"
+import dotenv from "dotenv"
+import cors from "cors"
+import { startEurekaClient } from "./eurekaConnection"
+import { quizStates, getDefaultQuizState } from "./state"
 
-dotenv.config();
+dotenv.config()
 
-const app = express();
-const server = http.createServer(app);
-const io = new Server(server, {
-    cors: {
-        origin: "*", // TODO change this later
-        methods: ["GET", "POST"],
-    },
-});
-const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 4000;
+export const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 4000
 
-const host = process.env.HOST_IP || 'localhost';
-const eurekaClient = new Eureka({
-    instance: {
-        app: "quiz-session",
-        instanceId: `quiz-session:${PORT}`,
-        hostName: host,
-        ipAddr: host,  // adjust if needed to a real IP address
-        statusPageUrl: `http://${host}:${PORT}`,
-        port: {
-            $: PORT,
-            "@enabled": true,
-        },
-        vipAddress: "quiz-session",
-        dataCenterInfo: {
-            "@class": "com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo",
-            name: "MyOwn",
-        },
-    },
-    eureka: {
-        host: process.env.EUREKA_HOST || "localhost",
-        port: process.env.EUREKA_PORT ? parseInt(process.env.EUREKA_PORT, 10) : 8761,
-        servicePath: "/eureka/apps/",
-    },
-});
+const app = express()
+export const server = http.createServer(app)
 
-eurekaClient.start((error: Error) => {
-    if (error) {
-        console.error("Failed to register with Eureka:", error);
-    } else {
-        console.log("Successfully registered with Eureka.");
-    }
-});
+// Import the Socket.IO server setup.
+import "./io"
 
-app.use(express.json());
+// TODO remove in production
+app.use(cors({
+  origin: "http://localhost:5173",
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+}))
+
+app.use(express.json())
+
+startEurekaClient()
 
 app.get("/", (req: Request, res: Response) => {
-    res.send("Session Service is Running! 🚀");
-});
+  res.send("Quiz Session Service is Running! 🚀")
+})
 
-io.on("connection", (socket) => {
-    console.log(`User connected: ${socket.id}`);
-
-    socket.on("join-session", (sessionId: string) => {
-        console.log(`User ${socket.id} joined session: ${sessionId}`);
-        socket.join(sessionId);
-
-        socket.to(sessionId).emit("user-joined", { userId: socket.id });
-    });
-
-    socket.on("send-message", (data: { sessionId: string; message: string }) => {
-        const { sessionId, message } = data;
-        console.log(`Message from ${socket.id} in session ${sessionId}: ${message}`);
-        socket.to(sessionId).emit("receive-message", { userId: socket.id, message });
-    });
-
-    socket.on("disconnect", () => {
-        console.log(`User disconnected: ${socket.id}`);
-    });
-});
+// GET endpoint to fetch the current quiz state.
+app.get("/quiz/:quizID", (req: Request, res: Response) => {
+  const quizID = req.params.quizID
+  if (!quizStates[quizID]) {
+    quizStates[quizID] = getDefaultQuizState(quizID)
+  }
+  console.log(`Sending quiz state for quiz ${quizID}: ${JSON.stringify(quizStates[quizID])}`)
+  res.json(quizStates[quizID])
+})
 
 server.listen(PORT, () => {
-    console.log(`Session service running on http://localhost:${PORT}`);
-});
+  console.log(`Session service running on http://localhost:${PORT}`)
+})

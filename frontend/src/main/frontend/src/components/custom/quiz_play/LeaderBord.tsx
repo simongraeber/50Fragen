@@ -1,6 +1,6 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import { User } from "@/types/User.ts";
-
+import { useGame } from "@/providers/GameProvider.tsx";
 import {
   Table,
   TableBody,
@@ -13,19 +13,19 @@ import {
   AvatarImage,
 } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card.tsx";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { updatePlayerScore } from "@/api/quizGame.ts";
 
-interface UserScore {
+export interface UserScore {
   user: User;
   score: number;
-}
-
-interface LeaderBordProps {
-  scores: UserScore[];
-  canEdit?: boolean;
 }
 
 interface ScoreContextType {
@@ -35,19 +35,40 @@ interface ScoreContextType {
 
 const ScoreContext = createContext<ScoreContextType | undefined>(undefined);
 
-const ScoreProvider: React.FC<{ initialScores: UserScore[]; children: React.ReactNode }> = ({
-                                                                                              initialScores,
-                                                                                              children,
-                                                                                            }) => {
-  const [scores, setScores] = useState<UserScore[]>(initialScores);
+export const useScore = () => {
+  const context = useContext(ScoreContext);
+  if (!context) {
+    throw new Error("useScore must be used within a ScoreProvider");
+  }
+  return context;
+};
+
+const ScoreProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { state } = useGame();
+  // Initialize scores using the current quizState.
+  const [scores, setScores] = useState<UserScore[]>(state.quizState?.participantsScores ?? []);
+
+  useEffect(() => {
+    if (state.quizState?.participantsScores) {
+      // Create a new array to trigger re-render.
+      setScores([...state.quizState.participantsScores]);
+    } else {
+      setScores([]);
+    }
+  }, [state.quizState]);
 
   const updateScore = (userId: string, newScore: number) => {
+    // Update the local score state.
     setScores((prevScores) =>
-      prevScores.map((scoreObj) =>
-        scoreObj.user.id === userId ? { ...scoreObj, score: newScore } : scoreObj
+      prevScores.map((score) =>
+        score.user.id === userId ? { ...score, score: newScore } : score
       )
     );
-    console.log(`Set score to ${newScore} for user ${userId}`);
+    // Also update on the backend.
+    if (state.quizState?.id) {
+      updatePlayerScore(state.quizState.id, userId, newScore);
+      console.log(`Score update sent for user ${userId}: ${newScore}`);
+    }
   };
 
   return (
@@ -57,22 +78,15 @@ const ScoreProvider: React.FC<{ initialScores: UserScore[]; children: React.Reac
   );
 };
 
-const useScore = () => {
-  const context = useContext(ScoreContext);
-  if (!context) {
-    throw new Error("useScore must be used within a ScoreProvider");
-  }
-  return context;
-};
-
 const EditScorePopover: React.FC<{ userScore: UserScore }> = ({ userScore }) => {
-  const { updateScore } = useScore();
   const [inputValue, setInputValue] = useState(String(userScore.score));
+  const { updateScore } = useScore();
 
   const handleSave = () => {
     const newScore = Number(inputValue);
     if (!isNaN(newScore)) {
       updateScore(userScore.user.id, newScore);
+      console.log(`Score updated for ${userScore.user.name}: ${newScore}`);
     }
   };
 
@@ -109,9 +123,8 @@ const EditScorePopover: React.FC<{ userScore: UserScore }> = ({ userScore }) => 
   );
 };
 
-const LeaderBordContent: React.FC<Pick<LeaderBordProps, "canEdit">> = ({ canEdit }) => {
+const LeaderBord: React.FC<{ canEdit: boolean }> = ({ canEdit }) => {
   const { scores } = useScore();
-
   return (
     <Card>
       <CardContent>
@@ -121,13 +134,18 @@ const LeaderBordContent: React.FC<Pick<LeaderBordProps, "canEdit">> = ({ canEdit
               <TableRow key={userScore.user.id}>
                 <TableCell>
                   <Avatar className="h-10 w-10">
-                    <AvatarImage src={userScore.user.image} alt={userScore.user.name} />
+                    <AvatarImage
+                      src={userScore.user.image}
+                      alt={userScore.user.name}
+                    />
                     <AvatarFallback>
                       {userScore.user.name.slice(0, 2).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                 </TableCell>
-                <TableCell className="font-medium">{userScore.user.name}</TableCell>
+                <TableCell className="font-medium">
+                  {userScore.user.name}
+                </TableCell>
                 <TableCell className="text-right text-xl bold">
                   {userScore.score}
                 </TableCell>
@@ -145,12 +163,13 @@ const LeaderBordContent: React.FC<Pick<LeaderBordProps, "canEdit">> = ({ canEdit
   );
 };
 
-function LeaderBord({ scores: initialScores, canEdit }: LeaderBordProps) {
+// Wrap the LeaderBord with ScoreProvider so that all children get live score updates.
+const LeaderBordWithScoreProvider: React.FC<{ canEdit: boolean }> = ({ canEdit }) => {
   return (
-    <ScoreProvider initialScores={initialScores}>
-      <LeaderBordContent canEdit={canEdit} />
+    <ScoreProvider>
+      <LeaderBord canEdit={canEdit} />
     </ScoreProvider>
   );
-}
+};
 
-export default LeaderBord;
+export default LeaderBordWithScoreProvider;

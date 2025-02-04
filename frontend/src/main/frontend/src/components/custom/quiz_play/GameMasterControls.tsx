@@ -16,18 +16,37 @@ interface GameMasterControlsProps {
 }
 
 function GameMasterControls({ quiz }: GameMasterControlsProps) {
-  // Hold the carousel API so you can control it with your external buttons.
   const [carouselApi, setCarouselApi] = React.useState<CarouselApi | null>(null);
+  // Maintain a separate state for the current index.
+  const [currentIndex, setCurrentIndex] = React.useState(0);
+
+  React.useEffect(() => {
+    if (carouselApi) {
+      // Define a handler to update currentIndex when the carousel selection changes.
+      const onSelect = () => {
+        setCurrentIndex(carouselApi.selectedScrollSnap());
+      };
+
+      // Subscribe to the carousel's select event.
+      carouselApi.on("select", onSelect);
+      // Initialize the index.
+      onSelect();
+
+      // Cleanup the event when the carouselApi changes or the component unmounts.
+      return () => {
+        carouselApi.off("select", onSelect);
+      };
+    }
+  }, [carouselApi]);
 
   const showQuestion = () => {
     if (!carouselApi) {
       console.log("Carousel API not ready");
       return;
     }
-    // Get the current slide index from the carousel API.
-    const currentIndex = carouselApi.selectedScrollSnap();
+    // Use the currentIndex from state for consistency.
     console.log("Show Question for:", quiz.questions[currentIndex]);
-    // You can add further logic to display or process the question.
+    // Further logic can be added here to display or process the question.
   };
 
   return (
@@ -44,13 +63,21 @@ function GameMasterControls({ quiz }: GameMasterControlsProps) {
         </Carousel>
       </CardContent>
       <CardFooter className="flex justify-between">
-        <Button onClick={() => carouselApi && carouselApi.scrollPrev()}>
+        <Button
+          disabled={!carouselApi || currentIndex === 0}
+          onClick={() => carouselApi && carouselApi.scrollPrev()}
+        >
           <MdNavigateBefore />
         </Button>
         <Button onClick={showQuestion}>
           Show Question
         </Button>
-        <Button onClick={() => carouselApi && carouselApi.scrollNext()}>
+        <Button
+          disabled={
+            !carouselApi || currentIndex === quiz.questions.length - 1
+          }
+          onClick={() => carouselApi && carouselApi.scrollNext()}
+        >
           <MdNavigateNext />
         </Button>
       </CardFooter>

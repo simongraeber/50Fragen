@@ -7,6 +7,7 @@ import TermsOfServicePage from "@/components/custom/legal/TermsOfServicePage.tsx
 import QuizOverviewPage from "@/components/custom/quiz_overview/QuizOverviewPage.tsx"
 import QuizEditPage from "@/components/custom/quiz_edit/QuizEditPage.tsx"
 import QuizPlayPage from "@/components/custom/quiz_play/QuizPlayPage.tsx"
+import { GameProvider } from "@/providers/GameProvider.tsx"
 
 const RoutesComponent = () => {
   return (
@@ -20,7 +21,11 @@ const RoutesComponent = () => {
       <Route path="/editor/:id" element={<QuizEditPage />} />
 
       {/* Quiz playing */}
-      <Route path="/play/:id" element={<QuizPlayPage />} />
+        <Route path="/play/:id" element={
+          <GameProvider>
+            <QuizPlayPage />
+          </GameProvider>
+        } />
 
       {/* Legal Stuff */}
       <Route path="/imprint" element={<ImprintPage />} />

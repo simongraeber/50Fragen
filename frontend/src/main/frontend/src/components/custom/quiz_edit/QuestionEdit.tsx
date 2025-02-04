@@ -70,6 +70,7 @@ export function QuestionEdit(input: QuestionEditProps) {
       setLoading(true)
       try {
         await deleteQuestion({ id: input.question.id, quizId: input.question.quizId })
+        input.removeQuestion(input.question.id)
         setDialogOpen(false)
       } catch (error) {
         console.error("Error deleting question:", error)
@@ -152,9 +153,6 @@ export function QuestionEdit(input: QuestionEditProps) {
               </div>
             </div>
             <DialogFooter className="flex justify-between">
-              <Button type="submit" disabled={loading}>
-                Save changes
-              </Button>
               <Button
                 variant="destructive"
                 type="button"
@@ -162,6 +160,9 @@ export function QuestionEdit(input: QuestionEditProps) {
                 disabled={loading}
               >
                 Delete Question
+              </Button>
+              <Button type="submit" disabled={loading}>
+                Save changes
               </Button>
             </DialogFooter>
           </form>

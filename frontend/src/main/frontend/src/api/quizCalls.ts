@@ -1,16 +1,18 @@
 import { Quiz } from "@/types/Quiz.ts"
 import { GET, PUT, DELETE, POST } from "@/lib/http"
 
+export const quizBasePath = 'quizzes' // TODO use "/quiz-database/quizzes/"
+
 /**
  * returns the quiz with the given id
  * including all questions
  * @param quizId the id of the quiz
  */
 export const getQuiz = async (quizId: string) => {
-  const value = await GET<Quiz>(`/quiz-database/quizzes/${quizId}`)
+  const value = await GET<Quiz>(`${quizBasePath}/${quizId}`)
   console.log(value)
   return value
-  return await GET<Quiz>(`/quiz-database/quizzes/${quizId}`)
+  return await GET<Quiz>(`${quizBasePath}/${quizId}`)
 }
 
 /**
@@ -19,7 +21,7 @@ export const getQuiz = async (quizId: string) => {
  * @returns all quizzes
  */
 export const getAllQuizzes = async () => {
-  return await GET<Quiz[]>("/quiz-database/quizzes")
+  return await GET<Quiz[]>(quizBasePath)
 }
 
 /**
@@ -27,7 +29,7 @@ export const getAllQuizzes = async () => {
  * @returns the newly created quiz with id
  */
 export const createQuiz = async (quiz: Partial<Quiz>) => {
-  return await POST<Quiz, Partial<Quiz>>("/quiz-database/quizzes", quiz)
+  return await POST<Quiz, Partial<Quiz>>(quizBasePath, quiz)
 }
 
 /**
@@ -36,7 +38,7 @@ export const createQuiz = async (quiz: Partial<Quiz>) => {
  */
 export const updateQuiz = async (quiz: Partial<Quiz>) => {
   console.log(quiz)
-  return await PUT<Quiz, Partial<Quiz>>(`/quiz-database/quizzes/${quiz.id}`, quiz)
+  return await PUT<Quiz, Partial<Quiz>>(`${quizBasePath}/${quiz.id}`, quiz)
 }
 
 /**
@@ -44,7 +46,7 @@ export const updateQuiz = async (quiz: Partial<Quiz>) => {
  * @param quizId the id of the quiz
  */
 export const deleteQuiz = async (quizId: string) => {
-  return await DELETE(`/quiz-database/quizzes/${quizId}`)
+  return await DELETE(`${quizBasePath}/${quizId}`)
 }
 
 

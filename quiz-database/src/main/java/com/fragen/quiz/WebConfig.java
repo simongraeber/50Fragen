@@ -17,7 +17,8 @@ public class WebConfig {
                         .allowedOrigins("http://gateway:8080", "http://localhost:8080", "http://localhost:5173",
                                 "https://dev.50fragen.com", "https://50fragen.com", "http://dev.50fragen.com",
                                 "http://50fragen.com")
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS");
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .allowCredentials(true);
             }
         };
     }
