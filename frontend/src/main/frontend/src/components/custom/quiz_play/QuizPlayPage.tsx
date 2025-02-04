@@ -10,8 +10,9 @@ import { Badge } from "@/components/ui/badge.tsx";
 import EstimationQuestionAnswers from "@/components/custom/quiz_play/EstimationQuestionAnswers.tsx";
 import { RootState } from "@/lib/store.ts";
 import { useSelector } from "react-redux";
-import { hitBuzz } from "@/api/quizGame.ts";
+import { hitBuzz, setGameActive, setGameInactive } from "@/api/quizGame.ts"
 import { GameProvider, useGame} from "@/providers/GameProvider.tsx";
+import { Button } from "@/components/ui/button.tsx"
 
 function QuizPlayContent() {
   const quizId = useQuizIdFromUrl();
@@ -53,6 +54,17 @@ function QuizPlayContent() {
           hitBuzz(quizId, "SomeUserId");
         }}
       />
+      <Separator />
+      <Button
+        onClick={() => {
+          if(quizState?.active) {
+            setGameActive(quizId);
+          } else {
+            setGameInactive(quizId);
+          }
+        }}>
+        Set {quizState?.active ? "inactive" : "active"}
+      </Button>
       <Separator />
       <div className="p-4 max-w-[400px]">
         <LeaderBord
