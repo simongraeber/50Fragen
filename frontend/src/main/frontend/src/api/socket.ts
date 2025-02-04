@@ -32,7 +32,7 @@ export const initializeSocket = (): void => {
   console.log("Initializing socket");
   if (!socket) {
     socket = io(socketServerURL, {
-      path: "/socket.io",
+      path: socketServerURL.split(baseURL)[1] + "/socket.io",
     });
 
     socket.on("connect", () => {
