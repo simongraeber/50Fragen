@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useReducer, useRef } from "react";
 import { initializeSocket } from "@/api/socket.ts";
-import { buzz, switchedToActiveOrInactive, connectToGame, playerScoreUpdated } from "@/api/quizGame.ts";
+import { buzz, switchedToActiveOrInactive, connectToGame, userScoreUpdated } from "@/api/quizGame.ts";
 import { Buzz } from "@/types/gamePlay/buzz.ts";
 import { QuizState } from "@/types/gamePlay/QuizState.ts";
 import { GameState } from "@/types/gamePlay/gameState.ts";
@@ -67,7 +67,7 @@ export const GameProvider = ({ quizId, children }: GameProviderProps) => {
     });
 
     // Listen for player score updates.
-    playerScoreUpdated((data: { quizID: string; playerID: string; score: number }) => {
+    userScoreUpdated((data: { quizID: string; userID: string; score: number }) => {
       console.log("Player score update received:", data);
       // Use stateRef.current to get the latest quizState:
       if (stateRef.current.quizState) {
@@ -76,7 +76,7 @@ export const GameProvider = ({ quizId, children }: GameProviderProps) => {
           payload: {
             ...stateRef.current.quizState,
             participantsScores: stateRef.current.quizState.participantsScores.map((player) => {
-              if (player.user.id === data.playerID) {
+              if (player.user.id === data.userID) {
                 return { ...player, score: data.score };
               }
               return player;

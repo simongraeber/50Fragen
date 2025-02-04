@@ -58,7 +58,10 @@ io.on("connection", (socket) => {
   });
 
   socket.on("updateUserScore", (data: { quizID: string; userID: string; score: number }) => {
+    console.log("updateUserScore", data);
     const { quizID, userID, score } = data;
+
+    console.log(`Updating score for user ${userID} in quiz ${quizID} to ${score}`);
 
     // Ensure the quiz state exists.
     if (!quizStates[quizID]) {

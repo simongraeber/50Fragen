@@ -4,7 +4,6 @@ import { QuizState } from "@/types/gamePlay/QuizState.ts"
 import { GameState } from "@/types/gamePlay/gameState.ts"
 import { Buzz } from "@/types/gamePlay/buzz.ts"
 
-
 /**
  * Joins a quiz room.
  * @param {string} quizID - The quiz identifier.
@@ -17,7 +16,7 @@ const _joinQuizRoom = (quizID: string): void => {
  * Connects to a quiz room.
  * @param {string} quizID - The quiz identifier.
  * @example
- * quizState: QuizState = await connectToQuiz("quiz-1");
+ * const quizState: QuizState = await connectToGame("quiz-1");
  */
 export const connectToGame = async (quizID: string): Promise<QuizState> => {
   _joinQuizRoom(quizID)
@@ -25,34 +24,32 @@ export const connectToGame = async (quizID: string): Promise<QuizState> => {
 }
 
 /**
- * Hits the buzz button. The player trying to buzz in is identified by the playerID.
+ * Hits the buzz button. The user trying to buzz in is identified by the userID.
  * @param {string} quizID
- * @param {string} playerID
+ * @param {string} userID
  * @example
- * hitBuzz("quiz-1", "player-1");
+ * hitBuzz("quiz-1", "user-1");
  */
-export const hitBuzz = (quizID: string, playerID: string): void => {
-  emitEvent<{ quizID: string; playerID: string }>("buzz", { "quizID": quizID, "playerID": playerID })
+export const hitBuzz = (quizID: string, userID: string): void => {
+  emitEvent<{ quizID: string; userID: string }>("buzz", { quizID, userID })
 }
-
 
 /**
  * Sets up a listener for receiving buzz events from the server.
- * @param {(playerID: string) => void} callback - The callback function to handle the buzz event.
+ * @param {(buzz: Buzz) => void} callback - The callback function to handle the buzz event.
  * @example
- * buzz((playerID) => {
- *   console.log("Player buzzed in: ", playerID);
+ * buzz((buzz) => {
+ *   console.log("User buzzed in:", buzz);
  * });
  */
-export const buzz = (
-  callback: (buzzVale: Buzz) => void): void => {
-  onEvent("buzz", (buzzVale: Buzz) => {
-    callback(buzzVale)
+export const buzz = (callback: (buzz: Buzz) => void): void => {
+  onEvent("buzz", (buzz: Buzz) => {
+    callback(buzz)
   })
 }
 
 /**
- * Set the game to active for all players eg after giving points to the last player
+ * Set the game to active for all users (e.g., after giving points to the last user).
  * @param {string} quizID
  * @example
  * setGameActive("quiz-1");
@@ -62,7 +59,7 @@ export const setGameActive = (quizID: string): void => {
 }
 
 /**
- * Set the game to inactive for all players eg no more answers are accepted
+ * Set the game to inactive for all users (e.g., no more answers are accepted).
  * @param {string} quizID
  * @example
  * setGameInactive("quiz-1");
@@ -71,23 +68,48 @@ export const setGameInactive = (quizID: string): void => {
   emitEvent<string>("setGameInactive", quizID)
 }
 
-export const updatePlayerScore = (quizID: string, playerID: string, score: number): void => {
-  emitEvent<{ quizID: string; playerID: string; score: number }>("updatePlayerScore", { "quizID": quizID, "playerID": playerID, "score": score })
+/**
+ * Updates the user's score.
+ * @param {string} quizID
+ * @param {string} userID
+ * @param {number} score
+ * @example
+ * updateUserScore("quiz-1", "user-1", 10);
+ */
+export const updateUserScore = (quizID: string, userID: string, score: number): void => {
+  emitEvent<{ quizID: string; userID: string; score: number }>("updateUserScore", { quizID, userID, score })
 }
 
-export const playerScoreUpdated = (
-  callback: (data: { quizID: string; playerID: string; score: number }) => void): void => {
-  onEvent("playerScoreUpdated", (data: { quizID: string; playerID: string; score: number }) => {
-    console.log("Received player score update io:", data)
+/**
+ * Sets up a listener for receiving user score update events from the server.
+ * @param {(data: { quizID: string; userID: string; score: number }) => void} callback - The callback function to handle the score update event.
+ * @example
+ * userScoreUpdated((data) => {
+ *   console.log("Received user score update:", data);
+ * });
+ */
+export const userScoreUpdated = (
+  callback: (data: { quizID: string; userID: string; score: number }) => void
+): void => {
+  onEvent("userScoreUpdated", (data: { quizID: string; userID: string; score: number }) => {
+    console.log("Received user score update io:", data)
     callback(data)
   })
 }
 
+/**
+ * Sets up a listener for when the game is switched to active or inactive.
+ * @param {(data: GameState) => void} callback - The callback function to handle the game state change.
+ * @example
+ * switchedToActiveOrInactive((gameState) => {
+ *   console.log("Game state updated:", gameState);
+ * });
+ */
 export const switchedToActiveOrInactive = (
-  callback: (data: GameState) => void): void => {
+  callback: (data: GameState) => void
+): void => {
   onEvent("switchedToActiveOrInactive", (gameState: GameState) => {
     console.log("Received game state change io:", gameState)
-      callback(gameState)
-    },
-  )
+    callback(gameState)
+  })
 }

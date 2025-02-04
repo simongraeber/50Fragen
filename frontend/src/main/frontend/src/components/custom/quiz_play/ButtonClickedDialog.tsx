@@ -1,21 +1,20 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button"
 import {
   AlertDialog,
   AlertDialogContent,
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogFooter,
-  AlertDialogAction,
-} from "@/components/ui/alert-dialog";
-import { User } from "@/types/User";
-import { Avatar } from "@/components/ui/avatar";
-import { AvatarImage } from "@radix-ui/react-avatar";
+} from "@/components/ui/alert-dialog"
+import { User } from "@/types/User"
+import { Avatar } from "@/components/ui/avatar"
+import { AvatarImage } from "@radix-ui/react-avatar"
 
-import { FaCheck } from "react-icons/fa";
-import { ImCross } from "react-icons/im";
-import { FaUndoAlt } from "react-icons/fa";
-import { setGameActive } from "@/api/quizGame";
-import useQuizIdFromUrl from "@/hooks/useQuizIdFromUrl";
+import { FaCheck } from "react-icons/fa"
+import { ImCross } from "react-icons/im"
+import { FaUndoAlt } from "react-icons/fa"
+import { setGameActive } from "@/api/quizGame"
+import useQuizIdFromUrl from "@/hooks/useQuizIdFromUrl"
 
 export interface ButtonClickedDialogProps {
   user: User;
@@ -24,12 +23,12 @@ export interface ButtonClickedDialogProps {
 }
 
 export function ButtonClickedDialog({ user, canEdit, open }: ButtonClickedDialogProps) {
-  const quizId = useQuizIdFromUrl();
+  const quizId = useQuizIdFromUrl()
 
   const onReset = () => {
-    console.log("Resetting");
-    setGameActive(quizId);
-  };
+    console.log("Resetting")
+    setGameActive(quizId)
+  }
 
   return (
     <AlertDialog open={open}>
@@ -44,16 +43,12 @@ export function ButtonClickedDialog({ user, canEdit, open }: ButtonClickedDialog
         </div>
         {canEdit && (
           <AlertDialogFooter>
-            <AlertDialogAction asChild>
-              <Button variant="outline">
-                <FaCheck className="text-green-700" />
-              </Button>
-            </AlertDialogAction>
-            <AlertDialogAction asChild>
-              <Button variant="outline">
-                <ImCross className="text-red-700" />
-              </Button>
-            </AlertDialogAction>
+            <Button variant="outline">
+              <FaCheck className="text-green-700" />
+            </Button>
+            <Button variant="outline">
+              <ImCross className="text-red-700" />
+            </Button>
             <Button
               variant="outline"
               onClick={onReset}
@@ -64,7 +59,7 @@ export function ButtonClickedDialog({ user, canEdit, open }: ButtonClickedDialog
         )}
       </AlertDialogContent>
     </AlertDialog>
-  );
+  )
 }
 
-export default ButtonClickedDialog;
+export default ButtonClickedDialog

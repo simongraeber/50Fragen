@@ -8,7 +8,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { updatePlayerScore } from "@/api/quizGame.ts";
+import { updateUserScore } from "@/api/quizGame.ts"
 import "@/styles/leaderBord.css";
 
 export interface UserScore {
@@ -47,7 +47,7 @@ const ScoreProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =>
       )
     );
     if (state.quizState?.id) {
-      updatePlayerScore(state.quizState.id, userId, newScore);
+      updateUserScore(state.quizState.id, userId, newScore);
       console.log(`Score update sent for user ${userId}: ${newScore}`);
     }
   };
