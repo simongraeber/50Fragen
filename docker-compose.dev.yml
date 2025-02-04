@@ -8,6 +8,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    ports:
+      - "8761:8761"
 
   frontend:
     image: simon1999/50fragen:frontend-dev
@@ -24,6 +26,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    ports:
+      - "8081:8081"
 
   quiz-session:
     image: simon1999/50fragen:quiz-session-dev
@@ -42,6 +46,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    ports:
+      - "4000:4000"
 
   postgres:
     image: postgres:15-alpine
@@ -80,6 +86,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    ports:
+      - "8083:8083"
 
   gateway:
     image: simon1999/50fragen:gateway-dev

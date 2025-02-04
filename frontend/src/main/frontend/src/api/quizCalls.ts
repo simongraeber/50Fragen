@@ -10,7 +10,7 @@ export const quizBasePath = 'quizzes' // TODO use "/quiz-database/quizzes/"
  */
 export const getQuiz = async (quizId: string) => {
   const value = await GET<Quiz>(`${quizBasePath}/${quizId}`)
-  console.log(value)
+  console.log("Quiz Get:" + value)
   return value
   return await GET<Quiz>(`${quizBasePath}/${quizId}`)
 }
@@ -22,7 +22,8 @@ export const getQuiz = async (quizId: string) => {
  */
 export const getAllQuizzes = async () => {
   const quizzes = await GET<Quiz[]>(quizBasePath)
-  console.log(quizzes)
+  console.log("Quizzes Get:" + quizzes)
+  console.log("Quizzes Get:" + quizBasePath)
   return quizzes
   return await GET<Quiz[]>(quizBasePath)
 }
