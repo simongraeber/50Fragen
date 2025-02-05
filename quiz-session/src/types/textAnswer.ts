@@ -1,6 +1,4 @@
-import { User } from "./user"
-
 export type TextAnswer = {
-  user: User;
+  userID: string;
   text: string;
 }

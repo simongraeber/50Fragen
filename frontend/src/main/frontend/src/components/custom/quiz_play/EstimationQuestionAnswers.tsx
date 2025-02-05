@@ -1,5 +1,3 @@
-import { User } from "@/types/User.ts";
-
 import {
   Table,
   TableBody,
@@ -20,18 +18,16 @@ import { updateUserScores } from "@/api/quizGame.ts"
 import { useGame } from "@/providers/GameProvider.tsx";
 import { useState, useEffect } from "react";
 import { UserScore } from "@/components/custom/quiz_play/LeaderBord.tsx";
+import { TextAnswer } from "@/types/gamePlay/TextAnswer.ts"
 
-interface Answer {
-  user: User;
-  answer: string;
-}
+
 interface EstimationQuestionAnswersProps {
-  answers: Answer[];
+  answers: TextAnswer[];
   canEdit?: boolean;
   quizId: string;
 }
 
-function EstimationQuestionAnswers({ answers, canEdit, quizId}: EstimationQuestionAnswersProps) {
+function EstimationQuestionAnswers({ answers, canEdit, quizId }: EstimationQuestionAnswersProps) {
   const { state } = useGame();
   const [scores, setScores] = useState<UserScore[]>(state.quizState?.participantsScores ?? []);
   const [correctUsers, setCorrectUsers] = useState<Set<string>>(new Set());
@@ -39,7 +35,6 @@ function EstimationQuestionAnswers({ answers, canEdit, quizId}: EstimationQuesti
   useEffect(() => {
     setScores(state.quizState?.participantsScores ?? []);
   }, [state.quizState?.participantsScores]);
-
 
   const handleCorrectChange = (userId: string) => {
     setCorrectUsers((prev) => {
@@ -53,8 +48,8 @@ function EstimationQuestionAnswers({ answers, canEdit, quizId}: EstimationQuesti
     });
   };
 
-  const onGivePoints =  () => {
-    console.log("give points: " + quizId)
+  const onGivePoints = () => {
+    console.log("give points: " + quizId);
     if (!quizId) return;
 
     const updates = scores
@@ -62,10 +57,15 @@ function EstimationQuestionAnswers({ answers, canEdit, quizId}: EstimationQuesti
       .map((score) => ({
         quizID: quizId || "",
         userID: score.user.id,
-        score: score.score + scores.length - 1
+        score: score.score + scores.length - 1,
       }));
-    console.log("update Points: "+ updates)
+    console.log("update Points: " + updates);
     updateUserScores(updates);
+  };
+
+  const findUserInfo = (userId: string) => {
+    const userScore = scores.find((score) => score.user.id === userId);
+    return userScore ? userScore.user : { name: "Unknown", image: "" };
   };
 
   return (
@@ -79,41 +79,37 @@ function EstimationQuestionAnswers({ answers, canEdit, quizId}: EstimationQuesti
             {canEdit && <TableHead>Correct?</TableHead>}
           </TableHeader>
           <TableBody>
-            {answers.map((userAnswers) => (
-              <TableRow key={userAnswers.user.id}>
-                <TableCell>
-                  <Avatar className="h-10 w-10">
-                    <AvatarImage
-                      src={userAnswers.user.image}
-                      alt={userAnswers.user.name}
-                    />
-                    <AvatarFallback>
-                      {userAnswers.user.name.slice(0, 2).toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                </TableCell>
-                <TableCell className="font-medium">{userAnswers.user.name}</TableCell>
-                <TableCell className="text-sm bold">
-                  {userAnswers.answer}
-                </TableCell>
-                {canEdit && (
+            {answers.map((userAnswers) => {
+              const userInfo = findUserInfo(userAnswers.userID);
+              return (
+                <TableRow key={userAnswers.userID}>
                   <TableCell>
-                    <Checkbox
-                      checked={correctUsers.has(userAnswers.user.id)}
-                      onClick={() => handleCorrectChange(userAnswers.user.id)}
-                    />
+                    <Avatar className="h-10 w-10">
+                      <AvatarImage src={userInfo.image} alt={userInfo.name} />
+                      <AvatarFallback>
+                        {userInfo.name.slice(0, 2).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
                   </TableCell>
-                )}
-              </TableRow>
-            ))}
+                  <TableCell className="font-medium">{userInfo.name}</TableCell>
+                  <TableCell className="text-sm bold">{userAnswers.text}</TableCell>
+                  {canEdit && (
+                    <TableCell>
+                      <Checkbox
+                        checked={correctUsers.has(userAnswers.userID)}
+                        onClick={() => handleCorrectChange(userAnswers.userID)}
+                      />
+                    </TableCell>
+                  )}
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </CardContent>
       {canEdit && (
         <CardFooter>
-          <Button className="mr-2" variant="outline"
-          onClick={() => console.log("Show Answers")}
-          >
+          <Button className="mr-2" variant="outline" onClick={() => console.log("Show Answers")}>
             Show Answers
           </Button>
           <Button className="ml-auto" onClick={onGivePoints}>

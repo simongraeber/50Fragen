@@ -2,13 +2,14 @@ import { Input } from "@/components/ui/input.tsx"
 import { Button } from "@/components/ui/button.tsx"
 import { Card, CardContent, CardHeader } from "@/components/ui/card.tsx"
 import { useState } from "react"
+import { newTextAnswer } from "@/api/quizGame.ts"
 
-function TextSubmission({ active }: { active: boolean }) {
+function TextSubmission({ active, quizId }: { active: boolean, quizId: string }) {
   const [value, setValue] = useState("")
 
   const handleSubmit = () => {
-    console.log("Submitted")
-    console.log(value)
+    newTextAnswer(quizId, "1", value)
+    setValue("")
   }
   return (
     <Card

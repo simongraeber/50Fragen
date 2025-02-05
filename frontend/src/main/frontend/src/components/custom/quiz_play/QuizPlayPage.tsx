@@ -67,7 +67,10 @@ function QuizPlayContent() {
       {
         state.quizState?.currentQuestionType === "estimationquestion" ? (
           <div className="p-4 max-w-[400px]">
-            <TextSubmission active={quizState?.active || false} />
+            <TextSubmission
+              active={quizState?.active || false}
+              quizId={quizId}
+            />
           </div>
         ) : (
           <Round3DButton
@@ -141,26 +144,9 @@ function QuizPlayContent() {
       <Separator />
       <div className="p-4 max-w-[400px]">
         <EstimationQuestionAnswers
-          answers={[
-            {
-              user: {
-                id: "1",
-                name: "Nico",
-                image:
-                  "https://cdn.discordapp.com/avatars/265637593172017162/4e8142aa1e1b1b24cdca93b87fbff331.png?size=64",
-              },
-              answer: "100",
-            },
-            {
-              user: {
-                id: "2",
-                name: "Lucas",
-                image:
-                  "https://cdn.discordapp.com/avatars/631929224197963786/5a68849ba4b1cf76e899e1f49db44bc7.png?size=64",
-              },
-              answer: "200",
-            },
-          ]}
+          answers={
+            quizState?.textAnswers || []
+          }
           canEdit={true}
           quizId={quizId}
         />

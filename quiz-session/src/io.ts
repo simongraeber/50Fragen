@@ -122,6 +122,27 @@ io.on("connection", (socket) => {
     io.to(quizID).emit("newQuestion", { quizID, questionType });
   });
 
+  socket.on("newTextAnswer", (data: { quizID: string; userID: string; answer: string })=> {
+      const { quizID, userID, answer } = data;
+      if (!quizStates[quizID]) {
+        quizStates[quizID] = getDefaultQuizState(quizID);
+      }
+      if (!quizStates[quizID].active) {
+        return;
+      }
+      const currentAnswers = quizStates[quizID].textAnswers || [];
+
+      const existingAnswerIndex = currentAnswers.findIndex(a => a.userID === userID);
+      if (existingAnswerIndex !== -1) {
+        currentAnswers[existingAnswerIndex].text = answer;
+      } else {
+        currentAnswers.push({ userID, text: answer });
+      }
+      quizStates[quizID].textAnswers = currentAnswers;
+      console.log("newTextAnswers", { quizID, userID, answer });
+      io.to(quizID).emit("newTextAnswers", { quizID, currentAnswers});
+    });
+
   socket.on("disconnect", () => {
     console.log(`User disconnected: ${socket.id}`);
     // TODO clean up the quiz state

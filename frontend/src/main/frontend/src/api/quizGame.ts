@@ -166,3 +166,15 @@ export const onNewQuestion = (callback: (data: { quizID: string; questionType: s
     callback(data)
   })
 }
+
+export const newTextAnswer = (quizID: string, userID: string, answer: string): void => {
+  console.log("newTextAnswer: ", quizID, userID, answer)
+  emitEvent<{ quizID: string; userID: string; answer: string }>("newTextAnswer", { quizID, userID, answer })
+}
+
+export const onNewTextAnswers = (callback: (data: { quizID: string; currentAnswers: { userID: string; text: string }[] }) => void): void => {
+  onEvent("newTextAnswers", (data: { quizID: string; currentAnswers: { userID: string; text: string }[] }) => {
+    console.log("onnNewTextAnswers: ", data)
+    callback(data)
+  })
+}

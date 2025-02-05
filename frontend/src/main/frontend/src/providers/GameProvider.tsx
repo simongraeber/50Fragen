@@ -6,7 +6,7 @@ import {
   connectToGame,
   userScoreUpdated,
   onShowQuestion,
-  onNewQuestion,
+  onNewQuestion, onNewTextAnswers,
 } from "@/api/quizGame.ts"
 import { Buzz } from "@/types/gamePlay/buzz.ts";
 import { QuizState } from "@/types/gamePlay/QuizState.ts";
@@ -150,6 +150,21 @@ export const GameProvider = ({ quizId, children }: GameProviderProps) => {
             ...stateRef.current.quizState,
             currentQuestionType: data.questionType,
             currentQuestion: "",
+            id: stateRef.current.quizState.id,
+          },
+        });
+      }
+    });
+
+    // on new Text Answers update
+    onNewTextAnswers((data) => {
+      console.log("New text answers received:", data);
+      if (stateRef.current.quizState) {
+        dispatch({
+          type: "SET_QUIZ_STATE",
+          payload: {
+            ...stateRef.current.quizState,
+            textAnswers: data.currentAnswers,
             id: stateRef.current.quizState.id,
           },
         });
