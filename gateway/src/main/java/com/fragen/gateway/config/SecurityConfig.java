@@ -28,27 +28,22 @@ public class SecurityConfig {
                 .oauth2Login(oauth2 ->
                         oauth2
                                 .authenticationSuccessHandler((exchange, authentication) ->
-                                        handleRedirect(exchange, true)))
+                                        handleRedirect(exchange, "success=true"))
+                                .authenticationFailureHandler((exchange, exception) ->
+                                        handleRedirect(exchange, "error"))
+                )
                 .logout(logout ->
                         logout
                                 .logoutSuccessHandler((exchange, authentication) ->
-                                        handleRedirect(exchange, false)))
+                                        handleRedirect(exchange, "logout"))
+                )
                 .build();
     }
 
-    /**
-     * A common redirect handler that builds the redirect URL from the externalized base URL
-     * and appends a query parameter indicating whether the login was successful.
-     *
-     * @param webFilterExchange the current exchange
-     * @param loginSuccess      flag indicating if the login authenticated successfully (true)
-     *                          or if the user is logging out (false)
-     * @return a completed Mono signaling that redirect handling is done
-     */
-    private Mono<Void> handleRedirect(WebFilterExchange webFilterExchange, boolean loginSuccess) {
-        String redirectUri = String.format("%s?success=%s", redirectBaseUrl, loginSuccess);
-        webFilterExchange.getExchange().getResponse().setStatusCode(HttpStatus.FOUND);
-        webFilterExchange.getExchange().getResponse().getHeaders().setLocation(URI.create(redirectUri));
-        return webFilterExchange.getExchange().getResponse().setComplete();
+    private Mono<Void> handleRedirect(WebFilterExchange exchange, String flagQuery) {
+        String redirectUri = String.format("%s?%s", redirectBaseUrl, flagQuery);
+        exchange.getExchange().getResponse().setStatusCode(HttpStatus.FOUND);
+        exchange.getExchange().getResponse().getHeaders().setLocation(URI.create(redirectUri));
+        return exchange.getExchange().getResponse().setComplete();
     }
 }
