@@ -40,6 +40,7 @@ function OAuth2Callback() {
         toast({ description: "Authentication error occurred", variant: "destructive" })
       } else {
         // Unknown authentication state passed via callback
+        console.error("Unknown authentication state")
         dispatch(clearCurrentUser())
         toast({ description: "Unknown authentication state", variant: "destructive" })
       }
