@@ -97,6 +97,8 @@ services:
       - 50Fragen
     environment:
       - EUREKA_SERVER=http://eureka:8761/eureka
+      - DISCORD_CLIENT_ID=your_discord_client_id
+      - DISCORD_CLIENT_SECRET=your_discord_client_secret
     depends_on:
       eureka:
         condition: service_healthy

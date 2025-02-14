@@ -11,7 +11,7 @@ spring:
     gateway:
       discovery:
         locator:
-          enabled: false
+          enabled: true
       routes:
         - id: quiz-session-route
           uri:  lb://quiz-session
@@ -21,14 +21,33 @@ spring:
         - id: quiz-database-route
           uri: lb://quiz-database
           predicates:
-              - Path=/quiz-database/**
+            - Path=/quiz-database/**
           filters:
-              - StripPrefix=1
+            - StripPrefix=1
 
         - id: frontend-route
           uri: lb://frontend
           predicates:
             - Path=/**
+
+  security:
+    oauth2:
+      client:
+        registration:
+          discord:
+            client-id: ${DISCORD_CLIENT_ID:1339887403883692094}
+            client-secret: ${DISCORD_CLIENT_SECRET:GQ7njUQTmqFW20wc3aBl7jwfvMO1Ks1o}
+            client-name: Discord
+            provider: discord
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            scope: identify, email
+        provider:
+          discord:
+            authorization-uri: https://discord.com/api/oauth2/authorize
+            token-uri: https://discord.com/api/oauth2/token
+            user-info-uri: https://discord.com/api/users/@me
+            user-name-attribute: id
 
 eureka:
   client:
@@ -37,3 +56,6 @@ eureka:
   instance:
     hostname: localhost
     preferIpAddress: true
+
+custom:
+  redirect-base-url: /loginCallback

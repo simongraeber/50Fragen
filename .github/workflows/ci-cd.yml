@@ -59,8 +59,6 @@ jobs:
       - name: Deploy to Dev environment
         run: |
           echo "Deploying to Dev environment..."
-          scp docker-compose.dev.yml \
-              ${{ secrets.DEV_SERVER_USER }}@${{ secrets.DEV_SERVER_ADDRESS }}:${{ secrets.DEV_SERVER_PROJECT_PATH }}/docker-compose.yml
           ssh ${{ secrets.DEV_SERVER_USER }}@${{ secrets.DEV_SERVER_ADDRESS }} << EOF
             cd ${{ secrets.DEV_SERVER_PROJECT_PATH }}
             docker compose pull
