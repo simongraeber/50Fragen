@@ -8,7 +8,7 @@ function TextSubmission({ active, quizId }: { active: boolean, quizId: string })
   const [value, setValue] = useState("")
 
   const handleSubmit = () => {
-    newTextAnswer(quizId, "1", value)
+    newTextAnswer(quizId, value)
     setValue("")
   }
   return (
@@ -25,6 +25,11 @@ function TextSubmission({ active, quizId }: { active: boolean, quizId: string })
             className="mr-2"
             value={value}
             disabled={!active}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleSubmit()
+              }
+            }}
             onChange={(e) => setValue(e.target.value)}
           />
           <Button

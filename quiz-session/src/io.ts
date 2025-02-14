@@ -1,6 +1,6 @@
 import { Server } from "socket.io";
 import { server } from "./index";
-import { quizStates, getEmptyQuizState } from "./state";
+import { quizStates, getQuizState } from "./state"
 
 // Create a namespace explicitly for '/quiz-session'
 const io = new Server(server, {
@@ -11,20 +11,43 @@ const io = new Server(server, {
   path: "/quiz-session/socket.io"
 }).of("/quiz-session");
 
+const ownerSockets: { [quizID: string]: string[] } = {};
+
 io.on("connection", (socket) => {
+
+  // the connected user
+  const user = {
+    id: socket.handshake.headers["x-user-id"] as string,
+    name: socket.handshake.headers["x-user-name"] as string,
+    image: socket.handshake.headers["x-user-image"] as string,
+  };
+
+  const canEdit = (quizID: string) => {
+    return quizStates[quizID].ownerID === user.id;
+  }
 
   socket.on("joinGame", (quizID: string) => {
     socket.join(quizID);
 
     if (!quizStates[quizID]) {
-      quizStates[quizID] = getEmptyQuizState(quizID);
+     return;
     }
 
-    socket.emit("quizState", quizStates[quizID]);
+    if (quizStates[quizID].ownerID === user.id) {
+      ownerSockets[quizID] = ownerSockets[quizID] || [];
+      ownerSockets[quizID].push(socket.id);
+    }
+
+    io.in(quizID)
+      .except(ownerSockets[quizID] || [])
+      .emit("quizState", getQuizState(quizID, false));
+    if (ownerSockets[quizID]) {
+      io.to(ownerSockets[quizID]).emit("quizState", getQuizState(quizID, true));
+    }
   });
 
-  socket.on("buzz", (data: { quizID: string; userID: string }) => {
-    const { quizID, userID } = data;
+  socket.on("buzz", (data: { quizID: string;}) => {
+    const { quizID } = data;
 
     const quiz = quizStates[quizID];
     if (!quiz) {
@@ -36,14 +59,18 @@ io.on("connection", (socket) => {
 
     // Set quiz to inactive and notify the room.
     quiz.active = false;
-    io.to(quizID).emit("buzz", { userId: userID, quizId: quizID });
+    io.to(quizID).emit("buzz", { userId: user.id, quizId: quizID });
     io.to(quizID).emit("switchedToActiveOrInactive", { active: false, quizId: quizID });
   });
 
   socket.on("setGameActive", (quizID: string) => {
     console.log(`Setting quiz ${quizID} to active`);
     if (!quizStates[quizID]) {
-      quizStates[quizID] = getEmptyQuizState(quizID);
+      return;
+    }
+    if (!canEdit(quizID)) {
+      console.log("User not allowed to set game active. User: ", user);
+      return;
     }
     quizStates[quizID].active = true;
     io.to(quizID).emit("switchedToActiveOrInactive", { active: true, quizId: quizID });
@@ -51,7 +78,10 @@ io.on("connection", (socket) => {
 
   socket.on("setGameInactive", (quizID: string) => {
     if (!quizStates[quizID]) {
-      quizStates[quizID] = getEmptyQuizState(quizID);
+      return;
+    }
+    if (!canEdit(quizID)) {
+      return;
     }
     quizStates[quizID].active = false;
     io.to(quizID).emit("switchedToActiveOrInactive", { active: false, quizId: quizID });
@@ -61,7 +91,7 @@ io.on("connection", (socket) => {
     const { quizID, userID, score } = data;
 
     if (!quizStates[quizID]) {
-      quizStates[quizID] = getEmptyQuizState(quizID);
+      return;
     }
 
     const quiz = quizStates[quizID];
@@ -106,7 +136,10 @@ io.on("connection", (socket) => {
     console.log("showQuestion", data);
     const { quizID, question } = data;
     if (!quizStates[quizID]) {
-      quizStates[quizID] = getEmptyQuizState(quizID);
+      return;
+    }
+    if (!canEdit(quizID)) {
+      return;
     }
     quizStates[quizID].currentQuestion = question;
 
@@ -116,34 +149,57 @@ io.on("connection", (socket) => {
   socket.on("newQuestion", (data: { quizID: string; questionType: string }) => {
     const { quizID, questionType } = data;
     if (!quizStates[quizID]) {
-      quizStates[quizID] = getEmptyQuizState(quizID);
+      return
+    }
+    if (!canEdit(quizID)) {
+      return;
     }
     quizStates[quizID].currentQuestionType = questionType;
+    quizStates[quizID].currentQuestion = "";
+    quizStates[quizID].textAnswersForOwnerOnly = [];
+    quizStates[quizID].participantsScores = [];
     io.to(quizID).emit("newQuestion", { quizID, questionType });
   });
 
-  socket.on("newTextAnswer", (data: { quizID: string; userID: string; answer: string })=> {
-      const { quizID, userID, answer } = data;
+  socket.on("newTextAnswer", (data: { quizID: string; answer: string })=> {
+      const { quizID, answer } = data;
       if (!quizStates[quizID]) {
-        quizStates[quizID] = getEmptyQuizState(quizID);
+        return;
       }
       if (!quizStates[quizID].active) {
         return;
       }
-      const currentAnswers = quizStates[quizID].textAnswers || [];
+      const currentAnswers = quizStates[quizID].textAnswersForOwnerOnly || [];
 
-      const existingAnswerIndex = currentAnswers.findIndex(a => a.userID === userID);
+      const existingAnswerIndex = currentAnswers.findIndex(a => a.userID === user.id);
       if (existingAnswerIndex !== -1) {
         currentAnswers[existingAnswerIndex].text = answer;
       } else {
-        currentAnswers.push({ userID, text: answer });
+        currentAnswers.push({ userID: user.id, text: answer });
       }
-      quizStates[quizID].textAnswers = currentAnswers;
-      console.log("newTextAnswers", { quizID, userID, answer });
-      io.to(quizID).emit("newTextAnswers", { quizID, currentAnswers});
+      quizStates[quizID].textAnswersForOwnerOnly = currentAnswers;
+      io.to(
+        ownerSockets[quizID] || []
+      ).emit("newTextAnswers", { quizID, currentAnswers});
     });
 
+  socket.on("showTextAnswers", (quizID: string) => {
+    if (!quizStates[quizID]) {
+      return;
+    }
+    if (!canEdit(quizID)) {
+      return;
+    }
+    const currentAnswers = quizStates[quizID].textAnswersForOwnerOnly || [];
+    io.to(quizID).except(ownerSockets[quizID] || []).emit("newTextAnswers", { quizID, currentAnswers });
+
+  });
+
   socket.on("disconnect", () => {
+    // remove the socket from the ownerSockets list
+    Object.keys(ownerSockets).forEach((quizID) => {
+      ownerSockets[quizID] = ownerSockets[quizID].filter((s) => s !== socket.id);
+    });
     console.log(`User disconnected: ${socket.id}`);
     // TODO clean up the quiz state
   });

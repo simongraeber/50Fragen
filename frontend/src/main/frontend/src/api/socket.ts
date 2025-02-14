@@ -29,7 +29,6 @@ const handleError = (errorMessage: unknown) => {
 };
 
 export const initializeSocket = (): void => {
-  console.log("Initializing socket");
   if (!socket) {
     socket = io(socketServerURL, {
       path: socketServerURL.split(baseURL)[1] + "/socket.io",
@@ -37,12 +36,10 @@ export const initializeSocket = (): void => {
 
     socket.on("connect", () => {
       store.dispatch(setOnline());
-      console.log("Socket is connected");
     });
 
     socket.on("disconnect", () => {
       store.dispatch(setOffline());
-      console.log("Socket is disconnected");
     });
 
     socket.on("connect_error", (err) => {

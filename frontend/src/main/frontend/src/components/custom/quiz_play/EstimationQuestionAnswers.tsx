@@ -14,7 +14,7 @@ import {
 import { Card, CardContent, CardFooter } from "@/components/ui/card.tsx";
 import { Checkbox } from "@/components/ui/checkbox.tsx";
 import { Button } from "@/components/ui/button.tsx";
-import { updateUserScores } from "@/api/quizGame.ts"
+import { showTextAnswers, updateUserScores } from "@/api/quizGame.ts"
 import { useGame } from "@/providers/GameProvider.tsx";
 import { useState, useEffect } from "react";
 import { UserScore } from "@/components/custom/quiz_play/LeaderBord.tsx";
@@ -49,7 +49,6 @@ function EstimationQuestionAnswers({ answers, canEdit, quizId }: EstimationQuest
   };
 
   const onGivePoints = () => {
-    console.log("give points: " + quizId);
     if (!quizId) return;
 
     const updates = scores
@@ -59,7 +58,6 @@ function EstimationQuestionAnswers({ answers, canEdit, quizId }: EstimationQuest
         userID: score.user.id,
         score: score.score + scores.length - 1,
       }));
-    console.log("update Points: " + updates);
     updateUserScores(updates);
   };
 
@@ -109,7 +107,7 @@ function EstimationQuestionAnswers({ answers, canEdit, quizId }: EstimationQuest
       </CardContent>
       {canEdit && (
         <CardFooter>
-          <Button className="mr-2" variant="outline" onClick={() => console.log("Show Answers")}>
+          <Button className="mr-2" variant="outline" onClick={() => showTextAnswers(quizId)}>
             Show Answers
           </Button>
           <Button className="ml-auto" onClick={onGivePoints}>

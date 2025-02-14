@@ -9,5 +9,6 @@ export type QuizState = {
   active: boolean;
   currentQuestion?: string;
   textAnswers?: TextAnswer[];
+  textAnswersForOwnerOnly?: TextAnswer[];
   currentQuestionType?: string;
 };

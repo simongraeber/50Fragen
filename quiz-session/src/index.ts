@@ -3,7 +3,7 @@ import http from "http"
 import dotenv from "dotenv"
 import cors from "cors"
 import { startEurekaClient } from "./eurekaConnection"
-import { quizStates, getEmptyQuizState, getCurrentQuizState } from "./state"
+import { quizStates, getCurrentQuizState, getQuizState } from "./state"
 
 dotenv.config()
 
@@ -41,13 +41,14 @@ app.get("/quiz-session/quiz/:quizID", async (req: Request, res: Response) => {
     quizStates[quizID] = await getCurrentQuizState(quizID)
   }
 
-  if (!quizStates[quizID].participantsScores.find(s => s.user.id === user.id)) {
+  if (quizStates[quizID].ownerID != user.id &&
+    !quizStates[quizID].participantsScores.find(s => s.user.id === user.id)) {
     quizStates[quizID].participantsScores.push({
       user,
       score: 0
     })
   }
-  res.json(quizStates[quizID])
+  res.json(getQuizState(quizID, user.id === quizStates[quizID].ownerID))
 })
 
 server.listen(PORT, () => {

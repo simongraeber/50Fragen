@@ -23,6 +23,7 @@ function QuizPlayContent() {
   const [dialogOpen, setDialogOpen] = useState(false)
   const isOnline = useSelector((state: RootState) => state.onlineStatus.isOnline)
   const [quiz, setQuiz] = useState<Quiz | null>(null)
+  const [buzzUserId, setBuzzUserId] = useState<string | null>(null)
 
   // Consume global game state here.
   const { state } = useGame()
@@ -36,14 +37,13 @@ function QuizPlayContent() {
         setQuiz(quiz)
       }
     }
-
     loadQuiz()
   }, [quizId])
 
   // When a buzz event is received, show the dialog.
   useEffect(() => {
     if (buzzData && buzzData.quizId === quizId) {
-      console.log("Buzz event for current quiz:", buzzData)
+      setBuzzUserId(buzzData.userId)
       setDialogOpen(true)
     }
   }, [buzzData, quizId])
@@ -51,7 +51,6 @@ function QuizPlayContent() {
   // When the game becomes active, close the dialog, etc.
   useEffect(() => {
     if (quizState) {
-      console.log("Global game state updated:", quizState)
       if (quizState.active) {
         setDialogOpen(false)
       }
@@ -91,8 +90,7 @@ function QuizPlayContent() {
                 <Round3DButton
                   isActiv={quizState?.active || false}
                   onClick={() => {
-                    console.log("Buzz button clicked")
-                    hitBuzz(quizId, "SomeUserId")
+                    hitBuzz(quizId)
                   }}
                 />
               </div>
@@ -103,7 +101,7 @@ function QuizPlayContent() {
         </>
       }
         {quiz && (
-          <>
+          <div className="p-4">
             <Button
               onClick={() => {
                 if (quizState?.active) {
@@ -114,7 +112,7 @@ function QuizPlayContent() {
               }}>
               Set {quizState?.active ? "inactive" : "active"}
             </Button><Separator />
-          </>
+          </div>
         )}
         <div className="p-4 max-w-[400px]">
           <LeaderBord
@@ -127,14 +125,13 @@ function QuizPlayContent() {
           open={dialogOpen}
           canEdit={!!quiz}
           user={{
-            id: "1",
-            name: "Nico",
-            image:
-              "https://cdn.discordapp.com/avatars/265637593172017162/4e8142aa1e1b1b24cdca93b87fbff331.png?size=64",
-          }}
+                id: buzzUserId || "1",
+                name: quizState?.participantsScores.find((player) => player.user.id === buzzUserId)?.user.name || "Unknown",
+                image: quizState?.participantsScores.find((player) => player.user.id === buzzUserId)?.user.image || "",
+              }}
         />
         <Separator />
-        {quiz &&
+        {quiz && (
           quiz.questions.length > 0 ? (
           <>
             <div className="p-4 max-w-[400px]">
@@ -152,7 +149,7 @@ function QuizPlayContent() {
               Add a question
             </Link>
           </div>
-        }
+        )}
         {quizState?.textAnswers && quizState.textAnswers.length > 0 &&
           <div className="p-4 max-w-[400px]">
             <EstimationQuestionAnswers

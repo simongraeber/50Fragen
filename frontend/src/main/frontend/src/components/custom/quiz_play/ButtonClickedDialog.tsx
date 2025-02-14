@@ -18,6 +18,8 @@ import useQuizIdFromUrl from "@/hooks/useQuizIdFromUrl"
 import { useGame } from "@/providers/GameProvider.tsx"
 import { useState } from "react"
 import { UserScore } from "@/components/custom/quiz_play/LeaderBord.tsx"
+import { useEffect } from "react";
+
 
 export interface ButtonClickedDialogProps {
   user: User;
@@ -29,29 +31,37 @@ export function ButtonClickedDialog({ user, canEdit, open }: ButtonClickedDialog
   const quizId = useQuizIdFromUrl()
 
   const { state } = useGame();
-  const [scores, _] = useState<UserScore[]>(state.quizState?.participantsScores ?? []);
+  const [scores, setScores] = useState<UserScore[]>(state.quizState?.participantsScores ?? []);
+
+  useEffect(() => {
+    setScores(state.quizState?.participantsScores ?? []);
+  }, [state.quizState?.participantsScores]);
 
   const onReset = () => {
+    console.log("onReset id: ", user.id)
     setGameActive(quizId)
   }
 
-  const onCorrectAnswer = () => {
+  const onCorrectAnswer = async () => {
     // give one point to the user who buzzed in
     for (let i = 0; i < scores.length; i++) {
       if (scores[i].user.id === user.id) {
-        updateUserScore(quizId, scores[i].user.id, scores[i].score + scores.length -1);
+        updateUserScore(quizId, scores[i].user.id, scores[i].score + scores.length - 1);
       }
     }
+    await new Promise(r => setTimeout(r, 20));
     setGameActive(quizId)
   }
 
-  const onWrongAnswer = () => {
+  const onWrongAnswer = async () => {
+    console.log("onWrongAnswer id: ", user.id)
     // give one point to the user except the user who buzzed in
     for (let i = 0; i < scores.length; i++) {
       if (scores[i].user.id !== user.id) {
         updateUserScore(quizId, scores[i].user.id, scores[i].score + 1);
       }
     }
+    await new Promise(r => setTimeout(r, 20));
     setGameActive(quizId)
   }
 

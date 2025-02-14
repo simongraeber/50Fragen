@@ -42,7 +42,7 @@ function UserNav() {
             <AvatarFallback
               className="w-full h-full flex items-center justify-center text-xl"
             >
-              {user.name[0]}
+              {user.name.slice(0, 2).toUpperCase()}
             </AvatarFallback>
           </Avatar>
         </Button>

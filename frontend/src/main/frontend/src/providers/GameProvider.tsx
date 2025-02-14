@@ -6,7 +6,7 @@ import {
   connectToGame,
   userScoreUpdated,
   onShowQuestion,
-  onNewQuestion, onNewTextAnswers,
+  onNewQuestion, onNewTextAnswers, onQuizState,
 } from "@/api/quizGame.ts"
 import { Buzz } from "@/types/gamePlay/buzz.ts";
 import { QuizState } from "@/types/gamePlay/QuizState.ts";
@@ -74,7 +74,6 @@ export const GameProvider = ({ quizId, children }: GameProviderProps) => {
 
     // Reinitialize game state when socket reconnects.
     const handleSocketConnect = () => {
-      console.log("Socket reconnected, reinitializing game state");
       initializeGameState();
     };
 
@@ -84,7 +83,6 @@ export const GameProvider = ({ quizId, children }: GameProviderProps) => {
     // Listen for buzz events.
     buzz((data: Buzz) => {
       if (data.quizId === quizId) {
-        console.log("Buzz event received:", data);
         dispatch({
           type: "SET_BUZZ_DATA",
           payload: {
@@ -97,7 +95,6 @@ export const GameProvider = ({ quizId, children }: GameProviderProps) => {
 
     // Listen for player score updates.
     userScoreUpdated((data: { quizID: string; userID: string; score: number }) => {
-      console.log("Player score update received:", data);
       if (stateRef.current.quizState) {
         dispatch({
           type: "SET_QUIZ_STATE",
@@ -117,7 +114,6 @@ export const GameProvider = ({ quizId, children }: GameProviderProps) => {
 
     // Listen for active/inactive game state changes.
     switchedToActiveOrInactive((data: GameState) => {
-      console.log("Game state update received:", data);
       dispatch({
         type: "SET_QUIZ_STATE",
         payload: {
@@ -151,6 +147,7 @@ export const GameProvider = ({ quizId, children }: GameProviderProps) => {
             ...stateRef.current.quizState,
             currentQuestionType: data.questionType,
             currentQuestion: "",
+            textAnswers: [],
             id: stateRef.current.quizState.id,
           },
         });
@@ -159,7 +156,6 @@ export const GameProvider = ({ quizId, children }: GameProviderProps) => {
 
     // on new Text Answers update
     onNewTextAnswers((data) => {
-      console.log("New text answers received:", data);
       if (stateRef.current.quizState) {
         dispatch({
           type: "SET_QUIZ_STATE",
@@ -170,6 +166,14 @@ export const GameProvider = ({ quizId, children }: GameProviderProps) => {
           },
         });
       }
+    });
+
+    // update the entire quiz state
+    onQuizState((data) => {
+      dispatch({
+        type: "SET_QUIZ_STATE",
+        payload: data,
+      });
     });
 
     // Clean up the event listener on unmount.

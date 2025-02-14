@@ -26,12 +26,11 @@ export const connectToGame = async (quizID: string): Promise<QuizState> => {
 /**
  * Hits the buzz button. The user trying to buzz in is identified by the userID.
  * @param {string} quizID
- * @param {string} userID
  * @example
  * hitBuzz("quiz-1", "user-1");
  */
-export const hitBuzz = (quizID: string, userID: string): void => {
-  emitEvent<{ quizID: string; userID: string }>("buzz", { quizID, userID })
+export const hitBuzz = (quizID: string): void => {
+  emitEvent<{ quizID: string }>("buzz", { quizID })
 }
 
 /**
@@ -90,7 +89,6 @@ export const updateUserScore = (quizID: string, userID: string, score: number): 
  *  ]);
  */
 export const updateUserScores = (scores: {quizID: string, userID: string; score: number }[]): void => {
-  console.log("updateUserScores: ", scores)
   emitEvent<{ quizID: string; userID: string; score: number }[]>("updateUserScores", scores)
 }
 
@@ -106,7 +104,6 @@ export const userScoreUpdated = (
   callback: (data: { quizID: string; userID: string; score: number }) => void
 ): void => {
   onEvent("userScoreUpdated", (data: { quizID: string; userID: string; score: number }) => {
-    console.log("Received user score update io:", data)
     callback(data)
   })
 }
@@ -123,7 +120,6 @@ export const switchedToActiveOrInactive = (
   callback: (data: GameState) => void
 ): void => {
   onEvent("switchedToActiveOrInactive", (gameState: GameState) => {
-    console.log("Received game state change io:", gameState)
     callback(gameState)
   })
 }
@@ -136,7 +132,6 @@ export const switchedToActiveOrInactive = (
  * showQuestion("quiz-1", "What is the capital of France?");
  */
 export const showQuestion = (quizID: string, question: string): void => {
-  console.log("showQuestion: ", quizID, question)
   emitEvent<{ quizID: string; question: string }>("showQuestion", { quizID, question })
 }
 
@@ -150,31 +145,37 @@ export const showQuestion = (quizID: string, question: string): void => {
  */
 export const onShowQuestion = (callback: (data: { quizID: string; question: string }) => void): void => {
   onEvent("questionShown", (data: { quizID: string; question: string }) => {
-    console.log("questionShown: ", data)
     callback(data)
   })
 }
 
 export const newQuestion = (quizID: string, questionType: string): void => {
-  console.log("newQuestion: ", quizID, questionType)
   emitEvent<{ quizID: string; questionType: string }>("newQuestion", { quizID, questionType })
 }
 
 export const onNewQuestion = (callback: (data: { quizID: string; questionType: string }) => void): void => {
   onEvent("newQuestion", (data: { quizID: string; questionType: string }) => {
-    console.log("onNewQuestion: ", data)
     callback(data)
   })
 }
 
-export const newTextAnswer = (quizID: string, userID: string, answer: string): void => {
-  console.log("newTextAnswer: ", quizID, userID, answer)
-  emitEvent<{ quizID: string; userID: string; answer: string }>("newTextAnswer", { quizID, userID, answer })
+export const newTextAnswer = (quizID: string, answer: string): void => {
+  emitEvent<{ quizID: string; answer: string }>("newTextAnswer", { quizID, answer })
 }
 
 export const onNewTextAnswers = (callback: (data: { quizID: string; currentAnswers: { userID: string; text: string }[] }) => void): void => {
   onEvent("newTextAnswers", (data: { quizID: string; currentAnswers: { userID: string; text: string }[] }) => {
-    console.log("onnNewTextAnswers: ", data)
+    callback(data)
+  })
+}
+
+export const showTextAnswers = (quizID: string): void => {
+  emitEvent<string>("showTextAnswers", quizID)
+}
+
+export const onQuizState = (callback: (data: QuizState) => void): void => {
+  onEvent("quizState", (data: QuizState) => {
+    console.log("onQuizState: ", data)
     callback(data)
   })
 }
