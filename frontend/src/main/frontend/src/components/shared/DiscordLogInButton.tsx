@@ -6,6 +6,8 @@ function DiscordLogInButton() {
     <Button
       className="bg-[#7289da] hover:bg-[#5a6fb2]"
       onClick={() => {
+        // redirect to the backend to start the OAuth flow
+        window.location.href = "/oauth2/authorization/discord"
       }}
     >
       <BsDiscord className="mr-2 text-xl" />

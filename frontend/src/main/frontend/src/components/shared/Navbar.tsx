@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom"
-import DiscordLogInButton from "@/components/shared/DiscordLogInButton.tsx"
+import UserNav from "@/components/shared/UserNav.tsx"
 
 function NavBar() {
   return (
@@ -13,7 +13,7 @@ function NavBar() {
           />
         </Link>
       </div>
-      <DiscordLogInButton />
+      <UserNav />
     </div>
   )
 }

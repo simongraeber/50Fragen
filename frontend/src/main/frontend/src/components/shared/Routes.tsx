@@ -9,6 +9,7 @@ import QuizEditPage from "@/components/custom/quiz_edit/QuizEditPage.tsx"
 import QuizPlayPage from "@/components/custom/quiz_play/QuizPlayPage.tsx"
 import { GameProvider } from "@/providers/GameProvider.tsx"
 import { useParams } from "react-router-dom";
+import OAuth2Callback from "@/components/shared/OAuth2Callback.tsx"
 
 const RoutesComponent = () => {
   return (
@@ -24,6 +25,11 @@ const RoutesComponent = () => {
       {/* Quiz playing */}
       <Route path="/play/:id" element={
         <QuizPlayWrapper />
+      } />
+
+      {/* Login Callback */}
+      <Route path="/loginCallback" element={
+        <OAuth2Callback />
       } />
 
       {/* Legal Stuff */}
