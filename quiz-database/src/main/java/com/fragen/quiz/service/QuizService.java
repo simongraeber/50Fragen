@@ -34,6 +34,18 @@ public class QuizService {
         return quiz;
     }
 
+    // Get Quiz or null if the user does not have access.
+    public Quiz getQuizAccess(UUID id, String userId) {
+        Quiz quiz = quizRepository.findById(id).orElse(null);
+        System.out.println("QuizService.getQuizAccess: quiz = " + quiz);
+        if (quiz == null || !quiz.getUserId().equals(userId)) {
+            System.out.println("QuizService.getQuizAccess: quiz not found or user does not have access");
+            return null;
+        }
+        System.out.println("QuizService.getQuizAccess: quiz found");
+        return quiz;
+    }
+
     // When creating a quiz, assign the userId from the header.
     public Quiz createQuiz(CreateQuizRequest request, String userId) {
         Quiz quiz = new Quiz(request.getName(), userId);

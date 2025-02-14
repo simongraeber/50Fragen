@@ -65,6 +65,7 @@ export const GameProvider = ({ quizId, children }: GameProviderProps) => {
     // Define the initialization function so we can use it both initially and on reconnection.
     const initializeGameState = async () => {
       const fetchedState = await connectToGame(quizId);
+      console.log("Fetched game state:", fetchedState);
       dispatch({ type: "SET_QUIZ_STATE", payload: fetchedState });
     };
 

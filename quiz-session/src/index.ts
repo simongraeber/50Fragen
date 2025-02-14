@@ -3,7 +3,7 @@ import http from "http"
 import dotenv from "dotenv"
 import cors from "cors"
 import { startEurekaClient } from "./eurekaConnection"
-import { quizStates, getDefaultQuizState } from "./state"
+import { quizStates, getEmptyQuizState, getCurrentQuizState } from "./state"
 
 dotenv.config()
 
@@ -29,10 +29,23 @@ app.get("/", (req: Request, res: Response) => {
 })
 
 // GET endpoint to fetch the current quiz state.
-app.get("/quiz-session/quiz/:quizID", (req: Request, res: Response) => {
+app.get("/quiz-session/quiz/:quizID", async (req: Request, res: Response) => {
   const quizID = req.params.quizID
+  // Get the user form the headers
+  const user = {
+    id: req.headers["x-user-id"] as string,
+    name: req.headers["x-user-name"] as string,
+    image: req.headers["x-user-image"] as string,
+  }
   if (!quizStates[quizID]) {
-    quizStates[quizID] = getDefaultQuizState(quizID)
+    quizStates[quizID] = await getCurrentQuizState(quizID)
+  }
+
+  if (!quizStates[quizID].participantsScores.find(s => s.user.id === user.id)) {
+    quizStates[quizID].participantsScores.push({
+      user,
+      score: 0
+    })
   }
   res.json(quizStates[quizID])
 })

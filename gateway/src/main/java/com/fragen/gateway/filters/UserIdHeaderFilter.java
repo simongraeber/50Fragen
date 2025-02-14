@@ -21,9 +21,15 @@ public class UserIdHeaderFilter implements GlobalFilter, Ordered {
                     if (authentication != null && authentication.getPrincipal() instanceof OAuth2User) {
                         OAuth2User user = (OAuth2User) authentication.getPrincipal();
                         String userId = user.getAttribute("id");
+                        String username = user.getAttribute("username");
+                        String avatar = user.getAttribute("avatar");
                         // Rebuild the request to add the header, making sure to override any client-supplied value.
                         ServerHttpRequest modifiedRequest = exchange.getRequest().mutate()
                                 .header("X-User-ID", userId)
+                                .header("X-User-Name", username)
+                                .header("X-User-Image", "https://cdn.discordapp.com/avatars/"
+                                        + userId
+                                        + "/" + avatar)
                                 .build();
                         return chain.filter(exchange.mutate().request(modifiedRequest).build());
                     }

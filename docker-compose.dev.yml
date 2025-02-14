@@ -36,10 +36,17 @@ services:
       - HOST_IP=quiz-session
       - EUREKA_HOST=eureka
       - EUREKA_PORT=8761
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=quiz
+      - DB_USERNAME=user_name
+      - DB_PASSWORD=password
     networks:
       - 50Fragen
     depends_on:
       eureka:
+        condition: service_healthy
+      postgres:
         condition: service_healthy
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:4000/ || exit 1"]

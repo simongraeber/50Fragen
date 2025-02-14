@@ -1,6 +1,6 @@
 import { Server } from "socket.io";
 import { server } from "./index";
-import { quizStates, getDefaultQuizState } from "./state";
+import { quizStates, getEmptyQuizState } from "./state";
 
 // Create a namespace explicitly for '/quiz-session'
 const io = new Server(server, {
@@ -17,7 +17,7 @@ io.on("connection", (socket) => {
     socket.join(quizID);
 
     if (!quizStates[quizID]) {
-      quizStates[quizID] = getDefaultQuizState(quizID);
+      quizStates[quizID] = getEmptyQuizState(quizID);
     }
 
     socket.emit("quizState", quizStates[quizID]);
@@ -43,7 +43,7 @@ io.on("connection", (socket) => {
   socket.on("setGameActive", (quizID: string) => {
     console.log(`Setting quiz ${quizID} to active`);
     if (!quizStates[quizID]) {
-      quizStates[quizID] = getDefaultQuizState(quizID);
+      quizStates[quizID] = getEmptyQuizState(quizID);
     }
     quizStates[quizID].active = true;
     io.to(quizID).emit("switchedToActiveOrInactive", { active: true, quizId: quizID });
@@ -51,7 +51,7 @@ io.on("connection", (socket) => {
 
   socket.on("setGameInactive", (quizID: string) => {
     if (!quizStates[quizID]) {
-      quizStates[quizID] = getDefaultQuizState(quizID);
+      quizStates[quizID] = getEmptyQuizState(quizID);
     }
     quizStates[quizID].active = false;
     io.to(quizID).emit("switchedToActiveOrInactive", { active: false, quizId: quizID });
@@ -61,7 +61,7 @@ io.on("connection", (socket) => {
     const { quizID, userID, score } = data;
 
     if (!quizStates[quizID]) {
-      quizStates[quizID] = getDefaultQuizState(quizID);
+      quizStates[quizID] = getEmptyQuizState(quizID);
     }
 
     const quiz = quizStates[quizID];
@@ -106,7 +106,7 @@ io.on("connection", (socket) => {
     console.log("showQuestion", data);
     const { quizID, question } = data;
     if (!quizStates[quizID]) {
-      quizStates[quizID] = getDefaultQuizState(quizID);
+      quizStates[quizID] = getEmptyQuizState(quizID);
     }
     quizStates[quizID].currentQuestion = question;
 
@@ -116,7 +116,7 @@ io.on("connection", (socket) => {
   socket.on("newQuestion", (data: { quizID: string; questionType: string }) => {
     const { quizID, questionType } = data;
     if (!quizStates[quizID]) {
-      quizStates[quizID] = getDefaultQuizState(quizID);
+      quizStates[quizID] = getEmptyQuizState(quizID);
     }
     quizStates[quizID].currentQuestionType = questionType;
     io.to(quizID).emit("newQuestion", { quizID, questionType });
@@ -125,7 +125,7 @@ io.on("connection", (socket) => {
   socket.on("newTextAnswer", (data: { quizID: string; userID: string; answer: string })=> {
       const { quizID, userID, answer } = data;
       if (!quizStates[quizID]) {
-        quizStates[quizID] = getDefaultQuizState(quizID);
+        quizStates[quizID] = getEmptyQuizState(quizID);
       }
       if (!quizStates[quizID].active) {
         return;

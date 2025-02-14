@@ -13,6 +13,15 @@ export const getQuiz = async (quizId: string) => {
 }
 
 /**
+ * returns the quiz with the given id
+ * including all questions if the user has access
+ * @param quizId the id of the quiz
+ */
+export const getQuizOrNull = async (quizId: string) => {
+  return await GET<Quiz | null>(`${quizBasePath}/${quizId}/access`)
+}
+
+/**
  * returns all quizzes
  * without the questions
  * @returns all quizzes

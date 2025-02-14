@@ -1,31 +1,41 @@
 import { QuizState } from "./types/quizState"
+import { pool } from "./database"
 
 export const quizStates: { [quizID: string]: QuizState } = {}
 
-export function getDefaultQuizState(quizID: string): QuizState {
+export async function getCurrentQuizState(quizID: string): Promise<QuizState> {
+  try {
+    const query = 'SELECT name, user_id FROM quizzes WHERE id = $1';
+    const result = await pool.query(query, [quizID]);
+
+    if (result.rows.length > 0) {
+      const { name, userId } = result.rows[0];
+      return {
+        id: quizID,
+        ownerID: userId,
+        name: name,
+        currentQuestion: "",
+        participantsScores: [],
+        active: true,
+        currentQuestionType: "buzzerquestion",
+        textAnswers: [],
+      };
+    }
+    console.error("Quiz not found in DB");
+    return getEmptyQuizState(quizID);
+  } catch (error) {
+    console.error("Error retrieving quiz from DB: ", error);
+    return getEmptyQuizState(quizID);
+  }
+}
+
+export function getEmptyQuizState(quizID: string): QuizState {
   return {
     id: quizID,
+    ownerID: "",
     name: `Quiz placeholder ${quizID}`,
     currentQuestion: "",
     participantsScores: [
-      {
-        user: {
-          id: "1",
-          name: "Nico",
-          image:
-            "https://cdn.discordapp.com/avatars/265637593172017162/4e8142aa1e1b1b24cdca93b87fbff331.png?size=64",
-        },
-        score: 100,
-      },
-      {
-        user: {
-          id: "2",
-          name: "Lucas",
-          image:
-            "https://cdn.discordapp.com/avatars/631929224197963786/5a68849ba4b1cf76e899e1f49db44bc7.png?size=64",
-        },
-        score: 200,
-      },
     ],
     active: true,
     currentQuestionType: "buzzerquestion",

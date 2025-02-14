@@ -72,3 +72,34 @@ run docker-compose with the development file:
 ```bash
 docker-compose -f docker-compose.yml up -d
 ```
+
+## Run servies individually
+You need a postgres database running
+```bash
+docker run --name pgdev \
+  -e POSTGRES_USER=admin \
+  -e POSTGRES_PASSWORD=test \
+  -e POSTGRES_DB=quiz \
+  -p 5432:5432 \
+  -d postgres
+ ````
+then you can run the services individually:
+```bash
+cd eureka
+mvn spring-boot:run
+```
+```bash
+cd quiz-database
+mvn spring-boot:run
+```
+```bash
+cd quiz-session
+npm install
+npm run build
+npm run start
+```
+```bash
+cd frontend
+mvn spring-boot:run
+```
+

@@ -34,12 +34,19 @@ public class QuizController {
         return quizService.getQuiz(id, userId);
     }
 
+    // return null if the quiz is not found or the user does not have access
+    @GetMapping("/{id}/access")
+    public Quiz getQuizAccess(@PathVariable UUID id, @RequestHeader("X-User-ID") String userId) {
+        System.out.println("QuizController.getQuizAccess");
+        System.out.println("id = " + id);
+        System.out.println("userId = " + userId);
+        return quizService.getQuizAccess(id, userId);
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Quiz createQuiz(@RequestHeader("X-User-ID") String userId,
                            @Valid @RequestBody CreateQuizRequest request) {
-        // log the userid of the requesting user
-        System.out.println("User ID: " + userId);
         return quizService.createQuiz(request, userId);
     }
 
