@@ -14,8 +14,7 @@ const Round3DButton: React.FC<Round3DButtonProps> = ({
   const [isHovered, setIsHovered] = useState(false);
   const [isActive, setIsActive] = useState(true);
 
-  // Component dimensions
-  const size = 80;
+  const size = 160;
 
   // Button style – adjust the cursor when deactivated
   const buttonStyle: React.CSSProperties = {
@@ -32,7 +31,6 @@ const Round3DButton: React.FC<Round3DButtonProps> = ({
     borderRadius: "50%",
   };
 
-  // Only allow interactions if the component is active
   const handleMouseEnter = () => {
     if (!isActiv) return;
     setIsHovered(true);
@@ -54,7 +52,6 @@ const Round3DButton: React.FC<Round3DButtonProps> = ({
     setIsActive(false);
   };
 
-  // Add touch events for mobile platforms
   const handleTouchStart = () => {
     if (!isActiv) return;
     setIsHovered(true);
@@ -73,15 +70,13 @@ const Round3DButton: React.FC<Round3DButtonProps> = ({
     setIsActive(false);
   };
 
-  // Update the front (face) color: when inactive not gray, but a less vibrant red.
   const frontBackground = isActiv
     ? "hsl(345deg 100% 47%)"
     : "hsl(345deg 60% 47%)";
 
-  // Shadow styling – simple animation based on hover/active state
-  const shadowBaseY = 2;
-  const shadowHoverY = 4;
-  const shadowActiveY = 1;
+  const shadowBaseY = 4;
+  const shadowHoverY = 8;
+  const shadowActiveY = 2;
   const shadowTranslateY = isActive
     ? shadowActiveY
     : isHovered
@@ -101,11 +96,9 @@ const Round3DButton: React.FC<Round3DButtonProps> = ({
     transition: isActive
       ? "transform 34ms, filter 34ms"
       : "transform 600ms cubic-bezier(0.3, 0.7, 0.4, 1), filter 250ms",
-    // Even when deactivated we can show a subtle shadow effect
     filter: isHovered ? "blur(4px) brightness(1.1)" : "blur(4px)",
   };
 
-  // Edge styling remains as defined
   const edgeStyle: React.CSSProperties = {
     position: "absolute",
     top: 0,
@@ -127,11 +120,9 @@ const Round3DButton: React.FC<Round3DButtonProps> = ({
     transition: "filter 250ms",
   };
 
-  // Front styling – change the translateY based on interactions and
-  // update the background color if deactivated.
-  const frontBaseY = -4;
-  const frontHoverY = -6;
-  const frontActiveY = -2;
+  const frontBaseY = -8;
+  const frontHoverY = -12;
+  const frontActiveY = -4;
   const frontTranslateY = isActive
     ? frontActiveY
     : isHovered
@@ -144,7 +135,7 @@ const Round3DButton: React.FC<Round3DButtonProps> = ({
     width: "100%",
     height: "100%",
     borderRadius: "50%",
-    fontSize: "1rem",
+    fontSize: "1.5rem",
     color: "white",
     background: frontBackground,
     willChange: "transform, filter",
@@ -157,7 +148,6 @@ const Round3DButton: React.FC<Round3DButtonProps> = ({
     filter: isHovered ? "brightness(1.1)" : "none",
   };
 
-  // Local onClick – perform the click action only when active
   const handleClick = () => {
     if (!isActiv) return;
     onClick();
@@ -175,7 +165,6 @@ const Round3DButton: React.FC<Round3DButtonProps> = ({
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
       onTouchCancel={handleTouchCancel}
-      // Accessibility: clear outlines on focus/blur if needed
       onFocus={(e) => ((e.target as HTMLButtonElement).style.outline = "")}
       onBlur={(e) => ((e.target as HTMLButtonElement).style.outline = "")}
     >

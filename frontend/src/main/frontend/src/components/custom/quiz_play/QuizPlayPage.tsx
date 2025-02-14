@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react"
 import useQuizIdFromUrl from "@/hooks/useQuizIdFromUrl"
 import Round3DButton from "@/components/custom/quiz_play/BuzzerButton.tsx"
-import { Separator } from "@/components/ui/separator.tsx"
 import LeaderBord from "@/components/custom/quiz_play/LeaderBord.tsx"
 import TextSubmission from "@/components/custom/quiz_play/TextSubmission.tsx"
 import ButtonClickedDialog from "@/components/custom/quiz_play/ButtonClickedDialog.tsx"
@@ -37,6 +36,7 @@ function QuizPlayContent() {
         setQuiz(quiz)
       }
     }
+
     loadQuiz()
   }, [quizId])
 
@@ -58,109 +58,108 @@ function QuizPlayContent() {
   }, [quizState])
 
   return (
-    <div className="h-full pb-32 p-4">
-      <Badge className={"p-4" + isOnline ? "bg-green-500" : "bg-red-500"}>
-        {isOnline ? "Online" : "Offline"}
-      </Badge>
-        {state.quizState?.currentQuestion !== "" && (
-          <Card>
+    <div className="min-h-screen p-4 flex flex-col">
+      <header className="mb-4">
+        <div className="flex justify-between items-center">
+          <Badge className={isOnline ? "bg-green-500" : "bg-red-500"}>
+            {isOnline ? "Online" : "Offline"}
+          </Badge>
+          {quiz && (
+            <Button
+              onClick={() => {
+                quizState?.active ? setGameInactive(quizId) : setGameActive(quizId);
+              }}
+            >
+              Set {quizState?.active ? "inactive" : "active"}
+            </Button>
+          )}
+        </div>
+      </header>
+
+      <h1 className="text-3xl font-bold mb-4">
+        {state.quizState ? state.quizState.name : "Loading..."}
+      </h1>
+
+      <section className="mb-4 h-24">
+        {state.quizState?.currentQuestion && (
+          <Card className="h-24">
             <CardHeader>
-              <CardTitle>
-                Question
-              </CardTitle>
+              <CardTitle>Question</CardTitle>
             </CardHeader>
             <CardContent>
-              {state.quizState?.currentQuestion}
+              {state.quizState.currentQuestion}
             </CardContent>
           </Card>
         )}
-        <Separator />
-      {!quiz &&
-        <>
-          {
-            state.quizState?.currentQuestionType === "estimationquestion" ? (
-              <div className="p-4 max-w-[400px]">
-                <TextSubmission
-                  active={quizState?.active || false}
-                  quizId={quizId}
-                />
-              </div>
-            ) : (
-              <div className="p-4 pt-6 max-w-[400px]">
+      </section>
+
+      <main className="flex flex-col lg:flex-row gap-4 flex-1">
+        {/* Left Aside: For text answers */}
+        <aside className="flex-1 min-w-0 lg:basis-1/4 flex flex-col gap-4">
+          {quizState?.textAnswers && quizState.textAnswers.length > 0 && (
+            <div className="p-4">
+              <EstimationQuestionAnswers
+                answers={quizState.textAnswers}
+                canEdit={!!quiz}
+                quizId={quizId}
+              />
+            </div>
+          )}
+        </aside>
+
+        <div className="flex-1 min-w-0 lg:basis-1/3">
+          {quiz ? (
+            <div className="mb-4">
+              {quiz.questions.length > 0 ? (
+                <div className="p-4">
+                  <GameMasterControls quiz={quiz} />
+                </div>
+              ) : (
+                <Card className="p-4 text-center">
+                  ⚠️ This quiz has no questions yet. <br />
+                  <Link to={`/editor/${quizId}`} className="text-blue-500 hover:underline">
+                    Add a question
+                  </Link>
+                </Card>
+              )}
+            </div>
+          ) : (
+            <div className="p-4 flex justify-center">
+              {state.quizState?.currentQuestionType === "estimationquestion" ? (
+                <TextSubmission active={quizState?.active || false} quizId={quizId} />
+              ) : (
                 <Round3DButton
                   isActiv={quizState?.active || false}
-                  onClick={() => {
-                    hitBuzz(quizId)
-                  }}
+                  onClick={() => hitBuzz(quizId)}
                 />
-              </div>
-            )
-
-          }
-          <Separator />
-        </>
-      }
-        {quiz && (
-          <div className="p-4">
-            <Button
-              onClick={() => {
-                if (quizState?.active) {
-                  setGameInactive(quizId)
-                } else {
-                  setGameActive(quizId)
-                }
-              }}>
-              Set {quizState?.active ? "inactive" : "active"}
-            </Button><Separator />
-          </div>
-        )}
-        <div className="p-4 max-w-[400px]">
-          <LeaderBord
-            canEdit={!!quiz}
-          />
-        </div>
-        <Separator />
-
-        <ButtonClickedDialog
-          open={dialogOpen}
-          canEdit={!!quiz}
-          user={{
-                id: buzzUserId || "1",
-                name: quizState?.participantsScores.find((player) => player.user.id === buzzUserId)?.user.name || "Unknown",
-                image: quizState?.participantsScores.find((player) => player.user.id === buzzUserId)?.user.image || "",
-              }}
-        />
-        <Separator />
-        {quiz && (
-          quiz.questions.length > 0 ? (
-          <>
-            <div className="p-4 max-w-[400px]">
-              <GameMasterControls
-                quiz={quiz} />
+              )}
             </div>
-            <Separator />
-          </>
-        ):
-          <div className="p-4 max-w-[400px] text-center">
-            This quiz has no questions yet.
-            <Link
-              to={`/editor/${quizId}`}
-              className="text-blue-500 hover:underline">
-              Add a question
-            </Link>
+          )}
+        </div>
+
+        {/* Right Aside: Leaderboard */}
+        <aside className="flex-1 min-w-0 lg:basis-1/4 flex flex-col gap-4">
+          <div className="p-4">
+            <LeaderBord canEdit={!!quiz} />
           </div>
-        )}
-        {quizState?.textAnswers && quizState.textAnswers.length > 0 &&
-          <div className="p-4 max-w-[400px]">
-            <EstimationQuestionAnswers
-              answers={
-                quizState?.textAnswers || []
-              }
-              canEdit={!!quiz}
-              quizId={quizId}
-            />
-          </div>
-        }
+        </aside>
+      </main>
+
+      <ButtonClickedDialog
+        open={dialogOpen}
+        canEdit={!!quiz}
+        user={{
+          id: buzzUserId || "1",
+          name:
+            quizState?.participantsScores.find(
+              (player) => player.user.id === buzzUserId,
+            )?.user.name || "Unknown",
+          image:
+            quizState?.participantsScores.find(
+              (player) => player.user.id === buzzUserId,
+            )?.user.image || "",
+        }}
+      />
     </div>
   )
 }

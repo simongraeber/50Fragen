@@ -38,7 +38,6 @@ export function ButtonClickedDialog({ user, canEdit, open }: ButtonClickedDialog
   }, [state.quizState?.participantsScores]);
 
   const onReset = () => {
-    console.log("onReset id: ", user.id)
     setGameActive(quizId)
   }
 
@@ -54,7 +53,6 @@ export function ButtonClickedDialog({ user, canEdit, open }: ButtonClickedDialog
   }
 
   const onWrongAnswer = async () => {
-    console.log("onWrongAnswer id: ", user.id)
     // give one point to the user except the user who buzzed in
     for (let i = 0; i < scores.length; i++) {
       if (scores[i].user.id !== user.id) {
