@@ -39,7 +39,11 @@ function UserNav() {
               src={user.image}
               alt={user.name}
             />
-            <AvatarFallback>{user.name[0]}</AvatarFallback>
+            <AvatarFallback
+              className="w-full h-full flex items-center justify-center text-xl"
+            >
+              {user.name[0]}
+            </AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
