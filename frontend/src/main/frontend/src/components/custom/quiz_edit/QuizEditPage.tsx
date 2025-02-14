@@ -52,6 +52,7 @@ function QuizEditPage() {
     setQuestions(reordered)
     await updateQuiz({ ...quiz, questions: reordered })
     toast({
+      variant: "success",
       title: "Question order updated",
       description: "Question order updated",
     })
@@ -62,6 +63,7 @@ function QuizEditPage() {
     const updatedQuiz = { ...quiz, name , questions }
     await updateQuiz(updatedQuiz)
     toast({
+      variant: "success",
       title: "Quiz name updated",
       description: `Quiz name updated to: ${name}`,
     })
