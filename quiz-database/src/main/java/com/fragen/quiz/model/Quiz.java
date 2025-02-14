@@ -19,6 +19,9 @@ public class Quiz {
 
     private LocalDateTime lastModified;
 
+    @Column(nullable = false)
+    private String userId;
+
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     @OrderBy("questionOrder ASC")  // ensures questions are returned in the saved order
@@ -26,8 +29,9 @@ public class Quiz {
 
     public Quiz() { }
 
-    public Quiz(String name) {
+    public Quiz(String name, String userId) {
         this.name = name;
+        this.userId = userId;
         this.lastModified = LocalDateTime.now();
     }
 
@@ -62,6 +66,12 @@ public class Quiz {
 
     public void setQuestions(List<QuizQuestion> questions) {
         this.questions = questions;
+    }
+    public String getUserId() {
+        return userId;
+    }
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public void addQuestion(QuizQuestion question) {

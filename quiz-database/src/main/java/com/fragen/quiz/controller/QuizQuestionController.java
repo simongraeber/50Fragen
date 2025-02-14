@@ -19,28 +19,32 @@ public class QuizQuestionController {
     private QuizQuestionService questionService;
 
     @GetMapping
-    public List<QuizQuestion> getQuestions(@PathVariable UUID quizId) {
-        return questionService.getQuestionsByQuizId(quizId);
+    public List<QuizQuestion> getQuestions(@PathVariable UUID quizId,
+                                           @RequestHeader("X-User-ID") String userId) {
+        return questionService.getQuestionsByQuizId(quizId, userId);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public QuizQuestion createQuestion(@PathVariable UUID quizId, @Valid @RequestBody CreateQuestionRequest request) {
-        return questionService.createQuestion(quizId, request);
+    public QuizQuestion createQuestion(@PathVariable UUID quizId,
+                                       @RequestHeader("X-User-ID") String userId,
+                                       @Valid @RequestBody CreateQuestionRequest request) {
+        return questionService.createQuestion(quizId, request, userId);
     }
 
     @PutMapping("/{questionId}")
     @ResponseStatus(HttpStatus.OK)
     public QuizQuestion updateQuestion(@PathVariable UUID quizId,
                                        @PathVariable UUID questionId,
+                                       @RequestHeader("X-User-ID") String userId,
                                        @Valid @RequestBody CreateQuestionRequest request) {
-        // Optionally, you can add a check to ensure the question belongs to the specified quizId
-        return questionService.updateQuestion(questionId, request);
+        return questionService.updateQuestion(questionId, request, userId);
     }
 
     @DeleteMapping("/{questionId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteQuestion(@PathVariable UUID questionId) {
-        questionService.deleteQuestion(questionId);
+    public void deleteQuestion(@PathVariable UUID questionId,
+                               @RequestHeader("X-User-ID") String userId) {
+        questionService.deleteQuestion(questionId, userId);
     }
 }

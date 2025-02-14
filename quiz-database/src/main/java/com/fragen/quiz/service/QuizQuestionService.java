@@ -22,14 +22,23 @@ public class QuizQuestionService {
     @Autowired
     private QuizRepository quizRepository;
 
-    // Return questions sorted by questionOrder
-    public List<QuizQuestion> getQuestionsByQuizId(UUID quizId) {
+    // Return questions only after verifying that the requesting user owns the quiz.
+    public List<QuizQuestion> getQuestionsByQuizId(UUID quizId, String userId) {
+        Quiz quiz = quizRepository.findById(quizId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Quiz not found"));
+        if (!quiz.getUserId().equals(userId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not authorized to access this quiz");
+        }
         return questionRepository.findByQuizIdOrderByQuestionOrderAsc(quizId);
     }
 
-    public QuizQuestion createQuestion(UUID quizId, CreateQuestionRequest request) {
+    public QuizQuestion createQuestion(UUID quizId, CreateQuestionRequest request, String userId) {
         Quiz quiz = quizRepository.findById(quizId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Quiz not found"));
+
+        if (!quiz.getUserId().equals(userId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not authorized to modify this quiz");
+        }
 
         QuizQuestionType type;
         try {
@@ -47,18 +56,21 @@ public class QuizQuestionService {
         return questionRepository.save(question);
     }
 
-    public void deleteQuestion(UUID questionId) {
-        if (!questionRepository.existsById(questionId)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Question not found");
+    public void deleteQuestion(UUID questionId, String userId) {
+        QuizQuestion question = questionRepository.findById(questionId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Question not found"));
+        if (!question.getQuiz().getUserId().equals(userId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not authorized to delete this question");
         }
         questionRepository.deleteById(questionId);
     }
 
-    public QuizQuestion updateQuestion(UUID questionId, CreateQuestionRequest request) {
+    public QuizQuestion updateQuestion(UUID questionId, CreateQuestionRequest request, String userId) {
         QuizQuestion existingQuestion = questionRepository.findById(questionId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Question not found"));
-
-        // Update text, answer, and question type – leave questionOrder untouched.
+        if (!existingQuestion.getQuiz().getUserId().equals(userId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not authorized to update this question");
+        }
         existingQuestion.setQuestion(request.getQuestion());
         existingQuestion.setAnswer(request.getAnswer());
         try {

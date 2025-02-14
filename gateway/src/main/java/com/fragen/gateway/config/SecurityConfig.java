@@ -37,6 +37,7 @@ public class SecurityConfig {
                                 .logoutSuccessHandler((exchange, authentication) ->
                                         handleRedirect(exchange, "logout"))
                 )
+                .csrf().disable()
                 .build();
     }
 

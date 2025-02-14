@@ -22,32 +22,38 @@ public class QuizController {
     private QuizService quizService;
 
     @GetMapping
-    public List<QuizSummaryDTO> getAllQuizzes() {
-        List<Quiz> quizzes = quizService.getAllQuizzes();
+    public List<QuizSummaryDTO> getAllQuizzes(@RequestHeader("X-User-ID") String userId) {
+        List<Quiz> quizzes = quizService.getAllQuizzes(userId);
         return quizzes.stream()
                 .map(quiz -> new QuizSummaryDTO(quiz.getId(), quiz.getName(), quiz.getLastModified()))
                 .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
-    public Quiz getQuiz(@PathVariable UUID id) {
-        return quizService.getQuiz(id);
+    public Quiz getQuiz(@PathVariable UUID id, @RequestHeader("X-User-ID") String userId) {
+        return quizService.getQuiz(id, userId);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Quiz createQuiz(@Valid @RequestBody CreateQuizRequest request) {
-        return quizService.createQuiz(request);
+    public Quiz createQuiz(@RequestHeader("X-User-ID") String userId,
+                           @Valid @RequestBody CreateQuizRequest request) {
+        // log the userid of the requesting user
+        System.out.println("User ID: " + userId);
+        return quizService.createQuiz(request, userId);
     }
 
     @PutMapping("/{id}")
-    public Quiz updateQuiz(@PathVariable UUID id, @Valid @RequestBody UpdateQuizRequest request) {
-        return quizService.updateQuiz(id, request);
+    public Quiz updateQuiz(@PathVariable UUID id,
+                           @RequestHeader("X-User-ID") String userId,
+                           @Valid @RequestBody UpdateQuizRequest request) {
+        return quizService.updateQuiz(id, request, userId);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteQuiz(@PathVariable UUID id) {
-        quizService.deleteQuiz(id);
+    public void deleteQuiz(@PathVariable UUID id,
+                           @RequestHeader("X-User-ID") String userId) {
+        quizService.deleteQuiz(id, userId);
     }
 }
