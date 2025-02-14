@@ -13,6 +13,8 @@ import { QuizQuestion, QuizQuestionType } from "@/types/QuizQuestion.ts"
 import QuestionEdit from "@/components/custom/quiz_edit/QuestionEdit.tsx"
 import LoadingButton from "@/components/ui/LoadingButton.tsx"
 import { toast } from "@/hooks/use-toast.ts"
+import { Button } from "@/components/ui/button.tsx"
+import { useNavigate } from "react-router-dom";
 
 function QuizEditPage() {
   const quizId = useQuizIdFromUrl()
@@ -21,6 +23,8 @@ function QuizEditPage() {
   const [quiz, setQuiz] = useState<Quiz | null>(null)
   const [questions, setQuestions] = useState<QuizQuestion[]>([])
   const [error, setError] = useState<Error | null>(null)
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     getQuiz(quizId)
@@ -114,7 +118,18 @@ function QuizEditPage() {
 
   return (
     <div className="h-full pb-32 p-4">
-      <p>Edit page for quiz ID: {quizId}</p>
+      <div className="flex justify-between mb-4">
+        <Button
+        onClick={() => navigate(`/quizzes`)}
+        >
+          Back to Quiz List
+        </Button>
+        <Button
+        onClick={() => navigate(`/play/${quizId}`)}
+        >
+          Start Quiz
+        </Button>
+      </div>
       <Card>
         <CardTitle className="p-4">
           Quiz Name

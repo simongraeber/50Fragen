@@ -67,7 +67,7 @@ function QuizPlayContent() {
           {quiz && (
             <Button
               onClick={() => {
-                quizState?.active ? setGameInactive(quizId) : setGameActive(quizId);
+                quizState?.active ? setGameInactive(quizId) : setGameActive(quizId)
               }}
             >
               Set {quizState?.active ? "inactive" : "active"}
@@ -80,86 +80,90 @@ function QuizPlayContent() {
         {state.quizState ? state.quizState.name : "Loading..."}
       </h1>
 
-      <section className="mb-4 h-24">
-        {state.quizState?.currentQuestion && (
-          <Card className="h-24">
-            <CardHeader>
-              <CardTitle>Question</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {state.quizState.currentQuestion}
-            </CardContent>
-          </Card>
-        )}
-      </section>
+      {state.quizState && (
+        <>
+          <section className="mb-4 h-24">
+            {state.quizState?.currentQuestion && (
+              <Card className="h-24">
+                <CardHeader>
+                  <CardTitle>Question</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {state.quizState.currentQuestion}
+                </CardContent>
+              </Card>
+            )}
+          </section>
 
-      <main className="flex flex-col lg:flex-row gap-4 flex-1">
-        {/* Left Aside: For text answers */}
-        <aside className="flex-1 min-w-0 lg:basis-1/4 flex flex-col gap-4">
-          {quizState?.textAnswers && quizState.textAnswers.length > 0 && (
-            <div className="p-4">
-              <EstimationQuestionAnswers
-                answers={quizState.textAnswers}
-                canEdit={!!quiz}
-                quizId={quizId}
-              />
-            </div>
-          )}
-        </aside>
-
-        <div className="flex-1 min-w-0 lg:basis-1/3">
-          {quiz ? (
-            <div className="mb-4">
-              {quiz.questions.length > 0 ? (
+          <main className="flex flex-col lg:flex-row gap-4 flex-1">
+            {/* Left Aside: For text answers */}
+            <aside className="flex-1 min-w-0 lg:basis-1/4 flex flex-col gap-4">
+              {quizState?.textAnswers && quizState.textAnswers.length > 0 && (
                 <div className="p-4">
-                  <GameMasterControls quiz={quiz} />
+                  <EstimationQuestionAnswers
+                    answers={quizState.textAnswers}
+                    canEdit={!!quiz}
+                    quizId={quizId}
+                  />
+                </div>
+              )}
+            </aside>
+
+            <div className="flex-1 min-w-0 lg:basis-1/3">
+              {quiz ? (
+                <div className="mb-4">
+                  {quiz.questions.length > 0 ? (
+                    <div className="p-4">
+                      <GameMasterControls quiz={quiz} />
+                    </div>
+                  ) : (
+                    <Card className="p-4 text-center">
+                      ⚠️ This quiz has no questions yet. <br />
+                      <Link to={`/editor/${quizId}`} className="text-blue-500 hover:underline">
+                        Add a question
+                      </Link>
+                    </Card>
+                  )}
                 </div>
               ) : (
-                <Card className="p-4 text-center">
-                  ⚠️ This quiz has no questions yet. <br />
-                  <Link to={`/editor/${quizId}`} className="text-blue-500 hover:underline">
-                    Add a question
-                  </Link>
-                </Card>
+                <div className="p-4 flex justify-center">
+                  {state.quizState?.currentQuestionType === "estimationquestion" ? (
+                    <TextSubmission active={quizState?.active || false} quizId={quizId} />
+                  ) : (
+                    <Round3DButton
+                      isActiv={quizState?.active || false}
+                      onClick={() => hitBuzz(quizId)}
+                    />
+                  )}
+                </div>
               )}
             </div>
-          ) : (
-            <div className="p-4 flex justify-center">
-              {state.quizState?.currentQuestionType === "estimationquestion" ? (
-                <TextSubmission active={quizState?.active || false} quizId={quizId} />
-              ) : (
-                <Round3DButton
-                  isActiv={quizState?.active || false}
-                  onClick={() => hitBuzz(quizId)}
-                />
-              )}
-            </div>
-          )}
-        </div>
 
-        {/* Right Aside: Leaderboard */}
-        <aside className="flex-1 min-w-0 lg:basis-1/4 flex flex-col gap-4">
-          <div className="p-4">
-            <LeaderBord canEdit={!!quiz} />
-          </div>
-        </aside>
-      </main>
+            {/* Right Aside: Leaderboard */}
+            <aside className="flex-1 min-w-0 lg:basis-1/4 flex flex-col gap-4">
+              <div className="p-4">
+                <LeaderBord canEdit={!!quiz} />
+              </div>
+            </aside>
+          </main>
 
-      <ButtonClickedDialog
-        open={dialogOpen}
-        canEdit={!!quiz}
-        user={{
-          id: buzzUserId || "1",
-          name:
-            quizState?.participantsScores.find(
-              (player) => player.user.id === buzzUserId,
-            )?.user.name || "Unknown",
-          image:
-            quizState?.participantsScores.find(
-              (player) => player.user.id === buzzUserId,
-            )?.user.image || "",
-        }}
-      />
+          <ButtonClickedDialog
+            open={dialogOpen}
+            canEdit={!!quiz}
+            user={{
+              id: buzzUserId || "1",
+              name:
+                quizState?.participantsScores.find(
+                  (player) => player.user.id === buzzUserId,
+                )?.user.name || "Unknown",
+              image:
+                quizState?.participantsScores.find(
+                  (player) => player.user.id === buzzUserId,
+                )?.user.image || "",
+            }}
+          />
+
+        </>)}
     </div>
   )
 }

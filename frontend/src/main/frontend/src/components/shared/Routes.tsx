@@ -10,6 +10,7 @@ import QuizPlayPage from "@/components/custom/quiz_play/QuizPlayPage.tsx"
 import { GameProvider } from "@/providers/GameProvider.tsx"
 import { useParams } from "react-router-dom";
 import OAuth2Callback from "@/components/shared/OAuth2Callback.tsx"
+import ProtectedRoute from "@/components/shared/ProtectedRouteProps.tsx"
 
 const RoutesComponent = () => {
   return (
@@ -17,14 +18,24 @@ const RoutesComponent = () => {
       <Route path="/" element={<HomePage />} />
 
       {/* Quiz creation*/}
-      <Route path="/quizzes" element={<QuizOverviewPage />} />
+      <Route path="/quizzes" element={
+        <ProtectedRoute>
+          <QuizOverviewPage />
+        </ProtectedRoute>
+        } />
 
       {/* Quiz editing */}
-      <Route path="/editor/:id" element={<QuizEditPage />} />
+      <Route path="/editor/:id" element={
+        <ProtectedRoute>
+          <QuizEditPage />
+        </ProtectedRoute>
+      } />
 
       {/* Quiz playing */}
       <Route path="/play/:id" element={
-        <QuizPlayWrapper />
+        <ProtectedRoute>
+          <QuizPlayWrapper />
+        </ProtectedRoute>
       } />
 
       {/* Login Callback */}
