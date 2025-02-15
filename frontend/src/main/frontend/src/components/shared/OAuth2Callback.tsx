@@ -33,6 +33,7 @@ function OAuth2Callback() {
       } else if (params.has("logout")) {
         // Handle logout success
         dispatch(clearCurrentUser())
+        console.log("Logged out")
         toast({ description: "You are now logged out", variant: "success" })
       } else if (params.has("error")) {
         // Handle error returned by the backend during authentication

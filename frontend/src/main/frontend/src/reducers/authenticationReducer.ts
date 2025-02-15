@@ -17,6 +17,9 @@ export const fetchCurrentUser = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const user = await getCurrentUser()
+      if (!user) {
+        return rejectWithValue("You are not logged in")
+      }
       return user as User
     } catch (error) {
       return rejectWithValue(error)
@@ -30,12 +33,6 @@ const userSlice = createSlice({
   reducers: {
     setCurrentUser: (state: AuthState, action: PayloadAction<User>): void => {
       state.user = action.payload
-    },
-    setAuthUserLoadingStatus: (
-      state: AuthState,
-      action: PayloadAction<boolean>
-    ): void => {
-      state.authUserLoadedStatus = action.payload
     },
     clearCurrentUser: (state: AuthState): void => {
       state.user = null
@@ -62,7 +59,6 @@ const userSlice = createSlice({
 
 export const {
   setCurrentUser,
-  setAuthUserLoadingStatus,
   clearCurrentUser,
 } = userSlice.actions
 

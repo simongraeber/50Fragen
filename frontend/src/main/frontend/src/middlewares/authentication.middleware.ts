@@ -38,6 +38,7 @@ const authMiddleware: Middleware<any, RootState> =
       ) {
         // the current user is cleared
         disconnectSocket()
+        console.log("User disconnected from the socket")
       }
     }
 

@@ -1,4 +1,4 @@
-import { GET } from "@/lib/http"
+import { GET, POST } from "@/lib/http"
 import { User } from "@/types/User"
 
 export const getCurrentUser = async (): Promise<User | null> => {
@@ -6,5 +6,5 @@ export const getCurrentUser = async (): Promise<User | null> => {
 }
 
 export const logOut = async (): Promise<void> => {
-  return await GET<void>("/logout")
+  return await POST<void, void>("/logout", void { withCredentials: true })
 }

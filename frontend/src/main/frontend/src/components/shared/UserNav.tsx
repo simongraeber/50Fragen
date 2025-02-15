@@ -16,6 +16,8 @@ import { RootState } from "@/lib/store"
 import { Button } from "../ui/button"
 import { useNavigate } from "react-router-dom"
 import { useTheme } from "@/providers/hemeProvider.tsx"
+import { disconnectSocket } from "@/api/socket.ts"
+import { logOut } from "@/api/user.ts"
 
 
 function UserNav() {
@@ -88,7 +90,12 @@ function UserNav() {
           <DropdownMenuItem
             className="cursor-pointer"
             onClick={() => {
-              window.location.href = "/logout_now";
+              disconnectSocket();
+              logOut().then(
+                () => {
+                  navigate("/loginCallback?logout")
+                }
+              )
             }}
           >
             Log out

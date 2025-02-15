@@ -45,6 +45,7 @@ public class SecurityConfig {
         String redirectUri = String.format("%s?%s", redirectBaseUrl, flagQuery);
         exchange.getExchange().getResponse().setStatusCode(HttpStatus.FOUND);
         exchange.getExchange().getResponse().getHeaders().setLocation(URI.create(redirectUri));
+        System.out.println("Redirecting to: " + redirectUri);
         return exchange.getExchange().getResponse().setComplete();
     }
 }

@@ -21,7 +21,7 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
       <div className="flex flex-col items-center h-full justify-center pb-32">
         <TbLogin2 className="text-[10rem]" />
         <p className="font-light text-4xl pt-8 text-destructive">
-          You need to be logged in to access this page
+          Unauthorized
         </p>
 
         <p className="text-xl pt-2">Error 401</p>
