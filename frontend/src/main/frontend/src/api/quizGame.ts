@@ -175,7 +175,6 @@ export const showTextAnswers = (quizID: string): void => {
 
 export const onQuizState = (callback: (data: QuizState) => void): void => {
   onEvent("quizState", (data: QuizState) => {
-    console.log("onQuizState: ", data)
     callback(data)
   })
 }

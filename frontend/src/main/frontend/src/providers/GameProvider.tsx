@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useReducer, useRef } from "react";
-import { initializeSocket, onEvent, offEvent } from "@/api/socket.ts";
+import { onEvent, offEvent } from "@/api/socket.ts";
 import {
   buzz,
   switchedToActiveOrInactive,
@@ -59,9 +59,6 @@ export const GameProvider = ({ quizId, children }: GameProviderProps) => {
   }, [state]);
 
   useEffect(() => {
-    // Initialize the socket connection on mount.
-    initializeSocket();
-
     // Define the initialization function so we can use it both initially and on reconnection.
     const initializeGameState = async () => {
       const fetchedState = await connectToGame(quizId);

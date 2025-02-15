@@ -75,8 +75,12 @@ const ScoreRow: React.FC<ScoreRowProps> = ({ userScore, canEdit }) => {
     if (userScore.score !== prevScore) {
       const diff = userScore.score - prevScore;
       setDelta(diff);
-      setShowDelta(true);
       setPrevScore(userScore.score);
+      setShowDelta(false);
+      console.log(`Delta: ${diff}`);
+      requestAnimationFrame(() => {
+        setShowDelta(true);
+      });
     }
   }, [userScore.score, prevScore]);
 
@@ -96,15 +100,17 @@ const ScoreRow: React.FC<ScoreRowProps> = ({ userScore, canEdit }) => {
         <div style={{ position: "relative", display: "inline-block" }}>
           <span>{userScore.score}</span>
           {delta !== null && showDelta && (
+            console.log(`delta-${prevScore}-${delta}`),
             <span
+              key={`delta-${prevScore}-${userScore.score}`}
               onAnimationEnd={() => setShowDelta(false)}
               className={`delta ${delta > 0 ? "slide-up" : "slide-down"}`}
               style={{
                 position: "absolute",
-                left: "100%",
+                left: "-100%",
                 top: "50%",
                 transform: "translateY(-50%)",
-                marginLeft: "0.5rem",
+                marginRight: "0.5rem",
                 color: delta > 0 ? "green" : "red",
               }}
             >

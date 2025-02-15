@@ -64,7 +64,6 @@ io.on("connection", (socket) => {
   });
 
   socket.on("setGameActive", (quizID: string) => {
-    console.log(`Setting quiz ${quizID} to active`);
     if (!quizStates[quizID]) {
       return;
     }
@@ -124,7 +123,6 @@ io.on("connection", (socket) => {
   });
 
   socket.on("updateUserScores", async (data: { quizID: string; userID: string; score: number }[]) => {
-    console.log("update Points", data);
     for (const item of data) {
       console.log("update Points", item);
       updateUserScore(item);
@@ -133,7 +131,6 @@ io.on("connection", (socket) => {
   });
 
   socket.on("showQuestion", (data: { quizID: string; question: string }) => {
-    console.log("showQuestion", data);
     const { quizID, question } = data;
     if (!quizStates[quizID]) {
       return;

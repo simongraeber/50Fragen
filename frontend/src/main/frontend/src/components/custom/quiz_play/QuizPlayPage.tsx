@@ -10,14 +10,14 @@ import EstimationQuestionAnswers from "@/components/custom/quiz_play/EstimationQ
 import { RootState } from "@/lib/store.ts"
 import { useSelector } from "react-redux"
 import { hitBuzz, setGameActive, setGameInactive } from "@/api/quizGame.ts"
-import { GameProvider, useGame } from "@/providers/GameProvider.tsx"
+import { useGame } from "@/providers/GameProvider.tsx"
 import { Button } from "@/components/ui/button.tsx"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card.tsx"
 import { Quiz } from "@/types/Quiz.ts"
 import { getQuizOrNull } from "@/api/quizCalls.ts"
 import { Link } from "react-router-dom"
 
-function QuizPlayContent() {
+function QuizPlayPage() {
   const quizId = useQuizIdFromUrl()
   const [dialogOpen, setDialogOpen] = useState(false)
   const isOnline = useSelector((state: RootState) => state.onlineStatus.isOnline)
@@ -168,12 +168,4 @@ function QuizPlayContent() {
   )
 }
 
-export default function QuizPlayPage() {
-  const quizId = useQuizIdFromUrl()
-
-  return (
-    <GameProvider quizId={quizId}>
-      <QuizPlayContent />
-    </GameProvider>
-  )
-}
+export default QuizPlayPage

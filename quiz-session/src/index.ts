@@ -38,11 +38,13 @@ app.get("/quiz-session/quiz/:quizID", async (req: Request, res: Response) => {
     image: req.headers["x-user-image"] as string,
   }
   if (!quizStates[quizID]) {
+    console.log("Fetching quiz state")
     quizStates[quizID] = await getCurrentQuizState(quizID)
   }
 
   if (quizStates[quizID].ownerID != user.id &&
     !quizStates[quizID].participantsScores.find(s => s.user.id === user.id)) {
+    console.log("Adding user to participants")
     quizStates[quizID].participantsScores.push({
       user,
       score: 0
