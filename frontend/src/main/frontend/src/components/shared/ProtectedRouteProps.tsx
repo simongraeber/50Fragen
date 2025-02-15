@@ -4,6 +4,7 @@ import { RootState } from "@/lib/store";
 import { ReactNode } from "react"
 import { TbLogin2 } from "react-icons/tb";
 import DiscordLogInButton from "@/components/shared/DiscordLogInButton.tsx"
+import Page from "@/components/shared/Layout/Page.tsx"
 
 
 interface ProtectedRouteProps {
@@ -18,7 +19,8 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     sessionStorage.setItem("lastSavedPage", location.pathname);
 
     return (
-      <div className="flex flex-col items-center h-full justify-center pb-32">
+      <Page>
+        <div className="flex flex-col items-center justify-center pb-32">
         <TbLogin2 className="text-[10rem]" />
         <p className="font-light text-4xl pt-8 text-destructive">
           Unauthorized
@@ -28,6 +30,7 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
 
         <DiscordLogInButton />
       </div>
+      </Page>
     );
   }
 
