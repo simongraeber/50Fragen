@@ -45,7 +45,7 @@ const RoutesComponent = () => {
 
       {/* Legal Stuff */}
       <Route path="/imprint" element={<ImprintPage />} />
-      <Route path="/preivacy" element={<PrivacyPage />} />
+      <Route path="/privacy" element={<PrivacyPage />} />
       <Route path="/terms" element={<TermsOfServicePage />} />
 
       {/* Other Routes */}

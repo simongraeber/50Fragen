@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import useQuizIdFromUrl from "@/hooks/useQuizIdFromUrl"
 import Round3DButton from "@/components/custom/quiz_play/BuzzerButton.tsx"
-import LeaderBord from "@/components/custom/quiz_play/LeaderBord.tsx"
+import LeaderBord from "@/components/custom/quiz_play/LeaderBord/LeaderBord.tsx"
 import TextSubmission from "@/components/custom/quiz_play/TextSubmission.tsx"
 import ButtonClickedDialog from "@/components/custom/quiz_play/ButtonClickedDialog.tsx"
 import GameMasterControls from "@/components/custom/quiz_play/GameMasterControls.tsx"

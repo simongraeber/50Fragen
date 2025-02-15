@@ -17,7 +17,7 @@ import { Button } from "@/components/ui/button.tsx";
 import { showTextAnswers, updateUserScores } from "@/api/quizGame.ts"
 import { useGame } from "@/providers/GameProvider.tsx";
 import { useState, useEffect } from "react";
-import { UserScore } from "@/components/custom/quiz_play/LeaderBord.tsx";
+import { Score } from "@/types/gamePlay/Score.ts"
 import { TextAnswer } from "@/types/gamePlay/TextAnswer.ts"
 
 
@@ -29,7 +29,7 @@ interface EstimationQuestionAnswersProps {
 
 function EstimationQuestionAnswers({ answers, canEdit, quizId }: EstimationQuestionAnswersProps) {
   const { state } = useGame();
-  const [scores, setScores] = useState<UserScore[]>(state.quizState?.participantsScores ?? []);
+  const [scores, setScores] = useState<Score[]>(state.quizState?.participantsScores ?? []);
   const [correctUsers, setCorrectUsers] = useState<Set<string>>(new Set());
 
   useEffect(() => {

@@ -1,4 +1,6 @@
-import { Card, CardContent, CardHeader } from "@/components/ui/card.tsx"
+import { Card, CardContent, CardHeader, CardFooter } from "@/components/ui/card.tsx"
+import { Link } from "react-router-dom"
+import { Button } from "@/components/ui/button.tsx"
 
 function PrivacyPage() {
   return (
@@ -11,6 +13,11 @@ function PrivacyPage() {
           Diese Seite befindet sich noch im Aufbau.
           Und ist ausschließlich für Testzwecke gedacht.
         </CardContent>
+        <CardFooter>
+        <Link to="/">
+          <Button variant="secondary" className="mt-8">Go back to Home Page</Button>
+        </Link>
+      </CardFooter>
       </Card>
     </div>
   )

@@ -17,7 +17,7 @@ import { setGameActive, updateUserScore } from "@/api/quizGame"
 import useQuizIdFromUrl from "@/hooks/useQuizIdFromUrl"
 import { useGame } from "@/providers/GameProvider.tsx"
 import { useState } from "react"
-import { UserScore } from "@/components/custom/quiz_play/LeaderBord.tsx"
+import { Score } from "@/types/gamePlay/Score.ts"
 import { useEffect } from "react";
 
 
@@ -31,7 +31,7 @@ export function ButtonClickedDialog({ user, canEdit, open }: ButtonClickedDialog
   const quizId = useQuizIdFromUrl()
 
   const { state } = useGame();
-  const [scores, setScores] = useState<UserScore[]>(state.quizState?.participantsScores ?? []);
+  const [scores, setScores] = useState<Score[]>(state.quizState?.participantsScores ?? []);
 
   useEffect(() => {
     setScores(state.quizState?.participantsScores ?? []);

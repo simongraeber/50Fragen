@@ -1,23 +1,18 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { User } from "@/types/User.ts";
 import { useGame } from "@/providers/GameProvider.tsx";
-import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table.tsx";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar.tsx";
 import { Card, CardContent } from "@/components/ui/card.tsx";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover.tsx";
+import { Button } from "@/components/ui/button.tsx";
+import { Input } from "@/components/ui/input.tsx";
+import { Label } from "@/components/ui/label.tsx";
 import { updateUserScore } from "@/api/quizGame.ts"
 import "@/styles/leaderBord.css";
-
-export interface UserScore {
-  user: User;
-  score: number;
-}
+import { Score } from "@/types/gamePlay/Score.ts"
 
 interface ScoreContextType {
-  scores: UserScore[];
+  scores: Score[];
   updateScore: (userId: string, newScore: number) => void;
 }
 
@@ -34,7 +29,7 @@ export const useScore = () => {
 const ScoreProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { state } = useGame();
   // Initialize the scores array from the quiz state.
-  const [scores, setScores] = useState<UserScore[]>(state.quizState?.participantsScores ?? []);
+  const [scores, setScores] = useState<Score[]>(state.quizState?.participantsScores ?? []);
 
   useEffect(() => {
     setScores(state.quizState?.participantsScores ?? []);
@@ -62,7 +57,7 @@ const ScoreProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 // ScoreRow renders a single row in the leaderboard.
 // The score number is wrapped in a relative container so the animated delta can be positioned absolutely.
 interface ScoreRowProps {
-  userScore: UserScore;
+  userScore: Score;
   canEdit: boolean;
 }
 
@@ -128,7 +123,7 @@ const ScoreRow: React.FC<ScoreRowProps> = ({ userScore, canEdit }) => {
   );
 };
 
-const EditScorePopover: React.FC<{ userScore: UserScore }> = ({ userScore }) => {
+const EditScorePopover: React.FC<{ userScore: Score }> = ({ userScore }) => {
   const [inputValue, setInputValue] = useState(String(userScore.score));
   const [isOpen, setIsOpen] = useState(false);
   const { updateScore } = useScore();

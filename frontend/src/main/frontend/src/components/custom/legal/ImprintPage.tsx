@@ -1,4 +1,6 @@
-import { Card, CardContent, CardHeader } from "@/components/ui/card.tsx"
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card.tsx"
+import { Button } from "@/components/ui/button.tsx"
+import { Link } from "react-router-dom"
 
 
 function ImprintPage() {
@@ -27,6 +29,11 @@ function ImprintPage() {
             Email: 80-read-crewel@icloud.com
           </p>
         </CardContent>
+        <CardFooter>
+          <Link to="/">
+          <Button variant="secondary" className="mt-8">Go back to Home Page</Button>
+          </Link>
+        </CardFooter>
       </Card>
     </div>
   )
