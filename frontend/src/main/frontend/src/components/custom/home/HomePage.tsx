@@ -62,7 +62,7 @@ function HomePage() {
         variants={scrollAnimation}
         initial="hidden"
         whileInView="visible"
-        transition={{ delay: 0.2, duration: 0.8 }}
+        transition={{ delay: 0.3, duration: 0.8 }}
         viewport={{ once: true }}
       >
         {user && user.id ? (
@@ -135,7 +135,7 @@ function HomePage() {
         variants={scrollAnimation}
         initial="hidden"
         whileInView="visible"
-        transition={{ delay: 0.6, duration: 0.8 }}
+        transition={{ delay: 0.4, duration: 0.8 }}
         viewport={{ once: true }}
       >
         <Card className="p-8 bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-xl rounded-xl">
