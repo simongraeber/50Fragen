@@ -6,7 +6,7 @@ function NavBar() {
   const { theme } = useTheme()
 
   return (
-    <div className="sticky top-0 z-50 flex items-center justify-between p-4 bg-background shadow-sm dark:border-b-2 dark:border-card'">
+    <div className="sticky top-0 z-50 flex items-center justify-between p-4 bg-background shadow dark:border-b-2 dark:border-card'">
       <div className="flex items-center gap-2">
         <Link to="/">
           <img
