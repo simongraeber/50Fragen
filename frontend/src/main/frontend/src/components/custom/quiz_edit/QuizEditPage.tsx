@@ -15,6 +15,7 @@ import LoadingButton from "@/components/ui/LoadingButton.tsx"
 import { toast } from "@/hooks/use-toast.ts"
 import { Button } from "@/components/ui/button.tsx"
 import { useNavigate } from "react-router-dom";
+import Page from "@/components/shared/Layout/Page.tsx"
 
 function QuizEditPage() {
   const quizId = useQuizIdFromUrl()
@@ -117,7 +118,7 @@ function QuizEditPage() {
   }
 
   return (
-    <div className="h-full pb-32 p-4">
+    <Page>
       <div className="flex justify-between mb-4">
         <Button
         onClick={() => navigate(`/quizzes`)}
@@ -181,7 +182,7 @@ function QuizEditPage() {
           </LoadingButton>
         </CardFooter>
       </Card>
-    </div>
+    </Page>
   )
 }
 

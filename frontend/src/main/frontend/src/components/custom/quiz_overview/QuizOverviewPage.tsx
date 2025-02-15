@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react"
 import { Quiz } from "@/types/Quiz.ts"
 import QuizOverviewTable from "./QuizOverviewTable.tsx"
-import { Card, CardContent, CardHeader } from "@/components/ui/card.tsx"
+import { Card, CardContent } from "@/components/ui/card.tsx"
 import { getAllQuizzes } from "@/api/quizCalls.ts"
+import Page from "@/components/shared/Layout/Page.tsx"
 
 function QuizOverviewPage() {
   const [quizzes, setQuizzes] = useState<Quiz[] | null>(null)
@@ -18,11 +19,13 @@ function QuizOverviewPage() {
   }, [])
 
   return (
-    <div className="flex-col h-full justify-center pb-32">
+    <Page>
+      <h1 className="w-full text-center text-4xl md:text-5xl font-extrabold mb-2
+                     bg-gradient-to-r from-indigo-500 via-purple-600 to-pink-500
+                     bg-clip-text text-transparent">
+        Your Quizzes
+      </h1>
       <Card className="m-4">
-        <CardHeader>
-          <h1 className="mb-4 text-xl">Quiz Overview</h1>
-        </CardHeader>
         <CardContent>
           {quizzes ?
             <QuizOverviewTable data={quizzes} />
@@ -30,7 +33,7 @@ function QuizOverviewPage() {
           }
         </CardContent>
       </Card>
-    </div>
+    </Page>
   )
 }
 
