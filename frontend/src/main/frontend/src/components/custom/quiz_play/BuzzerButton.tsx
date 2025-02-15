@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 interface Round3DButtonProps {
   label?: string;
@@ -12,7 +12,8 @@ const Round3DButton: React.FC<Round3DButtonProps> = ({
                                                        onClick,
                                                      }) => {
   const [isHovered, setIsHovered] = useState(false);
-  const [isActive, setIsActive] = useState(true);
+  const [isActive, setIsActive] = useState(false);
+  const [isReady, setIsReady] = useState(false); // New state to track readiness
 
   const size = 160;
 
@@ -31,41 +32,47 @@ const Round3DButton: React.FC<Round3DButtonProps> = ({
     borderRadius: "50%",
   };
 
+  useEffect(() => {
+    // Ensure the button is ready after the first render
+    const timeout = setTimeout(() => setIsReady(true), 0);
+    return () => clearTimeout(timeout);
+  }, []);
+
   const handleMouseEnter = () => {
-    if (!isActiv) return;
+    if (!isActiv || !isReady) return;
     setIsHovered(true);
   };
 
   const handleMouseLeave = () => {
-    if (!isActiv) return;
+    if (!isActiv || !isReady) return;
     setIsHovered(false);
     setIsActive(false);
   };
 
   const handleMouseDown = () => {
-    if (!isActiv) return;
+    if (!isActiv || !isReady) return;
     setIsActive(true);
   };
 
   const handleMouseUp = () => {
-    if (!isActiv) return;
+    if (!isActiv || !isReady) return;
     setIsActive(false);
   };
 
   const handleTouchStart = () => {
-    if (!isActiv) return;
+    if (!isActiv || !isReady) return;
     setIsHovered(true);
     setIsActive(true);
   };
 
   const handleTouchEnd = () => {
-    if (!isActiv) return;
+    if (!isActiv || !isReady) return;
     setIsHovered(false);
     setIsActive(false);
   };
 
   const handleTouchCancel = () => {
-    if (!isActiv) return;
+    if (!isActiv || !isReady) return;
     setIsHovered(false);
     setIsActive(false);
   };
@@ -149,7 +156,7 @@ const Round3DButton: React.FC<Round3DButtonProps> = ({
   };
 
   const handleClick = () => {
-    if (!isActiv) return;
+    if (!isActiv || !isReady) return;
     onClick();
   };
 

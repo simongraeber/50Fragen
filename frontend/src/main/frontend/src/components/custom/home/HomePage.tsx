@@ -8,6 +8,7 @@ import { useSelector } from "react-redux"
 import { RootState } from "@/lib/store.ts"
 import DiscordLogInButton from "@/components/shared/DiscordLogInButton.tsx"
 import { scrollAnimation } from "@/components/shared/Layout/scrollAnimation.ts"
+import HeadLine from "@/components/shared/Layout/HeadLine.tsx"
 
 function HomePage() {
   const navigate = useNavigate()
@@ -48,7 +49,8 @@ function HomePage() {
           connects friends both online and in person.
         </p>
         <p className="text-lg max-w-2xl mx-auto">
-          Create a Quiz, with buzzer and estimation rounds. Then, invite your friends you will be the host and they will be the players.
+          Create a Quiz, with buzzer and estimation rounds. Then, invite your friends you will be the host and they will
+          be the players.
         </p>
       </motion.section>
 
@@ -96,8 +98,10 @@ function HomePage() {
         viewport={{ once: true }}
       >
         <Card className="p-6 shadow-lg hover:shadow-2xl transition-shadow duration-300">
-          <CardTitle className="text-2xl font-bold text-gray-800 mb-2 dark:text-gray-200">
-            1 Create a Quiz
+          <CardTitle>
+            <HeadLine className="!text-xl2 !text-left">
+              1 Create a Quiz
+            </HeadLine>
           </CardTitle>
           <CardContent className="text-gray-600 dark:text-gray-400">
             Build unique quiz games with personalized questions.
@@ -106,8 +110,10 @@ function HomePage() {
           </CardContent>
         </Card>
         <Card className="p-6 shadow-lg hover:shadow-2xl transition-shadow duration-300">
-          <CardTitle className="text-2xl font-bold text-gray-800 mb-2 dark:text-gray-200">
-            2 Play with Friends
+          <CardTitle>
+            <HeadLine className="!text-xl2 !text-left">
+              2 Play with Friends
+            </HeadLine>
           </CardTitle>
           <CardContent className="text-gray-600 dark:text-gray-400">
             Join your friends on Discord or get together in person—the game.
@@ -115,8 +121,10 @@ function HomePage() {
           </CardContent>
         </Card>
         <Card className="p-6 shadow-lg hover:shadow-2xl transition-shadow duration-300">
-          <CardTitle className="text-2xl font-bold text-gray-800 mb-2 dark:text-gray-200">
-            3 Real-Time Buzzing
+          <CardTitle>
+            <HeadLine className="!text-xl2 !text-left">
+              3 Real-Time Buzzing
+            </HeadLine>
           </CardTitle>
           <CardContent className="text-gray-600 dark:text-gray-400">
             Experience real-time feedback and excitement as players buzz in to answer or type their estimations.
