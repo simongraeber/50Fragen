@@ -36,6 +36,7 @@ function OAuth2Callback() {
         console.log("Logged out")
         toast({ description: "You are now logged out", variant: "success" })
       } else if (params.has("error")) {
+        console.error("Authentication error occurred")
         // Handle error returned by the backend during authentication
         dispatch(clearCurrentUser())
         toast({ description: "Authentication error occurred", variant: "destructive" })

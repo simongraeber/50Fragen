@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import useQuizIdFromUrl from "@/hooks/useQuizIdFromUrl"
 import Round3DButton from "@/components/custom/quiz_play/BuzzerButton.tsx"
-import LeaderBord from "@/components/custom/quiz_play/LeaderBord/LeaderBord.tsx"
+import LeaderBordWithScoreProvider from "@/components/custom/quiz_play/LeaderBord/LeaderBordWithScoreProvider"
 import TextSubmission from "@/components/custom/quiz_play/TextSubmission.tsx"
 import ButtonClickedDialog from "@/components/custom/quiz_play/ButtonClickedDialog.tsx"
 import GameMasterControls from "@/components/custom/quiz_play/GameMasterControls.tsx"
@@ -84,7 +84,7 @@ function QuizPlayPage() {
         <>
           <section className="mb-4 h-24">
             {state.quizState?.currentQuestion && (
-              <Card className="h-24">
+              <Card className="h-24 mr-4 ml-4">
                 <CardHeader>
                   <CardTitle>Question</CardTitle>
                 </CardHeader>
@@ -142,7 +142,7 @@ function QuizPlayPage() {
             {/* Right Aside: Leaderboard */}
             <aside className="flex-1 min-w-0 lg:basis-1/4 flex flex-col gap-4">
               <div className="p-4">
-                <LeaderBord canEdit={!!quiz} />
+                <LeaderBordWithScoreProvider canEdit={!!quiz} />
               </div>
             </aside>
           </main>
