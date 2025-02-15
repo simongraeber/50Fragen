@@ -1,11 +1,12 @@
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card.tsx"
 import { Button } from "@/components/ui/button.tsx"
 import { Link } from "react-router-dom"
+import Page from "@/components/shared/Layout/Page.tsx"
 
 
 function ImprintPage() {
   return (
-    <div className="flex flex-col items-center h-full justify-center pb-32">
+    <Page>
       <Card className="max-w-2xl mx-auto">
         <CardHeader>
           <h1 className="text-xl">Imprint</h1>
@@ -35,7 +36,7 @@ function ImprintPage() {
           </Link>
         </CardFooter>
       </Card>
-    </div>
+    </Page>
   )
 }
 

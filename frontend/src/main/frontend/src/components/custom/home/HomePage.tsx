@@ -7,11 +7,7 @@ import { useToast } from "@/hooks/use-toast"
 import { useSelector } from "react-redux"
 import { RootState } from "@/lib/store.ts"
 import DiscordLogInButton from "@/components/shared/DiscordLogInButton.tsx"
-
-const scrollAnimation = {
-  hidden: { opacity: 0, y: 50 },
-  visible: { opacity: 1, y: 0 },
-}
+import { scrollAnimation } from "@/components/shared/Layout/scrollAnimation.ts"
 
 function HomePage() {
   const navigate = useNavigate()
@@ -135,7 +131,7 @@ function HomePage() {
         variants={scrollAnimation}
         initial="hidden"
         whileInView="visible"
-        transition={{ delay: 0.4, duration: 0.8 }}
+        transition={{ duration: 0.8 }}
         viewport={{ once: true }}
       >
         <Card className="p-8 bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-xl rounded-xl">

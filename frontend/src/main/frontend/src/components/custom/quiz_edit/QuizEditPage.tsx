@@ -14,8 +14,12 @@ import QuestionEdit from "@/components/custom/quiz_edit/QuestionEdit.tsx"
 import LoadingButton from "@/components/ui/LoadingButton.tsx"
 import { toast } from "@/hooks/use-toast.ts"
 import { Button } from "@/components/ui/button.tsx"
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom"
 import Page from "@/components/shared/Layout/Page.tsx"
+import HeadLine from "@/components/shared/Layout/HeadLine.tsx"
+import { scrollAnimation } from "@/components/shared/Layout/scrollAnimation.ts"
+import { motion } from "framer-motion"
+import { FaPlay } from "react-icons/fa"
 
 function QuizEditPage() {
   const quizId = useQuizIdFromUrl()
@@ -25,7 +29,7 @@ function QuizEditPage() {
   const [questions, setQuestions] = useState<QuizQuestion[]>([])
   const [error, setError] = useState<Error | null>(null)
 
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   useEffect(() => {
     getQuiz(quizId)
@@ -65,13 +69,14 @@ function QuizEditPage() {
 
   const updateQuizName = async (name: string) => {
     if (!quiz) return
-    const updatedQuiz = { ...quiz, name , questions }
+    const updatedQuiz = { ...quiz, name, questions }
     await updateQuiz(updatedQuiz)
     toast({
       variant: "success",
       title: "Quiz name updated",
       description: `Quiz name updated to: ${name}`,
     })
+    setQuiz(updatedQuiz)
   }
 
   const updateQuestion = (updatedQuestion: QuizQuestion) => {
@@ -119,69 +124,84 @@ function QuizEditPage() {
 
   return (
     <Page>
-      <div className="flex justify-between mb-4">
+      <div className="flex justify-between">
         <Button
-        onClick={() => navigate(`/quizzes`)}
+          variant="outline"
+          onClick={() => navigate(`/quizzes`)}
         >
           Back to Quiz List
         </Button>
         <Button
-        onClick={() => navigate(`/play/${quizId}`)}
+          variant="outline"
+          onClick={() => navigate(`/play/${quizId}`)}
         >
-          Start Quiz
+          <FaPlay className="mr-2" />
+          Start
         </Button>
       </div>
-      <Card>
-        <CardTitle className="p-4">
-          Quiz Name
-          <Input
-            placeholder="Enter quiz name"
-            defaultValue={quiz?.name}
-            className="mt-2"
-            onBlur={(e) => updateQuizName(e.target.value)}
-          />
-        </CardTitle>
-        <Separator />
-        <DragDropContext onDragEnd={onDragEnd}>
-          <Droppable droppableId="questions">
-            {(provided) => (
-              <div ref={provided.innerRef} {...provided.droppableProps}>
-                {questions.map((question, index) => (
-                  <Draggable key={question.id} draggableId={`${question.id}`} index={index}>
-                    {(provided) => (
-                      <div
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        className="flex bg-card center justify-between p-1 mt-2 ml-2 mr-2 border rounded-lg"
-                      >
+      <HeadLine>
+        Edit {quiz?.name}
+      </HeadLine>
+      <motion.section
+        className="w-full max-w-4xl mb-16 mx-auto mt-2"
+        variants={scrollAnimation}
+        initial="hidden"
+        whileInView="visible"
+        transition={{ duration: 0.8 }}
+        viewport={{ once: true }}
+      >
+        <Card>
+          <CardTitle className="p-4">
+            Quiz Name
+            <Input
+              placeholder="Enter quiz name"
+              defaultValue={quiz?.name}
+              className="mt-2"
+              onBlur={(e) => updateQuizName(e.target.value)}
+            />
+          </CardTitle>
+          <Separator />
+          <DragDropContext onDragEnd={onDragEnd}>
+            <Droppable droppableId="questions">
+              {(provided) => (
+                <div ref={provided.innerRef} {...provided.droppableProps}>
+                  {questions.map((question, index) => (
+                    <Draggable key={question.id} draggableId={`${question.id}`} index={index}>
+                      {(provided) => (
                         <div
-                          {...provided.dragHandleProps}
-                          className="cursor-pointer text-lg mt-1 ml-2"
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          className="flex bg-card center justify-between p-1 mt-2 ml-2 mr-2 border rounded-lg"
                         >
-                          &#x2630;
+                          <div
+                            {...provided.dragHandleProps}
+                            className="cursor-pointer text-lg mt-1 ml-2"
+                          >
+                            &#x2630;
+                          </div>
+                          <QuestionEdit
+                            updateQuestion={updateQuestion}
+                            removeQuestion={removeQuestion}
+                            question={question} quizId={quiz?.id || ""} />
                         </div>
-                        <QuestionEdit
-                          updateQuestion={updateQuestion}
-                          removeQuestion={removeQuestion}
-                          question={question} quizId={quiz?.id || ""} />
-                      </div>
-                    )}
-                  </Draggable>
-                ))}
-                {provided.placeholder}
-              </div>
-            )}
-          </Droppable>
-        </DragDropContext>
-        <CardFooter className="flex justify-end pt-2">
-          <LoadingButton
-            onClick={addQuestion}
-            loading={addQuestionLoading}
-          >
-            Add Question
-          </LoadingButton>
-        </CardFooter>
-      </Card>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
+          <CardFooter className="flex justify-end pt-2">
+            <LoadingButton
+              onClick={addQuestion}
+              loading={addQuestionLoading}
+            >
+              Add Question
+            </LoadingButton>
+          </CardFooter>
+        </Card>
+      </motion.section>
     </Page>
   )
 }

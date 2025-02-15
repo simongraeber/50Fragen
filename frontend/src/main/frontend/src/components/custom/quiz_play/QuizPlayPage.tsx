@@ -17,6 +17,7 @@ import { Quiz } from "@/types/Quiz.ts"
 import { getQuizOrNull } from "@/api/quizCalls.ts"
 import { Link } from "react-router-dom"
 import Page from "@/components/shared/Layout/Page.tsx"
+import HeadLine from "@/components/shared/Layout/HeadLine.tsx"
 
 function QuizPlayPage() {
   const quizId = useQuizIdFromUrl()
@@ -73,11 +74,9 @@ function QuizPlayPage() {
         </div>
       </header>
 
-      <h1 className="w-full text-center text-4xl md:text-5xl font-extrabold mb-2
-                     bg-gradient-to-r from-indigo-500 via-purple-600 to-pink-500
-                     bg-clip-text text-transparent">
+      <HeadLine>
         {state.quizState ? state.quizState.name : "Loading..."}
-      </h1>
+      </HeadLine>
 
       {state.quizState && (
         <>

@@ -4,6 +4,9 @@ import QuizOverviewTable from "./QuizOverviewTable.tsx"
 import { Card, CardContent } from "@/components/ui/card.tsx"
 import { getAllQuizzes } from "@/api/quizCalls.ts"
 import Page from "@/components/shared/Layout/Page.tsx"
+import HeadLine from "@/components/shared/Layout/HeadLine.tsx"
+import { motion } from "framer-motion"
+import { scrollAnimation } from "@/components/shared/Layout/scrollAnimation.ts"
 
 function QuizOverviewPage() {
   const [quizzes, setQuizzes] = useState<Quiz[] | null>(null)
@@ -20,19 +23,26 @@ function QuizOverviewPage() {
 
   return (
     <Page>
-      <h1 className="w-full text-center text-4xl md:text-5xl font-extrabold mb-2
-                     bg-gradient-to-r from-indigo-500 via-purple-600 to-pink-500
-                     bg-clip-text text-transparent">
+      <HeadLine>
         Your Quizzes
-      </h1>
-      <Card className="m-4">
-        <CardContent>
-          {quizzes ?
-            <QuizOverviewTable data={quizzes} />
-            : <QuizOverviewTable data={[]} loading={true} />
-          }
-        </CardContent>
-      </Card>
+      </HeadLine>
+      <motion.section
+        className="w-full max-w-4xl mb-16 mx-auto mt-2"
+        variants={scrollAnimation}
+        initial="hidden"
+        whileInView="visible"
+        transition={{ delay: 0.0, duration: 0.8 }}
+        viewport={{ once: true }}
+      >
+        <Card className="m-4">
+          <CardContent>
+            {quizzes ?
+              <QuizOverviewTable data={quizzes} />
+              : <QuizOverviewTable data={[]} loading={true} />
+            }
+          </CardContent>
+        </Card>
+      </motion.section>
     </Page>
   )
 }
