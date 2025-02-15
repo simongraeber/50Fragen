@@ -15,11 +15,15 @@ import DiscordLogInButton from "@/components/shared/DiscordLogInButton.tsx"
 import { RootState } from "@/lib/store"
 import { Button } from "../ui/button"
 import { useNavigate } from "react-router-dom"
+import { useTheme } from "@/providers/hemeProvider.tsx"
+
 
 function UserNav() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const user = useSelector((state: RootState) => state.authentication.user)
+
+  const { setTheme } = useTheme()
 
   useEffect(() => {
     dispatch(fetchCurrentUser())
@@ -32,8 +36,8 @@ function UserNav() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button className="relative h-12 w-12 p-0 m-0 rounded-full">
-          <Avatar className="w-12 h-12">
+        <Button className="relative h-10 w-10 p-0 m-0 rounded-full">
+          <Avatar className="w-10 h-10">
             <AvatarImage
               className="object-cover w-full h-full rounded-full"
               src={user.image}
@@ -58,6 +62,25 @@ function UserNav() {
             }}
           >
             Quizzes
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onClick={() => {
+              setTheme("dark")
+            }}
+          >
+            Dark mode
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onClick={() => {
+              setTheme("light")
+            }}
+          >
+            Light mode
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />

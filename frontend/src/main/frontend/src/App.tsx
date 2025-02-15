@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster"
 import { fetchCurrentUser } from "@/reducers/authenticationReducer"
 import { useEffect } from "react"
 import { useDispatch } from "react-redux"
+import { ThemeProvider } from "./providers/hemeProvider.tsx"
 
 function App() {
   const dispatch = useDispatch()
@@ -14,17 +15,19 @@ function App() {
   }, [dispatch])
 
   return (
-    <div className="bg-white h-screen w-full">
-      <Router>
-        <div className="flex flex-col h-full">
-          <NavBar />
-          <div className="flex-grow overflow-auto">
-            <RoutesComponent />
+    <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+      <div className="h-screen w-full bg-background">
+        <Router>
+          <div className="flex flex-col h-full">
+            <NavBar />
+            <div className="flex-grow overflow-auto">
+              <RoutesComponent />
+            </div>
           </div>
-        </div>
-      </Router>
-      <Toaster />
-    </div>
+        </Router>
+        <Toaster />
+      </div>
+    </ThemeProvider>
   )
 }
 
