@@ -154,7 +154,7 @@ io.on("connection", (socket) => {
     quizStates[quizID].currentQuestionType = questionType;
     quizStates[quizID].currentQuestion = "";
     quizStates[quizID].textAnswersForOwnerOnly = [];
-    quizStates[quizID].participantsScores = [];
+    quizStates[quizID].textAnswers = [];
     io.to(quizID).emit("newQuestion", { quizID, questionType });
   });
 
