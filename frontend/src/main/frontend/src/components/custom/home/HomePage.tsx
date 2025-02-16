@@ -165,7 +165,7 @@ function HomePage() {
       </motion.section>
 
       {/* Footer Spacer */}
-      <div className="h-16">
+      <div className="h-16 z-0">
         <Link to={"/imprint"} className="text-gray-500 dark:text-gray-400 p-4 pr-8">Imprint</Link>
         <Link to={"/privacy"} className="text-gray-500 dark:text-gray-400 p-4">Privacy</Link>
         <Link to={"/terms"} className="text-gray-500 dark:text-gray-400 p-4 pl-8">Terms</Link>
