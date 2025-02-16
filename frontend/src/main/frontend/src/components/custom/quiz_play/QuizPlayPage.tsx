@@ -69,7 +69,7 @@ function QuizPlayPage() {
     <Page>
       <header className="w-full mb-2">
         <div className="flex justify-between items-center">
-          <Badge className={isOnline ? "bg-green-500" : "bg-red-500"}>
+          <Badge className={`${isOnline ? "bg-green-500 hover:bg-green-500" : "bg-red-500 hover:bg-red-500"}`}>
             {isOnline ? "Online" : "Offline"}
           </Badge>
           {quiz && (
@@ -99,9 +99,9 @@ function QuizPlayPage() {
             )}
           </section>
 
-          <main className="w-full flex flex-col lg:flex-row gap-2 flex-1">
+          <main className="w-full flex flex-col lg:flex-row gap-1 flex-1">
             {/* Left Aside: Text answers */}
-            <aside className="flex-1 lg:mx-2 min-w-0 lg:basis-1/4 flex flex-col gap-2">
+            <aside className="flex-1 lg:mx-2 min-w-0 lg:basis-1/4 flex flex-col">
               {quizState?.textAnswers && quizState.textAnswers.length > 0 && (
                 <div className="pt-2 pb-2">
                   <EstimationQuestionAnswers
