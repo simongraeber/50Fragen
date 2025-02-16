@@ -7,9 +7,11 @@ import Page from "@/components/shared/Layout/Page.tsx"
 import HeadLine from "@/components/shared/Layout/HeadLine.tsx"
 import { motion } from "framer-motion"
 import { scrollAnimation } from "@/components/shared/Layout/scrollAnimation.ts"
+import ErrorPage from "@/components/shared/ErrorPage.tsx"
 
 function QuizOverviewPage() {
   const [quizzes, setQuizzes] = useState<Quiz[] | null>(null)
+  const [error, setError] = useState<Error | null>(null)
 
   useEffect(() => {
     getAllQuizzes()
@@ -17,9 +19,13 @@ function QuizOverviewPage() {
       .then(() => console.log("Quizzes fetched" + quizzes))
       .catch((err) => {
         console.error(err)
-        setQuizzes([])
+        setError(err)
       })
   }, [])
+
+  if (error) {
+    return <ErrorPage error={error.message} />
+  }
 
   return (
     <Page>

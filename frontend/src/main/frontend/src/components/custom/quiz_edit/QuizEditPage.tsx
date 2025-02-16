@@ -20,6 +20,8 @@ import HeadLine from "@/components/shared/Layout/HeadLine.tsx"
 import { scrollAnimation } from "@/components/shared/Layout/scrollAnimation.ts"
 import { motion } from "framer-motion"
 import { FaPlay } from "react-icons/fa"
+import ErrorPage from "@/components/shared/ErrorPage.tsx"
+import LoadingPage from "@/components/shared/LoadingPage.tsx"
 
 function QuizEditPage() {
   const quizId = useQuizIdFromUrl()
@@ -115,16 +117,16 @@ function QuizEditPage() {
   }
 
   if (error) {
-    return <div>Error: {error.message}</div>
+    return <ErrorPage error={error.message} />
   }
 
   if (loading) {
-    return <div>Loading...</div>
+    return <LoadingPage />
   }
 
   return (
     <Page>
-      <div className="flex justify-between">
+      <div className="flex justify-between w-full p-2">
         <Button
           variant="outline"
           onClick={() => navigate(`/quizzes`)}

@@ -96,7 +96,9 @@ function HomePage() {
       >
         <Card className="p-6 shadow-lg hover:shadow-2xl transition-shadow duration-300">
           <CardTitle>
-            <HeadLine className="!text-xl2 !text-left">
+            <HeadLine
+              disableDefaultSize={true}
+              className="text-3xl lg:text-2xl !text-left">
               1 Create a Quiz
             </HeadLine>
           </CardTitle>
@@ -108,7 +110,9 @@ function HomePage() {
         </Card>
         <Card className="p-6 shadow-lg hover:shadow-2xl transition-shadow duration-300">
           <CardTitle>
-            <HeadLine className="!text-xl2 !text-left">
+            <HeadLine
+              disableDefaultSize={true}
+              className="text-3xl lg:text-2xl !text-left">
               2 Play with Friends
             </HeadLine>
           </CardTitle>
@@ -119,7 +123,9 @@ function HomePage() {
         </Card>
         <Card className="p-6 shadow-lg hover:shadow-2xl transition-shadow duration-300">
           <CardTitle>
-            <HeadLine className="!text-xl2 !text-left">
+            <HeadLine
+              disableDefaultSize={true}
+              className="text-3xl lg:text-2xl !text-left">
               3 Real-Time Buzzing
             </HeadLine>
           </CardTitle>
