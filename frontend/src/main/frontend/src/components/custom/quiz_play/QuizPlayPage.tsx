@@ -96,7 +96,7 @@ function QuizPlayPage() {
 
       {state.quizState && (
         <>
-          <section className="w-full my-2 h-24">
+          <section className="w-full my-2 h-24 px-1">
             {state.quizState?.currentQuestion && (
               <Card className="h-24">
                 <CardHeader>
@@ -144,10 +144,12 @@ function QuizPlayPage() {
                       <TextSubmission active={quizState?.active || false} quizId={quizId} />
                     </div>
                   ) : (
-                    <Round3DButton
+                    <div className="py-6">
+                      <Round3DButton
                       isActiv={quizState?.active || false}
                       onClick={() => hitBuzz(quizId)}
                     />
+                    </div>
                   )}
                 </div>
               )}
