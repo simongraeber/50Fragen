@@ -1,16 +1,17 @@
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card.tsx"
+import { Card, CardContent, CardFooter } from "@/components/ui/card.tsx"
 import { Button } from "@/components/ui/button.tsx"
 import { Link } from "react-router-dom"
 import Page from "@/components/shared/Layout/Page.tsx"
+import HeadLine from "@/components/shared/Layout/HeadLine.tsx"
 
 
 function ImprintPage() {
   return (
     <Page>
-      <Card className="max-w-2xl mx-auto">
-        <CardHeader>
-          <h1 className="text-xl">Imprint</h1>
-        </CardHeader>
+      <HeadLine>
+        Imprint
+      </HeadLine>
+      <Card className="max-w-2xl mt-3 pt-4 mx-auto">
         <CardContent>
           Simon Graeber
         </CardContent>
@@ -32,7 +33,7 @@ function ImprintPage() {
         </CardContent>
         <CardFooter>
           <Link to="/">
-          <Button variant="secondary" className="mt-8">Go back to Home Page</Button>
+            <Button className="mt-8">Go back to Home Page</Button>
           </Link>
         </CardFooter>
       </Card>
