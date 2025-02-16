@@ -9,6 +9,7 @@ export function getQuizState(quizID: string, forOwner: boolean): QuizState | nul
     return null;
   }
   if (forOwner) {
+    console.log("Returning quiz state for owner");
     return {
       ...quizState,
       textAnswers: quizState.textAnswersForOwnerOnly,
@@ -21,7 +22,7 @@ export function getQuizState(quizID: string, forOwner: boolean): QuizState | nul
 }
 
 export async function getCurrentQuizState(quizID: string): Promise<QuizState> {
-  try {
+
     const query = 'SELECT name, user_id FROM quizzes WHERE id = $1';
     const result = await pool.query(query, [quizID]);
 
@@ -38,26 +39,7 @@ export async function getCurrentQuizState(quizID: string): Promise<QuizState> {
         textAnswers: [],
         textAnswersForOwnerOnly: [],
       };
+    } else {
+      throw new Error("Quiz not found");
     }
-    console.error("Quiz not found in DB");
-    return getEmptyQuizState(quizID);
-  } catch (error) {
-    console.error("Error retrieving quiz from DB: ", error);
-    return getEmptyQuizState(quizID);
-  }
-}
-
-export function getEmptyQuizState(quizID: string): QuizState {
-  return {
-    id: quizID,
-    ownerID: "",
-    name: `Quiz placeholder ${quizID}`,
-    currentQuestion: "",
-    participantsScores: [
-    ],
-    active: true,
-    currentQuestionType: "buzzerquestion",
-    textAnswers: [],
-    textAnswersForOwnerOnly: [],
-  }
 }

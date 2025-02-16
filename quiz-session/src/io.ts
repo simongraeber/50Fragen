@@ -1,6 +1,6 @@
 import { Server } from "socket.io";
 import { server } from "./index";
-import { quizStates, getQuizState } from "./state"
+import { quizStates, getQuizState, getCurrentQuizState } from "./state"
 
 // Create a namespace explicitly for '/quiz-session'
 const io = new Server(server, {
@@ -26,13 +26,17 @@ io.on("connection", (socket) => {
     return quizStates[quizID].ownerID === user.id;
   }
 
-  socket.on("joinGame", (quizID: string) => {
+  socket.on("joinGame", async (quizID: string) => {
     socket.join(quizID);
 
     if (!quizStates[quizID]) {
-     return;
+      try {
+        quizStates[quizID] = await getCurrentQuizState(quizID);
+      } catch (error) {
+        console.error("Error getting quiz state", error);
+        return;
+      }
     }
-
     if (quizStates[quizID].ownerID === user.id) {
       ownerSockets[quizID] = ownerSockets[quizID] || [];
       ownerSockets[quizID].push(socket.id);
@@ -41,9 +45,9 @@ io.on("connection", (socket) => {
     io.in(quizID)
       .except(ownerSockets[quizID] || [])
       .emit("quizState", getQuizState(quizID, false));
-    if (ownerSockets[quizID]) {
-      io.to(ownerSockets[quizID]).emit("quizState", getQuizState(quizID, true));
-    }
+    console.log("ownerSockets", ownerSockets);
+    io.to(ownerSockets[quizID] || []).emit("quizState", getQuizState(quizID, true));
+    console.log("# end of connection function");
   });
 
   socket.on("buzz", (data: { quizID: string;}) => {
