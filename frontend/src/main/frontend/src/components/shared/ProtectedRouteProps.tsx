@@ -20,8 +20,7 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
 
     return (
       <Page>
-        <div className="flex flex-col items-center justify-center pb-32">
-        <TbLogin2 className="text-[10rem]" />
+        <TbLogin2 className="text-[10rem] mt-16" />
         <p className="font-light text-4xl pt-8 text-destructive">
           Unauthorized
         </p>
@@ -29,7 +28,6 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
         <p className="text-xl pt-2">Error 401</p>
 
         <DiscordLogInButton />
-      </div>
       </Page>
     );
   }

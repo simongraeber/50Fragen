@@ -15,7 +15,7 @@ import DiscordLogInButton from "@/components/shared/DiscordLogInButton.tsx"
 import { RootState } from "@/lib/store"
 import { Button } from "../ui/button"
 import { useNavigate } from "react-router-dom"
-import { useTheme } from "@/providers/hemeProvider.tsx"
+import { useTheme } from "@/providers/ThemeProvider.tsx"
 import { disconnectSocket } from "@/api/socket.ts"
 import { logOut } from "@/api/user.ts"
 

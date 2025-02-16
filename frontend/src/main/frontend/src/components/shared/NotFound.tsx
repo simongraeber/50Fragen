@@ -6,8 +6,7 @@ import Page from "@/components/shared/Layout/Page.tsx"
 function NotFound() {
   return (
     <Page>
-      <div className="flex flex-col items-center justify-center pb-32">
-        <TbCloudX className="text-[10rem]" />
+        <TbCloudX className="text-[10rem] mt-16" />
         <p className="font-light text-4xl pt-8 text-destructive">
           Page not found
         </p>
@@ -17,7 +16,6 @@ function NotFound() {
         <Link to="/">
           <Button className="mt-8">Go back to Home Page</Button>
         </Link>
-      </div>
     </Page>
   )
 }

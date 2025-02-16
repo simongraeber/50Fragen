@@ -27,14 +27,14 @@ function QuizOverviewPage() {
         Your Quizzes
       </HeadLine>
       <motion.section
-        className="w-full max-w-4xl mb-16 mx-auto mt-2"
+        className="w-full max-w-6xl px-4 mb-16"
         variants={scrollAnimation}
         initial="hidden"
         whileInView="visible"
         transition={{ delay: 0.0, duration: 0.8 }}
         viewport={{ once: true }}
       >
-        <Card className="m-4">
+        <Card>
           <CardContent>
             {quizzes ?
               <QuizOverviewTable data={quizzes} />

@@ -9,6 +9,7 @@ import { RootState } from "@/lib/store.ts"
 import DiscordLogInButton from "@/components/shared/DiscordLogInButton.tsx"
 import { scrollAnimation } from "@/components/shared/Layout/scrollAnimation.ts"
 import HeadLine from "@/components/shared/Layout/HeadLine.tsx"
+import Page from "@/components/shared/Layout/Page.tsx"
 
 function HomePage() {
   const navigate = useNavigate()
@@ -17,19 +18,15 @@ function HomePage() {
   const user = useSelector((state: RootState) => state.authentication.user)
 
   return (
-    <div
-      className="relative flex flex-col items-center justify-center min-h-screen
-                 bg-gradient-to-b from-[hsl(var(--background))] to-[hsl(var(--muted))]
-                 text-[hsl(var(--foreground))] overflow-hidden"
-    >
+    <Page>
       {/* Decorative Background Elements */}
       <div
         className="absolute top-0 left-0 w-64 h-64 bg-gradient-to-br from-purple-300 to-indigo-400
-                   dark:from-purple-700 dark:to-indigo-900 rounded-full filter blur-3xl opacity-20 animate-pulse"
+                   dark:from-purple-700 dark:to-indigo-900 rounded-full filter blur-3xl opacity-20 animate-pulse-slow"
       ></div>
       <div
         className="absolute bottom-0 right-0 w-64 h-64 bg-gradient-to-br from-purple-300 to-indigo-400
-                   dark:from-purple-700 dark:to-indigo-900 rounded-full filter blur-3xl opacity-20 animate-pulse delay-200"
+                   dark:from-purple-700 dark:to-indigo-900 rounded-full filter blur-3xl opacity-20 animate-pulse-slow delay-200"
       ></div>
 
       {/* Hero Section */}
@@ -167,7 +164,7 @@ function HomePage() {
         <Link to={"/privacy"} className="text-gray-500 dark:text-gray-400 p-4">Privacy</Link>
         <Link to={"/terms"} className="text-gray-500 dark:text-gray-400 p-4 pl-8">Terms</Link>
       </div>
-    </div>
+    </Page>
   )
 }
 

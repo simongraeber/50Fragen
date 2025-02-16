@@ -5,7 +5,7 @@ import { Toaster } from "@/components/ui/toaster"
 import { fetchCurrentUser } from "@/reducers/authenticationReducer"
 import { useEffect } from "react"
 import { useDispatch } from "react-redux"
-import { ThemeProvider } from "./providers/hemeProvider.tsx"
+import { ThemeProvider } from "./providers/ThemeProvider.tsx"
 
 function App() {
   const dispatch = useDispatch()
