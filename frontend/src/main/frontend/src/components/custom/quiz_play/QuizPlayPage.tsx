@@ -18,6 +18,7 @@ import { getQuizOrNull } from "@/api/quizCalls.ts"
 import { Link } from "react-router-dom"
 import Page from "@/components/shared/Layout/Page.tsx"
 import HeadLine from "@/components/shared/Layout/HeadLine.tsx"
+import LoadingPage from "@/components/shared/LoadingPage.tsx"
 
 function QuizPlayPage() {
   const quizId = useQuizIdFromUrl()
@@ -25,6 +26,7 @@ function QuizPlayPage() {
   const isOnline = useSelector((state: RootState) => state.onlineStatus.isOnline)
   const [quiz, setQuiz] = useState<Quiz | null>(null)
   const [buzzUserId, setBuzzUserId] = useState<string | null>(null)
+  const [loading, setLoading] = useState(true)
 
   // Consume global game state here.
   const { state } = useGame()
@@ -33,10 +35,12 @@ function QuizPlayPage() {
   // Try to load the quiz.
   useEffect(() => {
     async function loadQuiz() {
+      setLoading(true)
       const quiz = await getQuizOrNull(quizId)
       if (quiz) {
         setQuiz(quiz)
       }
+      setLoading(false)
     }
 
     loadQuiz()
@@ -56,6 +60,10 @@ function QuizPlayPage() {
       setDialogOpen(false)
     }
   }, [quizState])
+
+  if (loading) {
+    return <LoadingPage />
+  }
 
   return (
     <Page>

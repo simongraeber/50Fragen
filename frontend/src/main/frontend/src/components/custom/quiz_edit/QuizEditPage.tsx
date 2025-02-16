@@ -126,7 +126,7 @@ function QuizEditPage() {
 
   return (
     <Page>
-      <div className="flex justify-between w-full p-2">
+      <div className="flex justify-between w-full">
         <Button
           variant="outline"
           onClick={() => navigate(`/quizzes`)}
