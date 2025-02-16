@@ -65,6 +65,14 @@ function QuizPlayPage() {
     return <LoadingPage />
   }
 
+  if (!quiz) {
+    return <Page>
+      <HeadLine>
+        Quiz not found.
+      </HeadLine>
+    </Page>
+  }
+
   return (
     <Page>
       <header className="w-full mb-2">

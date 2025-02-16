@@ -7,7 +7,7 @@ import {
   AlertDialogFooter,
 } from "@/components/ui/alert-dialog"
 import { User } from "@/types/User"
-import { Avatar } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { AvatarImage } from "@radix-ui/react-avatar"
 
 import { FaCheck } from "react-icons/fa"
@@ -72,6 +72,9 @@ export function ButtonClickedDialog({ user, canEdit, open }: ButtonClickedDialog
         <div className="flex items-center gap-4 py-4">
           <Avatar className="h-16 w-16">
             <AvatarImage src={user.image} alt={user.name} />
+            <AvatarFallback>
+              {user.name.slice(0, 2).toUpperCase()}
+            </AvatarFallback>
           </Avatar>
         </div>
         {canEdit && (
