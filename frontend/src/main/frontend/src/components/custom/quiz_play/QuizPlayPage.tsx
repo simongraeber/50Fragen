@@ -65,7 +65,7 @@ function QuizPlayPage() {
     return <LoadingPage />
   }
 
-  if (!quiz) {
+  if (!quiz && state.quizState === null) {
     return <Page>
       <HeadLine>
         Quiz not found.
