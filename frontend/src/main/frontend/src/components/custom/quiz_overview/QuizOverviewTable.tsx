@@ -123,7 +123,7 @@ export default function QuizOverviewTable({ data, loading = false }: QuizSession
           onChange={(event) =>
             table.getColumn("name")?.setFilterValue(event.target.value)
           }
-          className="max-w-sm"
+          className="max-w-sm mr-2"
           autoComplete="off"
         />
         <NewQuizButton />

@@ -75,7 +75,7 @@ function QuizPlayPage() {
 
   return (
     <Page>
-      <header className="w-full mb-2 xs:px-2">
+      <header className="w-full mb-2  px-4">
         <div className="flex justify-between items-center">
           <Badge className={`${isOnline ? "bg-green-500 hover:bg-green-500" : "bg-red-500 hover:bg-red-500"}`}>
             {isOnline ? "Online" : "Offline"}
