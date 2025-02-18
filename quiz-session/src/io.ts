@@ -12,6 +12,8 @@ const io = new Server(server, {
 }).of("/quiz-session");
 
 const ownerSockets: { [quizID: string]: string[] } = {};
+// responsible for cleaning up the quiz state after a certain time
+const cleanupTimers: { [quizID: string]: NodeJS.Timeout } = {};
 
 io.on("connection", (socket) => {
 
@@ -29,6 +31,11 @@ io.on("connection", (socket) => {
   socket.on("joinGame", async (quizID: string) => {
     socket.join(quizID);
 
+    if (cleanupTimers[quizID]) {
+      clearTimeout(cleanupTimers[quizID]);
+      delete cleanupTimers[quizID];
+    }
+
     if (!quizStates[quizID]) {
       try {
         quizStates[quizID] = await getCurrentQuizState(quizID);
@@ -45,9 +52,8 @@ io.on("connection", (socket) => {
     io.in(quizID)
       .except(ownerSockets[quizID] || [])
       .emit("quizState", getQuizState(quizID, false));
-    console.log("ownerSockets", ownerSockets);
     io.to(ownerSockets[quizID] || []).emit("quizState", getQuizState(quizID, true));
-    console.log("# end of connection function");
+    console.log(`Quiz ${quizID} joined by user ${user.id}`);
   });
 
   socket.on("buzz", (data: { quizID: string;}) => {
@@ -197,11 +203,26 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
-    // remove the socket from the ownerSockets list
     Object.keys(ownerSockets).forEach((quizID) => {
       ownerSockets[quizID] = ownerSockets[quizID].filter((s) => s !== socket.id);
     });
     console.log(`User disconnected: ${socket.id}`);
-    // TODO clean up the quiz state
+
+    for (const quizID in quizStates) {
+      const room = io.adapter.rooms.get(quizID);
+      if (!room || room.size === 0) {
+        if (!cleanupTimers[quizID]) {
+          cleanupTimers[quizID] = setTimeout(() => {
+            const currentRoom = io.adapter.rooms.get(quizID);
+            if (!currentRoom || currentRoom.size === 0) {
+              delete quizStates[quizID];
+              console.log(`Cleaned up quiz session ${quizID} due to inactivity.`);
+            }
+            // Remove the timer reference, regardless of cleanup
+            delete cleanupTimers[quizID];
+          }, 30 * 60 * 1000); // 30 minutes in milliseconds
+        }
+      }
+    }
   });
 });
