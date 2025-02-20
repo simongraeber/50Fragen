@@ -3,12 +3,15 @@ import { Link } from "react-router-dom"
 import { Button } from "@/components/ui/button.tsx"
 import Page from "@/components/shared/Layout/Page.tsx"
 import HeadLine from "@/components/shared/Layout/HeadLine.tsx"
+import { useTranslation } from "react-i18next"
 
 function TermsOfServicePage() {
+  const { t } = useTranslation();
+
   return (
     <Page>
       <HeadLine>
-        Terms Of Service
+        {t("terms_h")}
       </HeadLine>
       <Card className="max-w-2xl mt-3 pt-4 mx-auto">
         <CardContent>
@@ -17,7 +20,7 @@ function TermsOfServicePage() {
         </CardContent>
         <CardFooter>
           <Link to="/">
-            <Button className="mt-8">Go back to Home Page</Button>
+            <Button className="mt-8">{t("go_home")}</Button>
           </Link>
         </CardFooter>
       </Card>

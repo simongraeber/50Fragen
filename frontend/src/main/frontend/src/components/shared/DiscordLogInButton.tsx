@@ -1,7 +1,9 @@
 import { BsDiscord } from "react-icons/bs"
 import { Button } from "@/components/ui/button.tsx"
+import { useTranslation } from "react-i18next"
 
 function DiscordLogInButton() {
+  const { t } = useTranslation();
   return (
     <Button
       className="bg-[#7289da] hover:bg-[#5a6fb2]"
@@ -11,7 +13,7 @@ function DiscordLogInButton() {
       }}
     >
       <BsDiscord className="mr-2 text-xl" />
-      Sign in with Discord
+      {t("l_sign_discord")}
     </Button>
   )
 }

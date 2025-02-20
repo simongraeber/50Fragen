@@ -1,8 +1,9 @@
 import React from "react"
 import Page from "@/components/shared/Layout/Page.tsx"
-import { TbLogin2 } from "react-icons/tb"
+import { TbCloudX } from "react-icons/tb"
 import { Button } from "@/components/ui/button.tsx"
 import { Link } from "react-router-dom"
+import { useTranslation } from "react-i18next"
 
 
 interface ErrorPageProps {
@@ -10,24 +11,25 @@ interface ErrorPageProps {
 }
 
 const ErrorPage: React.FC<ErrorPageProps> = ({ error }) => {
+  const { t } = useTranslation();
 
   return (
     <Page>
-      <TbLogin2 className="text-[10rem] mt-16" />
+      <TbCloudX className="text-[10rem] mt-16" />
       <p className="font-light text-4xl pt-8 text-destructive">
-        Unauthorized
+        {t("er_error")}
       </p>
       <span className="text-destructive">
         {error}
       </span>
 
       <Link to="/">
-        <Button className="mt-8">Go back to Home Page</Button>
+        <Button className="mt-8">{t("go_home")}</Button>
       </Link>
       <Button
         className="mt-8"
         onClick={() => window.location.reload()}>
-        Reload Page
+        {t("er_reload")}
       </Button>
     </Page>
   )

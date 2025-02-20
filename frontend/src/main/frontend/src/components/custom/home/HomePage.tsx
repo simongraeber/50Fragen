@@ -10,10 +10,12 @@ import DiscordLogInButton from "@/components/shared/DiscordLogInButton.tsx"
 import { scrollAnimation } from "@/components/shared/Layout/scrollAnimation.ts"
 import HeadLine from "@/components/shared/Layout/HeadLine.tsx"
 import Page from "@/components/shared/Layout/Page.tsx"
+import { useTranslation } from "react-i18next";
 
 function HomePage() {
   const navigate = useNavigate()
   const { toast } = useToast()
+  const { t } = useTranslation();
 
   const user = useSelector((state: RootState) => state.authentication.user)
 
@@ -39,15 +41,13 @@ function HomePage() {
         viewport={{ once: true }}
       >
         <h1 className="text-5xl font-extrabold mb-4">
-          Welcome to 50Fragen
+          {t("h_welcome")}
         </h1>
         <p className="text-xl max-w-3xl mx-auto mb-6">
-          50Fragen is not just a quiz game—it’s an immersive experience that
-          connects friends both online and in person.
+          {t("h_sub1")}
         </p>
         <p className="text-lg max-w-2xl mx-auto">
-          Create a Quiz, with buzzer and estimation rounds. Then, invite your friends you will be the host and they will
-          be the players.
+          {t("h_sub2")}
         </p>
       </motion.section>
 
@@ -63,7 +63,7 @@ function HomePage() {
         {user && user.id ? (
             <>
             <span className="text-xl text-gray-700 dark:text-gray-300">
-              Hey, {user.name}! Ready to play?
+              Hey, {user.name}! {t("h_ready")}
             </span>
               <Button
                 className="m-4"
@@ -71,13 +71,13 @@ function HomePage() {
                 variant="outline"
                 onClick={() => navigate("/quizzes")}
               >
-                See Your Quizzes
+                {t("h_see")}
               </Button>
             </>
           ) :
           <>
           <span className="text-xl text-gray-t00 dark:text-gray-300">
-            Log in to start playing!
+            {t("h_login")}
           </span>
             <DiscordLogInButton />
           </>
@@ -99,13 +99,11 @@ function HomePage() {
             <HeadLine
               disableDefaultSize={true}
               className="text-3xl lg:text-2xl !text-left">
-              1 Create a Quiz
+              1 {t("h_create")}
             </HeadLine>
           </CardTitle>
           <CardContent className="text-gray-600 dark:text-gray-400">
-            Build unique quiz games with personalized questions.
-            You can create questions where the user needs to buzz in or
-            estimate the answer where players need to guess the answer.
+            {t("h_create_t")}
           </CardContent>
         </Card>
         <Card className="p-6 shadow-lg hover:shadow-2xl transition-shadow duration-300">
@@ -113,12 +111,11 @@ function HomePage() {
             <HeadLine
               disableDefaultSize={true}
               className="text-3xl lg:text-2xl !text-left">
-              2 Play with Friends
+              2 {t("h_play")}
             </HeadLine>
           </CardTitle>
           <CardContent className="text-gray-600 dark:text-gray-400">
-            Join your friends on Discord or get together in person—the game.
-            The Start the game and share the link with your friends.
+            {t("h_play_t")}
           </CardContent>
         </Card>
         <Card className="p-6 shadow-lg hover:shadow-2xl transition-shadow duration-300">
@@ -126,12 +123,11 @@ function HomePage() {
             <HeadLine
               disableDefaultSize={true}
               className="text-3xl lg:text-2xl !text-left">
-              3 Real-Time Buzzing
+              3 {t("h_real")}
             </HeadLine>
           </CardTitle>
           <CardContent className="text-gray-600 dark:text-gray-400">
-            Experience real-time feedback and excitement as players buzz in to answer or type their estimations.
-            Every second counts when the buzzer goes off! You, as the host, can easily award points to the players.
+            {t("h_real_t")}
           </CardContent>
         </Card>
       </motion.section>
@@ -147,18 +143,17 @@ function HomePage() {
       >
         <Card className="p-8 bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-xl rounded-xl">
           <CardTitle className="text-3xl font-bold mb-4">
-            Buzzer it!
+            {t("h_buzz")}
           </CardTitle>
           <CardContent className="flex flex-col items-center">
             <p className="mb-6 text-center">
-              Experience the thrill of buzzing. Click the button below to see how it feels to be the first to answer a
-              question:
+              {t("h_buzz_t")}
             </p>
             <Round3DButton onClick={() =>
               toast({
                 variant: "success",
                 title: "WOW 🤩",
-                description: "You are a genius!",
+                description: t("h_genius"),
               })} />
           </CardContent>
         </Card>
@@ -166,9 +161,15 @@ function HomePage() {
 
       {/* Footer Spacer */}
       <div className="h-16 z-0">
-        <Link to={"/imprint"} className="text-gray-500 dark:text-gray-400 p-4 pr-8">Imprint</Link>
-        <Link to={"/privacy"} className="text-gray-500 dark:text-gray-400 p-4">Privacy</Link>
-        <Link to={"/terms"} className="text-gray-500 dark:text-gray-400 p-4 pl-8">Terms</Link>
+        <Link to={"/imprint"} className="text-gray-500 dark:text-gray-400 p-4 pr-8">
+          {t("imprint")}
+        </Link>
+        <Link to={"/privacy"} className="text-gray-500 dark:text-gray-400 p-4">
+          {t("privacy")}
+        </Link>
+        <Link to={"/terms"} className="text-gray-500 dark:text-gray-400 p-4 pl-8">
+          {t("terms")}
+        </Link>
       </div>
     </Page>
   )

@@ -19,6 +19,7 @@ import { useGame } from "@/providers/GameProvider.tsx"
 import { useState } from "react"
 import { Score } from "@/types/gamePlay/Score.ts"
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next"
 
 
 export interface ButtonClickedDialogProps {
@@ -32,6 +33,7 @@ export function ButtonClickedDialog({ user, canEdit, open }: ButtonClickedDialog
 
   const { state } = useGame();
   const [scores, setScores] = useState<Score[]>(state.quizState?.participantsScores ?? []);
+  const { t } = useTranslation();
 
   useEffect(() => {
     setScores(state.quizState?.participantsScores ?? []);
@@ -67,7 +69,7 @@ export function ButtonClickedDialog({ user, canEdit, open }: ButtonClickedDialog
     <AlertDialog open={open}>
       <AlertDialogContent className="sm:max-w-[425px]">
         <AlertDialogHeader>
-          <AlertDialogTitle>{user.name} buzzed in!</AlertDialogTitle>
+          <AlertDialogTitle>{user.name} {t("p_buzzed")}</AlertDialogTitle>
         </AlertDialogHeader>
         <div className="flex items-center gap-4 py-4">
           <Avatar className="h-16 w-16">

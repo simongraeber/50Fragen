@@ -22,6 +22,7 @@ import { motion } from "framer-motion"
 import { FaPlay } from "react-icons/fa"
 import ErrorPage from "@/components/shared/ErrorPage.tsx"
 import LoadingPage from "@/components/shared/LoadingPage.tsx"
+import { useTranslation } from "react-i18next"
 
 function QuizEditPage() {
   const quizId = useQuizIdFromUrl()
@@ -32,6 +33,7 @@ function QuizEditPage() {
   const [error, setError] = useState<Error | null>(null)
 
   const navigate = useNavigate()
+  const { t } = useTranslation();
 
   useEffect(() => {
     getQuiz(quizId)
@@ -64,8 +66,8 @@ function QuizEditPage() {
     await updateQuiz({ ...quiz, questions: reordered })
     toast({
       variant: "success",
-      title: "Question order updated",
-      description: "Question order updated",
+      title: t("e_order_updated"),
+      description: t("e_order_updated"),
     })
   }
 
@@ -75,8 +77,8 @@ function QuizEditPage() {
     await updateQuiz(updatedQuiz)
     toast({
       variant: "success",
-      title: "Quiz name updated",
-      description: `Quiz name updated to: ${name}`,
+      title: t("e_q_name_updated"),
+      description: `${t("e_q_name_updated_to")} ${name}`,
     })
     setQuiz(updatedQuiz)
   }
@@ -98,8 +100,8 @@ function QuizEditPage() {
 
   const addQuestion = () => {
     const newQuestion: Partial<QuizQuestion> = {
-      question: "New question",
-      answer: "New answer",
+      question: t("e_new_q"),
+      answer: t("e_new_answer"),
       type: "buzzerquestion",
       quizId: quizId,
     }
@@ -131,14 +133,14 @@ function QuizEditPage() {
           variant="outline"
           onClick={() => navigate(`/quizzes`)}
         >
-          Back to Quiz List
+          {t("e_back")}
         </Button>
         <Button
           variant="outline"
           onClick={() => navigate(`/play/${quizId}`)}
         >
           <FaPlay className="mr-2" />
-          Start
+          {t("start")}
         </Button>
       </div>
       <HeadLine>
@@ -154,7 +156,7 @@ function QuizEditPage() {
       >
         <Card>
           <CardTitle className="p-4">
-            Quiz Name
+            {t("e_q_name")}
             <Input
               placeholder="Enter quiz name"
               defaultValue={quiz?.name}
@@ -199,7 +201,7 @@ function QuizEditPage() {
               onClick={addQuestion}
               loading={addQuestionLoading}
             >
-              Add Question
+              {t("e_add_q")}
             </LoadingButton>
           </CardFooter>
         </Card>

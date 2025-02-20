@@ -6,8 +6,8 @@ import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
+  DropdownMenuLabel, DropdownMenuPortal,
+  DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { fetchCurrentUser } from "@/reducers/authenticationReducer"
@@ -18,6 +18,11 @@ import { useNavigate } from "react-router-dom"
 import { useTheme } from "@/providers/ThemeProvider.tsx"
 import { disconnectSocket } from "@/api/socket.ts"
 import { logOut } from "@/api/user.ts"
+import { MdSunny } from "react-icons/md"
+import { MdNightlight } from "react-icons/md"
+import { useTranslation } from "react-i18next";
+import { MdLanguage } from "react-icons/md";
+import { availableLanguages } from "@/i18n.ts"
 
 
 function UserNav() {
@@ -26,6 +31,12 @@ function UserNav() {
   const user = useSelector((state: RootState) => state.authentication.user)
 
   const { setTheme } = useTheme()
+
+  const { i18n } = useTranslation();
+
+  const languageChange = (lan: string) => {
+    i18n.changeLanguage(lan);
+  };
 
   useEffect(() => {
     dispatch(fetchCurrentUser())
@@ -74,6 +85,7 @@ function UserNav() {
               setTheme("dark")
             }}
           >
+            <MdNightlight />
             Dark mode
           </DropdownMenuItem>
           <DropdownMenuItem
@@ -82,9 +94,31 @@ function UserNav() {
               setTheme("light")
             }}
           >
+            <MdSunny />
             Light mode
           </DropdownMenuItem>
         </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger>
+            <MdLanguage />
+            Language
+          </DropdownMenuSubTrigger>
+          <DropdownMenuPortal>
+            <DropdownMenuSubContent>
+              {Object.entries(availableLanguages).map(([key, label]) => (
+                <DropdownMenuItem
+                  key={key}
+                  onClick={() => {
+                    languageChange(key);
+                  }}
+                >
+                  {label}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuSubContent>
+          </DropdownMenuPortal>
+        </DropdownMenuSub>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem

@@ -19,6 +19,7 @@ import { useGame } from "@/providers/GameProvider.tsx";
 import { useState, useEffect } from "react";
 import { Score } from "@/types/gamePlay/Score.ts"
 import { TextAnswer } from "@/types/gamePlay/TextAnswer.ts"
+import { useTranslation } from "react-i18next"
 
 
 interface EstimationQuestionAnswersProps {
@@ -31,6 +32,7 @@ function EstimationQuestionAnswers({ answers, canEdit, quizId }: EstimationQuest
   const { state } = useGame();
   const [scores, setScores] = useState<Score[]>(state.quizState?.participantsScores ?? []);
   const [correctUsers, setCorrectUsers] = useState<Set<string>>(new Set());
+  const { t } = useTranslation();
 
   useEffect(() => {
     setScores(state.quizState?.participantsScores ?? []);
@@ -72,9 +74,9 @@ function EstimationQuestionAnswers({ answers, canEdit, quizId }: EstimationQuest
         <Table className="mt-5">
           <TableHeader>
             <TableHead></TableHead>
-            <TableHead>User</TableHead>
-            <TableHead>Answer</TableHead>
-            {canEdit && <TableHead>Correct?</TableHead>}
+            <TableHead>{t("user")}</TableHead>
+            <TableHead>{t("answer")}</TableHead>
+            {canEdit && <TableHead>{t("correct")}?</TableHead>}
           </TableHeader>
           <TableBody>
             {answers.map((userAnswers) => {
@@ -108,10 +110,10 @@ function EstimationQuestionAnswers({ answers, canEdit, quizId }: EstimationQuest
       {canEdit && (
         <CardFooter>
           <Button className="mr-2" variant="outline" onClick={() => showTextAnswers(quizId)}>
-            Show Answers
+            {t("p_show_answer")}
           </Button>
           <Button className="ml-auto" onClick={onGivePoints}>
-            Give Points
+            {t("p_give_p")}
           </Button>
         </CardFooter>
       )}

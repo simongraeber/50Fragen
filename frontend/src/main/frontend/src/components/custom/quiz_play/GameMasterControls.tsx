@@ -11,6 +11,7 @@ import { MdNavigateNext, MdNavigateBefore } from "react-icons/md";
 import { Quiz } from "@/types/Quiz.ts";
 import QuestionCard from "@/components/custom/quiz_play/QuestionCard.tsx";
 import { newQuestion, showQuestion } from "@/api/quizGame.ts"
+import { useTranslation } from "react-i18next"
 
 interface GameMasterControlsProps {
   quiz: Quiz;
@@ -19,6 +20,7 @@ interface GameMasterControlsProps {
 function GameMasterControls({ quiz }: GameMasterControlsProps) {
   const [carouselApi, setCarouselApi] = React.useState<CarouselApi | null>(null);
   const [currentIndex, setCurrentIndex] = React.useState(0);
+  const { t } = useTranslation();
 
   React.useEffect(() => {
     if (carouselApi) {
@@ -68,7 +70,7 @@ function GameMasterControls({ quiz }: GameMasterControlsProps) {
           <MdNavigateBefore />
         </Button>
         <Button onClick={onShowQuestion}>
-          Show Question
+          {t("p_show_q")}
         </Button>
         <Button
           disabled={

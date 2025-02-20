@@ -3,9 +3,11 @@ import { Button } from "@/components/ui/button.tsx"
 import { Card, CardContent, CardHeader } from "@/components/ui/card.tsx"
 import { useState } from "react"
 import { newTextAnswer } from "@/api/quizGame.ts"
+import { useTranslation } from "react-i18next"
 
 function TextSubmission({ active, quizId }: { active: boolean, quizId: string }) {
   const [value, setValue] = useState("")
+  const { t } = useTranslation();
 
   const handleSubmit = () => {
     newTextAnswer(quizId, value)
@@ -16,12 +18,12 @@ function TextSubmission({ active, quizId }: { active: boolean, quizId: string })
       className={`${active ? "" : "bg-gray-200"}`}
       >
       <CardHeader>
-        <h1 className="text-xl">What is your guess?</h1>
+        <h1 className="text-xl">{t("p_what_gess")}</h1>
       </CardHeader>
       <CardContent>
         <div className="flex items-center">
           <Input
-            placeholder="Enter your answer here"
+            placeholder={t("p_what_gess_placeholder")}
             className="mr-2"
             value={value}
             disabled={!active}
@@ -36,7 +38,7 @@ function TextSubmission({ active, quizId }: { active: boolean, quizId: string })
             onClick={handleSubmit}
             disabled={!active}
           >
-            Submit
+            {t("submit")}
           </Button>
         </div>
       </CardContent>

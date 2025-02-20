@@ -34,6 +34,7 @@ interface QuestionEditProps {
   updateQuestion: (updatedQuestion: QuizQuestion) => void
   removeQuestion: (questionId: string) => void
 }
+import { useTranslation } from "react-i18next"
 
 export function QuestionEdit(input: QuestionEditProps) {
 
@@ -42,6 +43,7 @@ export function QuestionEdit(input: QuestionEditProps) {
   const [loading, setLoading] = useState(false)
   const [editedQuestion, setEditedQuestion] = useState<string>(input.question.question)
   const [dialogOpen, setDialogOpen] = useState(false)
+  const { t } = useTranslation();
 
   const handleUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -66,7 +68,7 @@ export function QuestionEdit(input: QuestionEditProps) {
   }
 
   const handleDelete = async () => {
-    if (window.confirm("Are you sure you want to delete this question?")) {
+    if (window.confirm(t("e_check_delete"))) {
       setLoading(true)
       try {
         await deleteQuestion({ id: input.question.id, quizId: input.question.quizId })
@@ -86,7 +88,7 @@ export function QuestionEdit(input: QuestionEditProps) {
           {input.question.question}
         </span>
       <Badge className="ml-2 mr-2">
-        {input.question.type}
+        {t(input.question.type)}
       </Badge>
       <Dialog open={dialogOpen}
               onOpenChange={setDialogOpen}>
@@ -100,14 +102,14 @@ export function QuestionEdit(input: QuestionEditProps) {
           <DialogHeader>
             <DialogTitle>Edit Question</DialogTitle>
             <DialogDescription>
-              Update the question text, answer, and type below. Click save when you’re done.
+              {t("e_update_t")}
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleUpdate}>
             <div className="grid gap-4 py-4">
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="question" className="text-right">
-                  Question
+                  {t("question")}
                 </Label>
                 <Input
                   id="question"
@@ -118,7 +120,7 @@ export function QuestionEdit(input: QuestionEditProps) {
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="answer" className="text-right">
-                  Answer
+                  {t("answer")}
                 </Label>
                 <Input
                   id="answer"
@@ -129,7 +131,7 @@ export function QuestionEdit(input: QuestionEditProps) {
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="type" className="text-right">
-                  Type
+                  {t("type")}
                 </Label>
                 <div
                   className="col-span-3"
@@ -143,9 +145,15 @@ export function QuestionEdit(input: QuestionEditProps) {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
-                        <SelectLabel>Question Type</SelectLabel>
-                        <SelectItem value="buzzerquestion">Buzzer Question</SelectItem>
-                        <SelectItem value="estimationquestion">Estimation Question</SelectItem>
+                        <SelectLabel>
+                          {t("q_type")}
+                        </SelectLabel>
+                        <SelectItem value="buzzerquestion">
+                          {t("buzzerquestion")}
+                        </SelectItem>
+                        <SelectItem value="estimationquestion">
+                          {t("estimationquestion")}
+                        </SelectItem>
                       </SelectGroup>
                     </SelectContent>
                   </Select>
@@ -159,10 +167,10 @@ export function QuestionEdit(input: QuestionEditProps) {
                 onClick={handleDelete}
                 disabled={loading}
               >
-                Delete Question
+                {t("delete")}
               </Button>
               <Button type="submit" disabled={loading}>
-                Save changes
+                {t("save")}
               </Button>
             </DialogFooter>
           </form>

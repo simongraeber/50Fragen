@@ -8,10 +8,12 @@ import HeadLine from "@/components/shared/Layout/HeadLine.tsx"
 import { motion } from "framer-motion"
 import { scrollAnimation } from "@/components/shared/Layout/scrollAnimation.ts"
 import ErrorPage from "@/components/shared/ErrorPage.tsx"
+import { useTranslation } from "react-i18next"
 
 function QuizOverviewPage() {
   const [quizzes, setQuizzes] = useState<Quiz[] | null>(null)
   const [error, setError] = useState<Error | null>(null)
+  const { t } = useTranslation();
 
   useEffect(() => {
     getAllQuizzes()
@@ -30,7 +32,7 @@ function QuizOverviewPage() {
   return (
     <Page>
       <HeadLine>
-        Your Quizzes
+        {t("o_your_q")}
       </HeadLine>
       <motion.section
         className="w-full max-w-6xl px-4 mb-16"

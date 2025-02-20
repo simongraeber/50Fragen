@@ -19,6 +19,7 @@ import { Link } from "react-router-dom"
 import Page from "@/components/shared/Layout/Page.tsx"
 import HeadLine from "@/components/shared/Layout/HeadLine.tsx"
 import LoadingPage from "@/components/shared/LoadingPage.tsx"
+import { useTranslation } from "react-i18next"
 
 function QuizPlayPage() {
   const quizId = useQuizIdFromUrl()
@@ -31,6 +32,7 @@ function QuizPlayPage() {
   // Consume global game state here.
   const { state } = useGame()
   const { buzzData, quizState } = state
+  const { t } = useTranslation();
 
   // Try to load the quiz.
   useEffect(() => {
@@ -68,7 +70,7 @@ function QuizPlayPage() {
   if (!quiz && state.quizState === null) {
     return <Page>
       <HeadLine>
-        Quiz not found.
+        {t("p_q_not_found")}
       </HeadLine>
     </Page>
   }
@@ -100,7 +102,7 @@ function QuizPlayPage() {
             {state.quizState?.currentQuestion && (
               <Card className="h-24">
                 <CardHeader>
-                  <CardTitle>Question</CardTitle>
+                  <CardTitle>{t("question")}</CardTitle>
                 </CardHeader>
                 <CardContent
                 className="-mt-3"
@@ -132,9 +134,9 @@ function QuizPlayPage() {
                     </div>
                   ) : (
                     <Card className="pt-2 pb-2 text-center">
-                      ⚠️ This quiz has no questions yet. <br />
+                      {t("p_q_has_no_q")} <br />
                       <Link to={`/editor/${quizId}`} className="text-blue-500 hover:underline">
-                        Add a question
+                        {t("p_add_q")}
                       </Link>
                     </Card>
                   )}

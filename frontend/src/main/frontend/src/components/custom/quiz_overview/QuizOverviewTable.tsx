@@ -24,6 +24,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Quiz } from "@/types/Quiz.ts"
 import QuizOptions from "@/components/custom/quiz_overview/QuizOptions.tsx"
 import NewQuizButton from "@/components/custom/quiz_overview/NewQuizButton.tsx"
+import { useTranslation } from "react-i18next"
 
 interface QuizSessionOverviewTableProps {
   data: Quiz[]
@@ -32,6 +33,7 @@ interface QuizSessionOverviewTableProps {
 
 export default function QuizOverviewTable({ data, loading = false }: QuizSessionOverviewTableProps) {
   const navigate = useNavigate()
+  const { t } = useTranslation();
 
   const columns: ColumnDef<Quiz>[] = [
     {
@@ -41,7 +43,7 @@ export default function QuizOverviewTable({ data, loading = false }: QuizSession
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Name <ArrowUpDown className="ml-2 h-4 w-4" />
+          {t("o_name")} <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
       cell: ({ row }) => row.original.name,
@@ -53,7 +55,7 @@ export default function QuizOverviewTable({ data, loading = false }: QuizSession
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Last Modified <ArrowUpDown className="ml-2 h-4 w-4" />
+          {t("o_last_mod")} <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
       cell: ({ row }) => {
@@ -68,21 +70,21 @@ export default function QuizOverviewTable({ data, loading = false }: QuizSession
     },
     {
       id: "edit",
-      header: () => <span className="pl-4">Edit</span>,
+      header: () => <span className="pl-4"> {t("edit")}</span>,
       cell: ({ row }) => (
         <Button variant="outline" onClick={() => navigate(`/editor/${row.original.id}`)}>
           <MdEdit className="mr-2" />
-          Edit
+          {t("edit")}
         </Button>
       ),
     },
     {
       id: "start",
-      header: () => <span className="pl-4">Start</span>,
+      header: () => <span className="pl-4"> {t("start")}</span>,
       cell: ({ row }) => (
         <Button variant="outline" onClick={() => navigate(`/play/${row.original.id}`)}>
           <FaPlay className="mr-2" />
-          Start
+          {t("start")}
         </Button>
       ),
     },
@@ -118,7 +120,7 @@ export default function QuizOverviewTable({ data, loading = false }: QuizSession
     <div className="w-full">
       <div className="flex items-center py-4">
         <Input
-          placeholder="Filter by name..."
+          placeholder={t("o_filter_by_name")}
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("name")?.setFilterValue(event.target.value)
@@ -135,10 +137,6 @@ export default function QuizOverviewTable({ data, loading = false }: QuizSession
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
-                  // Decide classes based on column ID
-                  // - Name: always visible (no special class)
-                  // - Actions: visible on small only -> "block md:hidden"
-                  // - Everything else: hidden on small -> "hidden md:table-cell"
                   let headerClasses = ""
                   if (header.column.id === "actions") {
                     headerClasses = "block md:hidden"
@@ -190,7 +188,7 @@ export default function QuizOverviewTable({ data, loading = false }: QuizSession
                   </TableCell>
                 ) : (
                   <TableCell colSpan={columns.length} className="h-24 text-center">
-                    No sessions found.
+                    {t("o_no_q_found")}
                   </TableCell>
                 )}
               </TableRow>
@@ -207,7 +205,7 @@ export default function QuizOverviewTable({ data, loading = false }: QuizSession
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
-            Previous
+            {t("previous")}
           </Button>
           <Button
             variant="outline"
@@ -215,7 +213,7 @@ export default function QuizOverviewTable({ data, loading = false }: QuizSession
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >
-            Next
+            {t("next")}
           </Button>
         </div>
       </div>

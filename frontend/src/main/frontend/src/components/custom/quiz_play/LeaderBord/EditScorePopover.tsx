@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input.tsx";
 import { Label } from "@/components/ui/label.tsx";
 import { Score } from "@/types/gamePlay/Score.ts";
 import { useScore } from "./ScoreContext";
+import { useTranslation } from "react-i18next"
 
 interface EditScorePopoverProps {
   userScore: Score;
@@ -14,6 +15,7 @@ const EditScorePopover: React.FC<EditScorePopoverProps> = ({ userScore }) => {
   const [inputValue, setInputValue] = useState(String(userScore.score));
   const [isOpen, setIsOpen] = useState(false);
   const { updateScore } = useScore();
+  const { t } = useTranslation();
 
   const handleSave = () => {
     const newScore = Number(inputValue);
@@ -27,7 +29,7 @@ const EditScorePopover: React.FC<EditScorePopoverProps> = ({ userScore }) => {
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
         <Button variant="outline" onClick={() => setIsOpen(true)}>
-          Edit
+          {t("edit")}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-80">
@@ -40,7 +42,7 @@ const EditScorePopover: React.FC<EditScorePopoverProps> = ({ userScore }) => {
           </div>
           <div className="grid gap-2">
             <div className="grid grid-cols-3 items-center gap-4">
-              <Label htmlFor="score-input">Score</Label>
+              <Label htmlFor="score-input">{t("score")}</Label>
               <Input
                 id="score-input"
                 value={inputValue}
@@ -50,7 +52,7 @@ const EditScorePopover: React.FC<EditScorePopoverProps> = ({ userScore }) => {
               />
             </div>
             <div className="flex justify-end">
-              <Button onClick={handleSave}>Save</Button>
+              <Button onClick={handleSave}>{t("save")}</Button>
             </div>
           </div>
         </div>

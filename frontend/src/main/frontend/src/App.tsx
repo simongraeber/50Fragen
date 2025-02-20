@@ -6,6 +6,7 @@ import { fetchCurrentUser } from "@/reducers/authenticationReducer"
 import { useEffect } from "react"
 import { useDispatch } from "react-redux"
 import { ThemeProvider } from "./providers/ThemeProvider.tsx"
+import "./i18n";
 
 function App() {
   const dispatch = useDispatch()
