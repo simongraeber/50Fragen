@@ -102,4 +102,15 @@ npm run start
 cd frontend
 mvn spring-boot:run
 ```
-
+#### For the AI-Quiz
+You need to set a open (AI API key)[https://platform.openai.com/account/api-keys]
+```bash
+export OPENAI_API_KEY="your_api_key_here"
+```
+Then you can run the AI-Quiz service:
+```bash
+cd ai-quiz
+npm install
+npm run build
+npm run start
+```

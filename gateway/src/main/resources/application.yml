@@ -25,6 +25,14 @@ spring:
           filters:
             - StripPrefix=1
 
+        # ai-quiz
+        - id: ai-quiz-route
+          uri: lb://ai-quiz
+          predicates:
+            - Path=/ai-quiz/**
+          filters:
+            - StripPrefix=1
+
         - id: frontend-route
           uri: lb://frontend
           predicates:

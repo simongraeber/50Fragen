@@ -23,6 +23,7 @@ import { FaPlay } from "react-icons/fa"
 import ErrorPage from "@/components/shared/ErrorPage.tsx"
 import LoadingPage from "@/components/shared/LoadingPage.tsx"
 import { useTranslation } from "react-i18next"
+import AIQuestion from "@/components/custom/quiz_edit/AIQestion.tsx"
 
 function QuizEditPage() {
   const quizId = useQuizIdFromUrl()
@@ -33,7 +34,7 @@ function QuizEditPage() {
   const [error, setError] = useState<Error | null>(null)
 
   const navigate = useNavigate()
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
   useEffect(() => {
     getQuiz(quizId)
@@ -67,7 +68,6 @@ function QuizEditPage() {
     toast({
       variant: "success",
       title: t("e_order_updated"),
-      description: t("e_order_updated"),
     })
   }
 
@@ -98,23 +98,27 @@ function QuizEditPage() {
     setQuestions(updatedQuestions)
   }
 
-  const addQuestion = () => {
-    const newQuestion: Partial<QuizQuestion> = {
-      question: t("e_new_q"),
-      answer: t("e_new_answer"),
-      type: "buzzerquestion",
-      quizId: quizId,
-    }
+  const placeholderQuestion: Partial<QuizQuestion> = {
+    question: t("e_new_q"),
+    answer: t("e_new_answer"),
+    type: "buzzerquestion",
+  }
+
+  const addQuestion = async (newQuestion: Partial<QuizQuestion>) => {
+    newQuestion.quizId = quizId
     setAddQuestionLoading(true)
-    createQuestion(newQuestion)
-      .then((newQuestion) => {
-        setQuestions([...questions, newQuestion])
-        setAddQuestionLoading(false)
+    try {
+      const newFullQuestion = await createQuestion(newQuestion)
+      setQuestions([...questions, newFullQuestion])
+      setAddQuestionLoading(false)
+    } catch (err) {
+      console.error("Error adding question:", err)
+      toast({
+        variant: "destructive",
+        description: t("e_error_adding_q"),
       })
-      .catch((err) => {
-        console.error("Error adding question:", err)
-        setAddQuestionLoading(false)
-      })
+      setAddQuestionLoading(false)
+    }
 
   }
 
@@ -144,7 +148,7 @@ function QuizEditPage() {
         </Button>
       </div>
       <HeadLine>
-        Edit {quiz?.name}
+        {t("edit")} {quiz?.name}
       </HeadLine>
       <motion.section
         className="w-full max-w-6xl px-4 mb-16"
@@ -161,6 +165,11 @@ function QuizEditPage() {
               placeholder="Enter quiz name"
               defaultValue={quiz?.name}
               className="mt-2"
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  updateQuizName(e.currentTarget.value)
+                }
+              }}
               onBlur={(e) => updateQuizName(e.target.value)}
             />
           </CardTitle>
@@ -175,18 +184,20 @@ function QuizEditPage() {
                         <div
                           ref={provided.innerRef}
                           {...provided.draggableProps}
-                          className="flex bg-card center justify-between p-1 mt-2 ml-2 mr-2 border rounded-lg"
+                          className="flex bg-card p-1 mt-2 ml-2 mr-2 border rounded-lg"
                         >
                           <div
                             {...provided.dragHandleProps}
-                            className="cursor-pointer text-lg mt-1 ml-2"
+                            className="cursor-pointer text-lg mt-1 ml-2 pr-2"
                           >
                             &#x2630;
                           </div>
-                          <QuestionEdit
-                            updateQuestion={updateQuestion}
-                            removeQuestion={removeQuestion}
-                            question={question} quizId={quiz?.id || ""} />
+                          <div className="flex-grow">
+                            <QuestionEdit
+                              updateQuestion={updateQuestion}
+                              removeQuestion={removeQuestion}
+                              question={question} quizId={quiz?.id || ""} />
+                          </div>
                         </div>
                       )}
                     </Draggable>
@@ -196,9 +207,10 @@ function QuizEditPage() {
               )}
             </Droppable>
           </DragDropContext>
-          <CardFooter className="flex justify-end pt-2">
+          <CardFooter className="flex justify-between pt-2">
+            <AIQuestion addQuestion={addQuestion} />
             <LoadingButton
-              onClick={addQuestion}
+              onClick={() => addQuestion(placeholderQuestion)}
               loading={addQuestionLoading}
             >
               {t("e_add_q")}

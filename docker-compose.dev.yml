@@ -56,6 +56,27 @@ services:
     ports:
       - "4000:4000"
 
+  ai-quiz:
+    image: simon1999/50fragen:ai-quiz-dev
+    networks:
+      - 50Fragen
+    environment:
+      - PORT=4001
+      - HOST_IP=quiz-session
+      - EUREKA_HOST=eureka
+      - EUREKA_PORT=8761
+      - OPENAI_API_KEY=YOUR_OPENAI_API_KEY
+    depends_on:
+      eureka:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:4001/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "4001:4001"
+
   postgres:
     image: postgres:15-alpine
     environment:
