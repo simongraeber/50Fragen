@@ -67,6 +67,7 @@ const resources = {
       e_ai_q_t: "Let Chat generate a Question for you.",
       e_category: "Category",
       e_ai_disclaimer: "Chat can make mistakes. Please review the question before saving.",
+      e_error_adding_q: "Error adding question",
 
       // Overview
       o_your_q: "Your Quizzes",
@@ -163,6 +164,7 @@ const resources = {
       e_ai_q_t: "Lass Chat eine Frage für dich generieren.",
       e_category: "Kategorie",
       e_ai_disclaimer: "Chat kann Fehler machen. Bitte überprüfe die Frage, bevor du sie speicherst.",
+      e_error_adding_q: "Fehler beim Hinzufügen der Frage",
 
       // Overview
       o_your_q: "Deine Quizze",

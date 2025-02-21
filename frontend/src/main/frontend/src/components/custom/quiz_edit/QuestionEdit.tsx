@@ -77,12 +77,10 @@ export function QuestionEdit(input: QuestionEditProps) {
 
   return (
     <div className="flex items-center justify-between">
-      {/* Left Section */}
-      <span>
+      <span className="w-0 flex-1 min-w-0 inline-block truncate">
         {input.question.question}
       </span>
 
-      {/* Right Section */}
       <div className="flex items-center">
         <Badge className="ml-2 mr-2">
           {t(input.question.type)}

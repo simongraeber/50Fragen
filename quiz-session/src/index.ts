@@ -28,6 +28,10 @@ app.get("/", (req: Request, res: Response) => {
   res.send("Quiz Session Service is Running! 🚀")
 })
 
+app.get("/quiz-session/", (req: Request, res: Response) => {
+  res.send("Quiz Session Service is Running! 🚀 /quiz-session")
+})
+
 // GET endpoint to fetch the current quiz state.
 app.get("/quiz-session/quiz/:quizID", async (req: Request, res: Response) => {
   const quizID = req.params.quizID

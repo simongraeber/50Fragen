@@ -25,7 +25,6 @@ spring:
           filters:
             - StripPrefix=1
 
-        # ai-quiz
         - id: ai-quiz-route
           uri: lb://ai-quiz
           predicates:

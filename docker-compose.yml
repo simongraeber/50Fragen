@@ -113,7 +113,7 @@ services:
       - 50Fragen
     environment:
       - PORT=4001
-      - HOST_IP=quiz-session
+      - HOST_IP=ai-quiz
       - EUREKA_HOST=eureka
       - EUREKA_PORT=8761
       - OPENAI_API_KEY=YOUR_OPENAI_API_KEY
