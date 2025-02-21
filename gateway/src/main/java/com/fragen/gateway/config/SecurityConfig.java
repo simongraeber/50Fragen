@@ -22,7 +22,7 @@ public class SecurityConfig {
     public SecurityWebFilterChain securityFilterChain(ServerHttpSecurity http) {
         return http
                 .authorizeExchange(auth ->
-                        auth.pathMatchers("/quiz-database/**", "/quiz-session/**")
+                        auth.pathMatchers("/quiz-database/**", "/quiz-session/**", "/ai-quiz/**")
                                 .authenticated()
                                 .anyExchange().permitAll())
                 .oauth2Login(oauth2 ->

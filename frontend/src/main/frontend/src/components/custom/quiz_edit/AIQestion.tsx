@@ -56,7 +56,7 @@ function AIQuestion({ addQuestion }: { addQuestion: (question: Partial<QuizQuest
           {t("e_ai_q")}
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{t("e_ai_q")}</DialogTitle>
           <DialogDescription>
