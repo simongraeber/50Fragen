@@ -89,7 +89,9 @@ export function QuestionEdit(input: QuestionEditProps) {
           <DialogTrigger asChild>
             <Button variant="outline">
               <MdEdit className="mr-2" />
-              {t("edit")}
+              <span className="hidden xs:inline w-0 xs:w-auto overflow-hidden">
+                {t("edit")}
+              </span>
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
