@@ -14,7 +14,6 @@ import QuestionCard from "@/components/custom/quiz_play/QuestionCard.tsx"
 import { WiStars } from "react-icons/wi"
 import LoadingButton from "@/components/ui/LoadingButton.tsx"
 import { useTranslation } from "react-i18next"
-import i18n, { availableLanguages } from "@/i18n.ts"
 import { CardDescription } from "@/components/ui/card.tsx"
 
 function AIQuestion({ addQuestion }: { addQuestion: (question: Partial<QuizQuestion>) => Promise<void> }) {
@@ -28,8 +27,7 @@ function AIQuestion({ addQuestion }: { addQuestion: (question: Partial<QuizQuest
 
   const onGenerateQuestion = async (category: string) => {
     setLoadingAiQuestion(true)
-    const language = availableLanguages[i18n.language as keyof typeof availableLanguages] || availableLanguages["en"]
-    const question = await generateAiQuestion(category, language, questionType)
+    const question = await generateAiQuestion(category, t("displayed_language"), questionType)
     setCurrentQuestion(question)
     setLoadingAiQuestion(false)
   }

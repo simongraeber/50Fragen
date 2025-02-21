@@ -10,6 +10,8 @@ export const availableLanguages = {
 const resources = {
   en: {
     translation: {
+      displayed_language: "English",
+
       imprint: "Imprint",
       privacy: "Privacy",
       terms: "Terms",
@@ -107,6 +109,8 @@ const resources = {
   },
   de: {
     translation: {
+      displayed_language: "Deutsch",
+
       imprint: "Impressum",
       privacy: "Datenschutz",
       terms: "AGB",
@@ -184,7 +188,7 @@ const resources = {
       p_q_not_found: "Quiz nicht gefunden.",
       p_q_has_no_q: "⚠️ Dieses Quiz enthält bisher keine Fragen.",
       p_add_q: "Frage hinzufügen",
-      p_what_gess: "Was ist deine Vermutung?",
+      p_what_gess: "Was schätzt du?",
       p_what_gess_placeholder: "Gib hier deine Antwort ein",
 
       // Login
