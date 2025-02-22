@@ -56,11 +56,10 @@ function EstimationQuestionAnswers({ answers, canEdit, quizId }: EstimationQuest
     const updates = scores
       .filter((score) => correctUsers.has(score.user.id))
       .map((score) => ({
-        quizID: quizId || "",
         userID: score.user.id,
         score: score.score + scores.length - 1,
       }));
-    updateUserScores(updates);
+    updateUserScores({ quizID: quizId, users: updates });
   };
 
   const findUserInfo = (userId: string) => {

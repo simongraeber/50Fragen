@@ -59,11 +59,10 @@ export function ButtonClickedDialog({ user, canEdit, open }: ButtonClickedDialog
     const updates = scores.filter(
       (score) => score.user.id !== user.id
     ).map((score) => ({
-      quizID: quizId || "",
       userID: score.user.id,
       score: score.score + 1,
     }));
-    updateUserScores(updates);
+    updateUserScores({ quizID: quizId, users: updates });
     await new Promise(r => setTimeout(r, 10));
     setGameActive(quizId)
   }

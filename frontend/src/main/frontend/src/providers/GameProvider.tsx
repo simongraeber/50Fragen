@@ -6,7 +6,7 @@ import {
   connectToGame,
   userScoreUpdated,
   onShowQuestion,
-  onNewQuestion, onNewTextAnswers, onQuizState,
+  onNewQuestion, onNewTextAnswers, onQuizState, userScoresUpdated,
 } from "@/api/quizGame.ts"
 import { Buzz } from "@/types/gamePlay/buzz.ts";
 import { QuizState } from "@/types/gamePlay/QuizState.ts";
@@ -100,6 +100,26 @@ export const GameProvider = ({ quizId, children }: GameProviderProps) => {
             participantsScores: stateRef.current.quizState.participantsScores.map((player) => {
               if (player.user.id === data.userID) {
                 return { ...player, score: data.score };
+              }
+              return player;
+            }),
+            id: stateRef.current.quizState.id,
+          },
+        });
+      }
+    });
+
+    // multiple scores at once
+    userScoresUpdated((data) => {
+      if (stateRef.current.quizState) {
+        dispatch({
+          type: "SET_QUIZ_STATE",
+          payload: {
+            ...stateRef.current.quizState,
+            participantsScores: stateRef.current.quizState.participantsScores.map((player) => {
+              const updatedScore = data.users.find((user) => user.userID === player.user.id);
+              if (updatedScore) {
+                return { ...player, score: updatedScore.score };
               }
               return player;
             }),

@@ -88,8 +88,8 @@ export const updateUserScore = (quizID: string, userID: string, score: number): 
  *  { quizID: "quiz-1", userID: "user-2", score: 20 },
  *  ]);
  */
-export const updateUserScores = (scores: {quizID: string, userID: string; score: number }[]): void => {
-  emitEvent<{ quizID: string; userID: string; score: number }[]>("updateUserScores", scores)
+export const updateUserScores = (scores: {quizID: string, users:{userID: string; score: number}[]}): void => {
+  emitEvent<{quizID: string, users:{userID: string; score: number}[] }>("updateUserScores", scores)
 }
 
 /**
@@ -104,6 +104,14 @@ export const userScoreUpdated = (
   callback: (data: { quizID: string; userID: string; score: number }) => void
 ): void => {
   onEvent("userScoreUpdated", (data: { quizID: string; userID: string; score: number }) => {
+    callback(data)
+  })
+}
+
+export const userScoresUpdated = (
+  callback: (data: { quizID: string; users:{userID: string; score: number}[] }) => void
+): void => {
+  onEvent("userScoresUpdated", (data: { quizID: string; users:{userID: string; score: number}[] } ) => {
     callback(data)
   })
 }

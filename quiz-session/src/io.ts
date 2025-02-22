@@ -96,29 +96,24 @@ io.on("connection", (socket) => {
     io.to(quizID).emit("switchedToActiveOrInactive", { active: false, quizId: quizID });
   });
 
-  const updateUserScore = (data: { quizID: string; userID: string; score: number }) => {
+  socket.on("updateUserScore", (data: { quizID: string; userID: string; score: number }) => {
     const { quizID, userID, score } = data;
-
     if (!quizStates[quizID]) {
       return;
     }
-
     const quiz = quizStates[quizID];
     // Look for the user in the participantsScores array.
     const participantIndex = quiz.participantsScores.findIndex(
       (participant) => participant.user.id === userID
     );
-
     if (participantIndex !== -1) {
-      // Update score for the existing user.
       quiz.participantsScores[participantIndex].score = score;
     } else {
-      // User not found: add a new entry with a default name and an empty image.
       quiz.participantsScores.push({
         user: {
           id: userID,
-          name: `User ${userID}`, // Adjust or fetch the actual name as needed.
-          image: "", // Set a default image URL or leave empty.
+          name: `User ${userID}`,
+          image: "",
         },
         score: score,
       });
@@ -126,18 +121,32 @@ io.on("connection", (socket) => {
 
     // Emit the updated score to all clients in the quiz room.
     io.to(quizID).emit("userScoreUpdated", { quizID, userID, score });
-  }
-
-  socket.on("updateUserScore", (data: { quizID: string; userID: string; score: number }) => {
-    updateUserScore(data)
   });
 
-  socket.on("updateUserScores", async (data: { quizID: string; userID: string; score: number }[]) => {
-    for (const item of data) {
-      console.log("update Points", item);
-      updateUserScore(item);
-      await new Promise(resolve => setTimeout(resolve, 10));
+  socket.on("updateUserScores", async (data: {quizID: string, users:{userID: string; score: number}[] }) => {
+    const { quizID, users } = data;
+    if (!quizStates[quizID]) {
+      return;
     }
+    const quiz = quizStates[quizID];
+    users.forEach((user) => {
+      const participantIndex = quiz.participantsScores.findIndex(
+        (participant) => participant.user.id === user.userID
+      );
+      if (participantIndex !== -1) {
+        quiz.participantsScores[participantIndex].score = user.score;
+      } else {
+        quiz.participantsScores.push({
+          user: {
+            id: user.userID,
+            name: `User ${user.userID}`,
+            image: "",
+          },
+          score: user.score,
+        });
+      }
+    });
+    io.to(quizID).emit("userScoresUpdated", data);
   });
 
   socket.on("showQuestion", (data: { quizID: string; question: string }) => {
