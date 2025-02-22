@@ -91,6 +91,9 @@ const resources = {
       p_add_q: "Add a question",
       p_what_gess: "What is your guess?",
       p_what_gess_placeholder: "Enter your answer here",
+      p_link_copied: "Link Copied",
+      p_invite: "Invite Friends to join the Quiz",
+      p_copy_link: "Copy Link",
 
       // Login
       l_sign_discord: "Sign in with Discord",
@@ -190,6 +193,9 @@ const resources = {
       p_add_q: "Frage hinzufügen",
       p_what_gess: "Was schätzt du?",
       p_what_gess_placeholder: "Gib hier deine Antwort ein",
+      p_link_copied: "Link kopiert",
+      p_invite: "Lade deine Freunde zum Quiz ein",
+      p_copy_link: "Link kopieren",
 
       // Login
       l_sign_discord: "Mit Discord anmelden",

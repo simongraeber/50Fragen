@@ -98,7 +98,7 @@ function QuizPlayPage() {
 
       {state.quizState && (
         <>
-          <section className="w-full my-2 h-24">
+          <section className="w-full lg:px-3 my-2 h-24">
             {state.quizState?.currentQuestion && (
               <Card className="h-24">
                 <CardHeader>
