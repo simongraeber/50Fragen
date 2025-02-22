@@ -12,12 +12,15 @@ import { Quiz } from "@/types/Quiz.ts";
 import QuestionCard from "@/components/custom/quiz_play/QuestionCard.tsx";
 import { newQuestion, showQuestion } from "@/api/quizGame.ts"
 import { useTranslation } from "react-i18next"
+import { QuizQuestionType } from "@/types/QuizQuestion.ts"
+import { updateQuestion } from "@/api/questionCalls.ts"
 
 interface GameMasterControlsProps {
   quiz: Quiz;
 }
 
 function GameMasterControls({ quiz }: GameMasterControlsProps) {
+  const [currentQuiz, setCurrentQuiz] = React.useState<Quiz>(quiz);
   const [carouselApi, setCarouselApi] = React.useState<CarouselApi | null>(null);
   const [currentIndex, setCurrentIndex] = React.useState(0);
   const { t } = useTranslation();
@@ -41,12 +44,29 @@ function GameMasterControls({ quiz }: GameMasterControlsProps) {
 
   const onShowQuestion = () => {
     if (carouselApi) {
-      showQuestion(quiz.id, quiz.questions[currentIndex].question);
+      showQuestion(currentQuiz.id, currentQuiz.questions[currentIndex].question);
     }
   };
 
   const onNewQuestion = (index: number) => {
-    newQuestion(quiz.id, quiz.questions[index].type);
+    newQuestion(currentQuiz.id, currentQuiz.questions[index].type);
+  }
+
+  const onTypeChange = (type: QuizQuestionType) => {
+    const updatedQuestions = currentQuiz.questions;
+    updatedQuestions[currentIndex] = {
+      ...updatedQuestions[currentIndex],
+      type: type
+    };
+    setCurrentQuiz(prevQuiz => {
+      return {
+        ...prevQuiz,
+        questions: updatedQuestions
+      };
+    });
+    onNewQuestion(currentIndex);
+    updatedQuestions[currentIndex].quizId = currentQuiz.id;
+    updateQuestion(updatedQuestions[currentIndex]);
   }
 
   return (
@@ -54,9 +74,11 @@ function GameMasterControls({ quiz }: GameMasterControlsProps) {
       <CardContent>
         <Carousel setApi={setCarouselApi} className="w-full pt-4">
           <CarouselContent className="-ml-4">
-            {quiz.questions.map((question, index) => (
+            {currentQuiz.questions.map((question, index) => (
               <CarouselItem key={index} className="pl-4">
-                <QuestionCard question={question} />
+                <QuestionCard
+                  onTypeChange={onTypeChange}
+                  question={question} />
               </CarouselItem>
             ))}
           </CarouselContent>

@@ -1,15 +1,20 @@
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
-import { QuizQuestion } from "@/types/QuizQuestion.ts"
-import { Badge } from "@/components/ui/badge.tsx"
+import { QuizQuestion, QuizQuestionType } from "@/types/QuizQuestion.ts"
+import { Button } from "@/components/ui/button.tsx"
 import { useTranslation } from "react-i18next"
+import {
+  TooltipProvider, Tooltip,
+  TooltipTrigger, TooltipContent
+} from "@/components/ui/tooltip.tsx"
+import { Badge } from "@/components/ui/badge.tsx"
 
 interface QuestionCardProps {
-  question: Partial<QuizQuestion>
+  question: Partial<QuizQuestion>,
+  onTypeChange: (type: QuizQuestionType) => void
 }
 
-function QuestionCard({ question }: QuestionCardProps) {
+function QuestionCard({ question, onTypeChange }: QuestionCardProps) {
   const { t } = useTranslation();
-
   return (
     <Card>
       <CardContent className="p-4">
@@ -22,10 +27,26 @@ function QuestionCard({ question }: QuestionCardProps) {
           <p>{question.answer}</p>
         </div>
       </CardContent>
-      <CardFooter className="text-right">
-        <Badge className="inline-block ml-auto">
-          {t(question.type ?? "buzzerquestion")}
-        </Badge>
+      <CardFooter className="text-right pb-2">
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="link"
+              onClick={() => onTypeChange(
+                question.type === "buzzerquestion"
+                ? "estimationquestion" : "buzzerquestion")}
+              className="inline-block p-0 ml-auto">
+              <Badge>
+                {t(question.type ?? "buzzerquestion")}
+              </Badge>
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>{t("p_change_q_type")}</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
       </CardFooter>
     </Card>
   );

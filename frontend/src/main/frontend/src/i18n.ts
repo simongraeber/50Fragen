@@ -94,6 +94,8 @@ const resources = {
       p_link_copied: "Link Copied",
       p_invite: "Invite Friends to join the Quiz",
       p_copy_link: "Copy Link",
+      p_gess_send: "Answer Sent",
+      p_change_q_type: "Change Question Type",
 
       // Login
       l_sign_discord: "Sign in with Discord",
@@ -196,6 +198,8 @@ const resources = {
       p_link_copied: "Link kopiert",
       p_invite: "Lade deine Freunde zum Quiz ein",
       p_copy_link: "Link kopieren",
+      p_gess_send: "Antwort gesendet",
+      p_change_q_type: "Frage-Typ ändern",
 
       // Login
       l_sign_discord: "Mit Discord anmelden",

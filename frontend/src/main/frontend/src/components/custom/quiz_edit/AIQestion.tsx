@@ -28,6 +28,7 @@ function AIQuestion({ addQuestion }: { addQuestion: (question: Partial<QuizQuest
   const onGenerateQuestion = async (category: string) => {
     setLoadingAiQuestion(true)
     const question = await generateAiQuestion(category, t("displayed_language"), questionType)
+    question.type = questionType
     setCurrentQuestion(question)
     setLoadingAiQuestion(false)
   }
@@ -37,13 +38,21 @@ function AIQuestion({ addQuestion }: { addQuestion: (question: Partial<QuizQuest
     const newQuestion: Partial<QuizQuestion> = {
       question: currentQuestion?.question ?? "",
       answer: currentQuestion?.answer ?? "",
-      type: questionType,
+      type: currentQuestion?.type ?? "buzzerquestion",
     }
     await addQuestion(newQuestion)
     setLoadingAddQuestion(false)
     setCurrentQuestion(null)
     setCategory("")
     setIsDialogOpen(false)
+  }
+
+  const onTypeChange = (type: QuizQuestion["type"]) => {
+    console.log("type", type)
+    console.log("currentQuestion", currentQuestion)
+    if (currentQuestion) {
+      setCurrentQuestion({ ...currentQuestion, type })
+    }
   }
 
   return (
@@ -88,7 +97,9 @@ function AIQuestion({ addQuestion }: { addQuestion: (question: Partial<QuizQuest
             <>
               <Separator />
               <div className="py-4">
-                <QuestionCard question={currentQuestion} />
+                <QuestionCard
+                  onTypeChange={onTypeChange}
+                  question={currentQuestion} />
               </div>
               <CardDescription className="mb-2">
                 {t("e_ai_disclaimer")}

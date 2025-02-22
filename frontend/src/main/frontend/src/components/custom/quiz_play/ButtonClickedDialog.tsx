@@ -13,7 +13,7 @@ import { AvatarImage } from "@radix-ui/react-avatar"
 import { FaCheck } from "react-icons/fa"
 import { ImCross } from "react-icons/im"
 import { FaUndoAlt } from "react-icons/fa"
-import { setGameActive, updateUserScore } from "@/api/quizGame"
+import { setGameActive, updateUserScore, updateUserScores } from "@/api/quizGame"
 import useQuizIdFromUrl from "@/hooks/useQuizIdFromUrl"
 import { useGame } from "@/providers/GameProvider.tsx"
 import { useState } from "react"
@@ -50,18 +50,21 @@ export function ButtonClickedDialog({ user, canEdit, open }: ButtonClickedDialog
         updateUserScore(quizId, scores[i].user.id, scores[i].score + scores.length - 1);
       }
     }
-    await new Promise(r => setTimeout(r, 20));
+    await new Promise(r => setTimeout(r, 10));
     setGameActive(quizId)
   }
 
   const onWrongAnswer = async () => {
     // give one point to the user except the user who buzzed in
-    for (let i = 0; i < scores.length; i++) {
-      if (scores[i].user.id !== user.id) {
-        updateUserScore(quizId, scores[i].user.id, scores[i].score + 1);
-      }
-    }
-    await new Promise(r => setTimeout(r, 20));
+    const updates = scores.filter(
+      (score) => score.user.id !== user.id
+    ).map((score) => ({
+      quizID: quizId || "",
+      userID: score.user.id,
+      score: score.score + 1,
+    }));
+    updateUserScores(updates);
+    await new Promise(r => setTimeout(r, 10));
     setGameActive(quizId)
   }
 

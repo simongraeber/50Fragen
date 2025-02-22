@@ -4,14 +4,20 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card.tsx"
 import { useState } from "react"
 import { newTextAnswer } from "@/api/quizGame.ts"
 import { useTranslation } from "react-i18next"
+import { useToast } from "@/hooks/use-toast.ts"
 
 function TextSubmission({ active, quizId }: { active: boolean, quizId: string }) {
   const [value, setValue] = useState("")
   const { t } = useTranslation();
+  const { toast } = useToast()
 
   const handleSubmit = () => {
     newTextAnswer(quizId, value)
-    setValue("")
+    toast({
+      title: t("p_gess_send"),
+      description: value,
+      variant: "success"
+    })
   }
   return (
     <Card
