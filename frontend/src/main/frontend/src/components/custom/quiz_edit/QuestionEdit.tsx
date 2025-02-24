@@ -88,7 +88,7 @@ export function QuestionEdit(input: QuestionEditProps) {
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
             <Button variant="outline">
-              <MdEdit className="mr-2" />
+              <MdEdit className="xs:mr-2" />
               <span className="hidden xs:inline w-0 xs:w-auto overflow-hidden">
                 {t("edit")}
               </span>
@@ -138,6 +138,7 @@ export function QuestionEdit(input: QuestionEditProps) {
                 <Button
                   variant="destructive"
                   type="button"
+                  className="mt-2 sm:mt-0"
                   onClick={handleDelete}
                   disabled={loading}
                 >

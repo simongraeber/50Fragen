@@ -6,29 +6,29 @@
 
 /* Animation for a positive change: it slides up and fades out */
 .slide-up {
-    animation: slideUp 1s forwards;
+    animation: slideUp 1.5s forwards;
 }
 
 /* Animation for a negative change: it slides down and fades out */
 .slide-down {
-    animation: slideDown 1s forwards;
+    animation: slideDown 1.5s forwards;
 }
 
 @keyframes slideUp {
     0% {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateY(-10px);
     }
     100% {
         opacity: 0;
-        transform: translateY(-20px);
+        transform: translateY(-40px);
     }
 }
 
 @keyframes slideDown {
     0% {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateY(-10px);
     }
     100% {
         opacity: 0;

@@ -50,7 +50,7 @@ export function ButtonClickedDialog({ user, canEdit, open }: ButtonClickedDialog
         updateUserScore(quizId, scores[i].user.id, scores[i].score + scores.length - 1);
       }
     }
-    await new Promise(r => setTimeout(r, 10));
+    await new Promise(r => setTimeout(r, 50));
     setGameActive(quizId)
   }
 
@@ -63,7 +63,7 @@ export function ButtonClickedDialog({ user, canEdit, open }: ButtonClickedDialog
       score: score.score + 1,
     }));
     updateUserScores({ quizID: quizId, users: updates });
-    await new Promise(r => setTimeout(r, 10));
+    await new Promise(r => setTimeout(r, 50));
     setGameActive(quizId)
   }
 
