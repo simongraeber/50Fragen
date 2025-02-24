@@ -21,7 +21,7 @@ function TextSubmission({ active, quizId }: { active: boolean, quizId: string })
   }
   return (
     <Card
-      className={`${active ? "" : "bg-gray-200"}`}
+      className={`${active ? "" : "bg-gray-200 dark:bg-gray-700"}`}
       >
       <CardHeader>
         <h1 className="text-xl">{t("p_what_gess")}</h1>
