@@ -32,7 +32,7 @@ function QuizPlayPage() {
   // Consume global game state here.
   const { state } = useGame()
   const { buzzData, quizState } = state
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
   // Try to load the quiz.
   useEffect(() => {
@@ -105,7 +105,7 @@ function QuizPlayPage() {
                   <CardTitle>{t("question")}</CardTitle>
                 </CardHeader>
                 <CardContent
-                className="-mt-3"
+                  className="-mt-3"
                 >{state.quizState.currentQuestion}</CardContent>
               </Card>
             )}
@@ -113,15 +113,13 @@ function QuizPlayPage() {
 
           <main className="w-full flex flex-col lg:flex-row gap-1 flex-1">
             {/* Left Aside: Text answers */}
-            <aside className="flex-1 lg:mx-2 min-w-0 lg:basis-1/4 flex flex-col">
+            <aside className="flex-1 my-2 lg:my-0 lg:mx-2 min-w-0 lg:basis-1/4 flex flex-col gap-2">
               {quizState?.textAnswers && quizState.textAnswers.length > 0 && (
-                <div className="pt-2 pb-2">
-                  <EstimationQuestionAnswers
-                    answers={quizState.textAnswers}
-                    canEdit={!!quiz}
-                    quizId={quizId}
-                  />
-                </div>
+                <EstimationQuestionAnswers
+                  answers={quizState.textAnswers}
+                  canEdit={!!quiz}
+                  quizId={quizId}
+                />
               )}
             </aside>
 
@@ -150,9 +148,9 @@ function QuizPlayPage() {
                   ) : (
                     <div className="py-6">
                       <Round3DButton
-                      isActiv={quizState?.active || false}
-                      onClick={() => hitBuzz(quizId)}
-                    />
+                        isActiv={quizState?.active || false}
+                        onClick={() => hitBuzz(quizId)}
+                      />
                     </div>
                   )}
                 </div>
