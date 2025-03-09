@@ -188,9 +188,12 @@ function QuizEditPage() {
                         >
                           <div
                             {...provided.dragHandleProps}
-                            className="cursor-pointer text-lg mt-1 ml-2 pr-2"
+                            className="cursor-pointer text-lg mt-1 ml-2 pr-2 flex items-center"
                           >
                             &#x2630;
+                            <span className="text-lg font-bold ml-2 overflow-hidden w-0 sm:w-10">
+                              # {index + 1}
+                            </span>
                           </div>
                           <div className="flex-grow">
                             <QuestionEdit
