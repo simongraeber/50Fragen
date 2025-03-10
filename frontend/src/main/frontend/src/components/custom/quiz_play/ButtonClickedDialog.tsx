@@ -20,6 +20,10 @@ import { useState } from "react"
 import { Score } from "@/types/gamePlay/Score.ts"
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next"
+import { QuizQuestion } from "@/types/QuizQuestion.ts"
+import QuestionCard from "@/components/custom/quiz_play/QuestionCard.tsx"
+import { getQuestion } from "@/api/questionCalls.ts"
+import { Skeleton } from "@/components/ui/skeleton.tsx"
 
 
 export interface ButtonClickedDialogProps {
@@ -30,6 +34,8 @@ export interface ButtonClickedDialogProps {
 
 export function ButtonClickedDialog({ user, canEdit, open }: ButtonClickedDialogProps) {
   const quizId = useQuizIdFromUrl()
+  const [questionLoading, setQuestionLoading] = useState(true)
+  const [question, setQuestion] = useState<QuizQuestion | null>(null)
 
   const { state } = useGame();
   const [scores, setScores] = useState<Score[]>(state.quizState?.participantsScores ?? []);
@@ -67,9 +73,26 @@ export function ButtonClickedDialog({ user, canEdit, open }: ButtonClickedDialog
     setGameActive(quizId)
   }
 
+  useEffect(() => {
+    if (canEdit && state.currentQuestionId != null) {
+      setQuestionLoading(true);
+      const fetchQuestion = async () => {
+        try {
+          const data = await getQuestion(quizId, state.currentQuestionId!);
+          setQuestion(data);
+        } catch (error) {
+          console.error("Error retrieving question:", error);
+        } finally {
+          setQuestionLoading(false);
+        }
+      };
+      fetchQuestion();
+    }
+  }, [canEdit, state.currentQuestionId, quizId]);
+
   return (
     <AlertDialog open={open}>
-      <AlertDialogContent className="sm:max-w-[425px]">
+      <AlertDialogContent className="sm:max-w-[425px] overflow-auto">
         <AlertDialogHeader>
           <AlertDialogTitle>{user.name} {t("p_buzzed")}</AlertDialogTitle>
         </AlertDialogHeader>
@@ -82,24 +105,33 @@ export function ButtonClickedDialog({ user, canEdit, open }: ButtonClickedDialog
           </Avatar>
         </div>
         {canEdit && (
-          <AlertDialogFooter>
-            <Button variant="outline"
-              onClick={onCorrectAnswer}
-            >
-              <FaCheck className="text-green-700" />
-            </Button>
-            <Button variant="outline"
-              onClick={onWrongAnswer}
-            >
-              <ImCross className="text-red-700" />
-            </Button>
-            <Button
-              variant="outline"
-              onClick={onReset}
-            >
-              <FaUndoAlt />
-            </Button>
-          </AlertDialogFooter>
+          <>
+            {!questionLoading ? (
+              <QuestionCard question={question!} onTypeChange={() => {}}/>
+            ) : (
+              <div className="flex justify-center">
+                <Skeleton className="w-full h-40" />
+              </div>
+            )}
+            <AlertDialogFooter>
+              <Button variant="outline"
+                onClick={onCorrectAnswer}
+              >
+                <FaCheck className="text-green-700" />
+              </Button>
+              <Button variant="outline"
+                onClick={onWrongAnswer}
+              >
+                <ImCross className="text-red-700" />
+              </Button>
+              <Button
+                variant="outline"
+                onClick={onReset}
+              >
+                <FaUndoAlt />
+              </Button>
+            </AlertDialogFooter>
+          </>
         )}
       </AlertDialogContent>
     </AlertDialog>

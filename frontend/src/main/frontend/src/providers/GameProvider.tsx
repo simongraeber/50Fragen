@@ -15,16 +15,19 @@ import { GameState } from "@/types/gamePlay/gameState.ts";
 interface GameStateData {
   buzzData: Buzz | null;
   quizState: QuizState | null;
+  currentQuestionId: string | null;
 }
 
 const initialState: GameStateData = {
   buzzData: null,
   quizState: null,
+  currentQuestionId: null,
 };
 
 type Action =
   | { type: "SET_BUZZ_DATA"; payload: Buzz | null }
-  | { type: "SET_QUIZ_STATE"; payload: QuizState | null };
+  | { type: "SET_QUIZ_STATE"; payload: QuizState | null }
+  | { type: "SET_CURRENT_QUESTION_ID"; payload: string | null };
 
 function gameReducer(state: GameStateData, action: Action): GameStateData {
   switch (action.type) {
@@ -32,6 +35,8 @@ function gameReducer(state: GameStateData, action: Action): GameStateData {
       return { ...state, buzzData: action.payload };
     case "SET_QUIZ_STATE":
       return { ...state, quizState: action.payload };
+    case "SET_CURRENT_QUESTION_ID":
+      return { ...state, currentQuestionId: action.payload };
     default:
       return state;
   }

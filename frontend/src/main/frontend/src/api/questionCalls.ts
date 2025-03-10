@@ -1,5 +1,5 @@
 import { QuizQuestion } from "@/types/QuizQuestion.ts"
-import { PUT, POST, DELETE } from "@/lib/http"
+import { PUT, POST, DELETE, GET } from "@/lib/http"
 import { quizBasePath } from "@/api/quizCalls"
 
 /**
@@ -18,6 +18,15 @@ export const createQuestion = async (question: Partial<QuizQuestion>) => {
  */
 export const updateQuestion = async (question: Partial<QuizQuestion>) => {
   return await PUT<QuizQuestion, Partial<QuizQuestion>>(`${quizBasePath}/${question.quizId}/questions/${question.id}`, question)
+}
+
+/**
+ * returns the question with the given id
+ * @param quizId the id of the quiz
+ * @param questionId the id of the question
+ */
+export const getQuestion = async (quizId: string, questionId: string) => {
+  return await GET<QuizQuestion>(`${quizBasePath}/${quizId}/questions/${questionId}`)
 }
 
 /**

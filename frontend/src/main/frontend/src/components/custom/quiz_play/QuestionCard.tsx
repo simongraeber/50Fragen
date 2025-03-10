@@ -4,17 +4,17 @@ import { Button } from "@/components/ui/button.tsx"
 import { useTranslation } from "react-i18next"
 import {
   TooltipProvider, Tooltip,
-  TooltipTrigger, TooltipContent
+  TooltipTrigger, TooltipContent,
 } from "@/components/ui/tooltip.tsx"
 import { Badge } from "@/components/ui/badge.tsx"
 
 interface QuestionCardProps {
   question: Partial<QuizQuestion>,
-  onTypeChange: (type: QuizQuestionType) => void
+  onTypeChange: (type: QuizQuestionType) => void | null;
 }
 
 function QuestionCard({ question, onTypeChange }: QuestionCardProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
   return (
     <Card>
       <CardContent className="p-4">
@@ -28,28 +28,32 @@ function QuestionCard({ question, onTypeChange }: QuestionCardProps) {
         </div>
       </CardContent>
       <CardFooter className="text-right pb-2">
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              variant="link"
-              onClick={() => onTypeChange(
-                question.type === "buzzerquestion"
-                ? "estimationquestion" : "buzzerquestion")}
-              className="inline-block p-0 ml-auto">
-              <Badge>
-                {t(question.type ?? "buzzerquestion")}
-              </Badge>
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>{t("p_change_q_type")}</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+        <TooltipProvider>
+          {onTypeChange ? (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="link"
+                  onClick={() => onTypeChange(
+                    question.type === "buzzerquestion"
+                      ? "estimationquestion" : "buzzerquestion")}
+                  className="inline-block p-0 ml-auto">
+                  <Badge>
+                    {t(question.type ?? "buzzerquestion")}
+                  </Badge>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{t("p_change_q_type")}</p>
+              </TooltipContent>
+            </Tooltip>
+          ) : (
+            <Badge>{t(question.type ?? "buzzerquestion")}</Badge>
+          )}
+        </TooltipProvider>
       </CardFooter>
     </Card>
-  );
+  )
 }
 
-export default QuestionCard;
+export default QuestionCard

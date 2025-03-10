@@ -24,6 +24,13 @@ public class QuizQuestionController {
         return questionService.getQuestionsByQuizId(quizId, userId);
     }
 
+    @GetMapping("/{questionId}")
+    public QuizQuestion getQuestion(@PathVariable UUID quizId,
+                                    @PathVariable UUID questionId,
+                                    @RequestHeader("X-User-ID") String userId) {
+        return questionService.getQuestionById(quizId, questionId, userId);
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public QuizQuestion createQuestion(@PathVariable UUID quizId,

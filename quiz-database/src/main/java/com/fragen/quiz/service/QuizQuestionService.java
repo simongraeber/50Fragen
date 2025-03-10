@@ -32,6 +32,18 @@ public class QuizQuestionService {
         return questionRepository.findByQuizIdOrderByQuestionOrderAsc(quizId);
     }
 
+    public QuizQuestion getQuestionById(UUID quizId, UUID questionId, String userId) {
+        QuizQuestion question = questionRepository.findById(questionId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Question not found"));
+        if (!question.getQuiz().getId().equals(quizId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Question not found");
+        }
+        if (!question.getQuiz().getUserId().equals(userId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not authorized to access this question");
+        }
+        return question;
+    }
+
     public QuizQuestion createQuestion(UUID quizId, CreateQuestionRequest request, String userId) {
         Quiz quiz = quizRepository.findById(quizId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Quiz not found"));

@@ -15,6 +15,7 @@ import { useTranslation } from "react-i18next"
 import { QuizQuestionType } from "@/types/QuizQuestion.ts"
 import { updateQuestion } from "@/api/questionCalls.ts"
 import { Progress } from "@/components/ui/progress"
+import { useGame } from "@/providers/GameProvider.tsx"
 
 interface GameMasterControlsProps {
   quiz: Quiz;
@@ -24,6 +25,7 @@ function GameMasterControls({ quiz }: GameMasterControlsProps) {
   const [currentQuiz, setCurrentQuiz] = React.useState<Quiz>(quiz)
   const [carouselApi, setCarouselApi] = React.useState<CarouselApi | null>(null)
   const [currentIndex, setCurrentIndex] = React.useState(0)
+  const { dispatch } = useGame();
   const { t } = useTranslation()
 
   React.useEffect(() => {
@@ -50,6 +52,10 @@ function GameMasterControls({ quiz }: GameMasterControlsProps) {
   }
 
   const onNewQuestion = (index: number) => {
+    dispatch({
+      type: 'SET_CURRENT_QUESTION_ID',
+      payload: currentQuiz.questions[index].id,
+    });
     newQuestion(currentQuiz.id, currentQuiz.questions[index].type)
   }
 
@@ -74,7 +80,7 @@ function GameMasterControls({ quiz }: GameMasterControlsProps) {
 
   return (
     <Card className="relative overflow-hidden">
-      <div className="absolute top-0 -mx-2 left-0 right-0 flex items-center justify-between">
+      <div className="absolute bottom-0 -mx-2 left-0 right-0 flex items-center justify-between">
         <Progress value={progressPercent} className="flex-grow h-3" />
       </div>
       <CardContent>
@@ -90,7 +96,7 @@ function GameMasterControls({ quiz }: GameMasterControlsProps) {
           </CarouselContent>
         </Carousel>
       </CardContent>
-      <CardFooter className="flex justify-between">
+      <CardFooter className="flex justify-between pb-6">
         <Button
           disabled={!carouselApi || currentIndex === 0}
           onClick={() => carouselApi && carouselApi.scrollPrev()}
