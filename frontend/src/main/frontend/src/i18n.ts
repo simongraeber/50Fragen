@@ -96,6 +96,7 @@ const resources = {
       p_copy_link: "Copy Link",
       p_gess_send: "Answer Sent",
       p_change_q_type: "Change Question Type",
+      p_no_active_game: "The Quiz is not active‼️",
 
       // Login
       l_sign_discord: "Sign in with Discord",
@@ -200,6 +201,7 @@ const resources = {
       p_copy_link: "Link kopieren",
       p_gess_send: "Antwort gesendet",
       p_change_q_type: "Frage-Typ ändern",
+      p_no_active_game: "Das Quiz ist nicht aktiv‼️",
 
       // Login
       l_sign_discord: "Mit Discord anmelden",

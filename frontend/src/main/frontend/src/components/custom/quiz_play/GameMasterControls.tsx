@@ -1,4 +1,4 @@
-import React from "react"
+import { useEffect, useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import {
@@ -16,24 +16,31 @@ import { QuizQuestionType } from "@/types/QuizQuestion.ts"
 import { updateQuestion } from "@/api/questionCalls.ts"
 import { Progress } from "@/components/ui/progress"
 import { useGame } from "@/providers/GameProvider.tsx"
+import { toast } from "@/hooks/use-toast.ts"
 
 interface GameMasterControlsProps {
   quiz: Quiz;
 }
 
 function GameMasterControls({ quiz }: GameMasterControlsProps) {
-  const [currentQuiz, setCurrentQuiz] = React.useState<Quiz>(quiz)
-  const [carouselApi, setCarouselApi] = React.useState<CarouselApi | null>(null)
-  const [currentIndex, setCurrentIndex] = React.useState(0)
-  const { dispatch } = useGame();
+  const [currentQuiz, setCurrentQuiz] = useState<Quiz>(quiz)
+  const [carouselApi, setCarouselApi] = useState<CarouselApi | null>(null)
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const { dispatch, state } = useGame()
+  const stateRef = useRef(state);
+
   const { t } = useTranslation()
 
-  React.useEffect(() => {
+  useEffect(() => {
+    setCurrentQuiz(quiz)
+  }, [quiz])
+
+  useEffect(() => {
     if (carouselApi) {
       const onSelect = () => {
         const newIndex = carouselApi.selectedScrollSnap()
         setCurrentIndex(newIndex)
-        onNewQuestion(newIndex) // Pass the new index to onNewQuestion
+        onNewQuestion(newIndex)
       }
 
       carouselApi.on("select", onSelect)
@@ -51,12 +58,24 @@ function GameMasterControls({ quiz }: GameMasterControlsProps) {
     }
   }
 
+  useEffect(() => {
+    stateRef.current = state;
+  }, [state]);
+
   const onNewQuestion = (index: number) => {
     dispatch({
       type: 'SET_CURRENT_QUESTION_ID',
       payload: currentQuiz.questions[index].id,
     });
-    newQuestion(currentQuiz.id, currentQuiz.questions[index].type)
+    newQuestion(currentQuiz.id, currentQuiz.questions[index].type);
+
+    // Access the most current state via ref
+    if (!stateRef.current.quizState?.active) {
+      toast({
+        title: t("p_no_active_game"),
+        variant: "default"
+      });
+    }
   }
 
   const onTypeChange = (type: QuizQuestionType) => {
