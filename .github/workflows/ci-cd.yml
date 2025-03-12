@@ -48,6 +48,8 @@ jobs:
           docker push simon1999/50fragen:quiz-database-dev
           docker build -f ai-quiz/Dockerfile -t simon1999/50fragen:ai-quiz-dev ai-quiz
           docker push simon1999/50fragen:ai-quiz-dev
+          docker build -f file-manager/Dockerfile -t simon1999/50fragen:file-manager-dev file-manager
+          docker push simon1999/50fragen:file-manager-dev
 
       - name: Add server to known_hosts
         run: |
