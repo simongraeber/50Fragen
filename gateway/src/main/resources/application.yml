@@ -13,6 +13,12 @@ spring:
         locator:
           enabled: true
       routes:
+        - id: file-manager-route
+          uri: lb://file-manager
+          predicates:
+            - Path=/file-manager/**
+          filters:
+            - StripPrefix=1
         - id: quiz-session-route
           uri:  lb://quiz-session
           predicates:
