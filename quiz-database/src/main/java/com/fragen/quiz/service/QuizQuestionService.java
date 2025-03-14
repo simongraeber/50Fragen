@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.UUID;
+import com.fragen.quiz.model.QuestionExtensions.AttachedImageExtension;
 
 @Service
 public class QuizQuestionService {
@@ -22,7 +23,6 @@ public class QuizQuestionService {
     @Autowired
     private QuizRepository quizRepository;
 
-    // Return questions only after verifying that the requesting user owns the quiz.
     public List<QuizQuestion> getQuestionsByQuizId(UUID quizId, String userId) {
         Quiz quiz = quizRepository.findById(quizId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Quiz not found"));
@@ -61,10 +61,21 @@ public class QuizQuestionService {
 
         QuizQuestion question = new QuizQuestion(request.getQuestion(), request.getAnswer(), type, quiz);
 
-        // Set the new question order to be the last position.
         List<QuizQuestion> existingQuestions = questionRepository.findByQuizIdOrderByQuestionOrderAsc(quizId);
         question.setQuestionOrder(existingQuestions.size());
 
+        if (request.getExtensions() != null) {
+            request.getExtensions().forEach(extensionDTO -> {
+                if ("attachedImage".equals(extensionDTO.getExtensionType())) {
+                    AttachedImageExtension ext = new AttachedImageExtension();
+                    ext.setImageUrl(extensionDTO.getImageUrl());
+                    question.addExtension(ext);
+                } else {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                            "Unsupported extension type: " + extensionDTO.getExtensionType());
+                }
+            });
+        }
         return questionRepository.save(question);
     }
 
@@ -89,6 +100,20 @@ public class QuizQuestionService {
             existingQuestion.setType(QuizQuestionType.valueOf(request.getType()));
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid question type");
+        }
+
+        if (request.getExtensions() != null) {
+            existingQuestion.getExtensions().clear();
+            request.getExtensions().forEach(extensionDTO -> {
+                if ("attachedImage".equals(extensionDTO.getExtensionType())) {
+                    AttachedImageExtension ext = new AttachedImageExtension();
+                    ext.setImageUrl(extensionDTO.getImageUrl());
+                    existingQuestion.addExtension(ext);
+                } else {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                            "Unsupported extension type: " + extensionDTO.getExtensionType());
+                }
+            });
         }
 
         return questionRepository.save(existingQuestion);

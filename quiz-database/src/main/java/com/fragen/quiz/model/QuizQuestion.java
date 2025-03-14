@@ -3,6 +3,9 @@ package com.fragen.quiz.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import java.util.UUID;
+import java.util.ArrayList;
+import java.util.List;
+import com.fragen.quiz.model.QuizQuestionExtension;
 
 @Entity
 @Table(name = "quiz_questions")
@@ -22,9 +25,11 @@ public class QuizQuestion {
     @Enumerated(EnumType.STRING)
     private QuizQuestionType type;
 
-    // New field to store the order of the question
     @Column(nullable = false)
     private int questionOrder;
+
+    @OneToMany(mappedBy = "quizQuestion", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<QuizQuestionExtension> extensions = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "quiz_id", nullable = false)
@@ -41,7 +46,6 @@ public class QuizQuestion {
         this.quiz = quiz;
     }
 
-    // Getters and Setters
     public UUID getId() {
         return id;
     }
@@ -88,5 +92,23 @@ public class QuizQuestion {
 
     public void setQuestionOrder(int questionOrder) {
         this.questionOrder = questionOrder;
+    }
+
+    public void setExtensions(List<QuizQuestionExtension> extensions) {
+        this.extensions = extensions;
+    }
+
+    public List<QuizQuestionExtension> getExtensions() {
+        return extensions;
+    }
+
+    public void removeExtension(QuizQuestionExtension extension) {
+        extensions.remove(extension);
+        extension.setQuizQuestion(null);
+    }
+
+    public void addExtension(QuizQuestionExtension extension) {
+        extensions.add(extension);
+        extension.setQuizQuestion(this);
     }
 }

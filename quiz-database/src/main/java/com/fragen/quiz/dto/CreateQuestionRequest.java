@@ -2,6 +2,7 @@ package com.fragen.quiz.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import java.util.List;
 
 public class CreateQuestionRequest {
 
@@ -15,6 +16,8 @@ public class CreateQuestionRequest {
     private String type;  // Use "buzzerquestion" or "estimationquestion"
 
     public CreateQuestionRequest() { }
+
+    private List<QuizQuestionExtensionDTO> extensions;
 
     public String getQuestion() {
         return question;
@@ -35,5 +38,13 @@ public class CreateQuestionRequest {
     }
     public void setType(String type) {
         this.type = type;
+    }
+
+    public List<QuizQuestionExtensionDTO> getExtensions() {
+        return extensions;
+    }
+
+    public void setExtensions(List<QuizQuestionExtensionDTO> extensions) {
+        this.extensions = extensions;
     }
 }
