@@ -60,8 +60,15 @@ export const POST = <T, U>(
   config?: AxiosRequestConfig,
   expectedHTTPErrors?: Record<number, (err: AxiosError) => void>,
 ): Promise<T> => {
+  const requestConfig = { ...config };
+  if (data instanceof FormData) {
+    requestConfig.headers = {
+      ...(requestConfig.headers || {}),
+      'Content-Type': undefined
+    };
+  }
   return axiosInstance
-    .post<T>(url, data, config)
+    .post<T>(url, data, requestConfig)
     .then(handleResponse)
     .catch((err) => handleError(err, expectedHTTPErrors))
 }

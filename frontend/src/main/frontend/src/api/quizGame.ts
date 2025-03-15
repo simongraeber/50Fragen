@@ -3,6 +3,7 @@ import { GET } from "@/lib/http.ts"
 import { QuizState } from "@/types/gamePlay/QuizState.ts"
 import { GameState } from "@/types/gamePlay/gameState.ts"
 import { Buzz } from "@/types/gamePlay/buzz.ts"
+import { QuizQuestionExtension } from "@/types/QuizQuestionExtension.ts"
 
 /**
  * Joins a quiz room.
@@ -183,6 +184,16 @@ export const showTextAnswers = (quizID: string): void => {
 
 export const onQuizState = (callback: (data: QuizState) => void): void => {
   onEvent("quizState", (data: QuizState) => {
+    callback(data)
+  })
+}
+
+export const showQuestionExtension = (quizID: string, extension: QuizQuestionExtension): void => {
+  emitEvent("showQuestionExtension", { quizID: quizID, extension: extension })
+}
+
+export const onQuestionExtension = (callback: (data: { extension: QuizQuestionExtension }) => void): void => {
+  onEvent("showQuestionExtension", (data: { extension: QuizQuestionExtension }) => {
     callback(data)
   })
 }

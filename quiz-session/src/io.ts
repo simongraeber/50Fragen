@@ -1,6 +1,8 @@
 import { Server } from "socket.io";
 import { server } from "./index";
 import { quizStates, getQuizState, getCurrentQuizState } from "./state"
+import { strict } from "node:assert"
+import e from "express"
 
 // Create a namespace explicitly for '/quiz-session'
 const io = new Server(server, {
@@ -123,9 +125,23 @@ io.on("connection", (socket) => {
     io.to(quizID).emit("userScoreUpdated", { quizID, userID, score });
   });
 
+  socket.on("showQuestionExtension", (data: {  quizID: string, extension: any })=> {
+    const {quizID, extension} = data;
+    if (!quizStates[quizID]) {
+      return;
+    }
+    if (!canEdit(quizID)) {
+      return;
+    }
+    io.to(quizID).emit("showQuestionExtension", {extension: extension})
+  })
+
   socket.on("updateUserScores", async (data: {quizID: string, users:{userID: string; score: number}[] }) => {
     const { quizID, users } = data;
     if (!quizStates[quizID]) {
+      return;
+    }
+    if (!canEdit(quizID)) {
       return;
     }
     const quiz = quizStates[quizID];

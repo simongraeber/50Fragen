@@ -6,28 +6,32 @@ import {
   connectToGame,
   userScoreUpdated,
   onShowQuestion,
-  onNewQuestion, onNewTextAnswers, onQuizState, userScoresUpdated,
+  onNewQuestion, onNewTextAnswers, onQuizState, userScoresUpdated, onQuestionExtension,
 } from "@/api/quizGame.ts"
 import { Buzz } from "@/types/gamePlay/buzz.ts";
 import { QuizState } from "@/types/gamePlay/QuizState.ts";
 import { GameState } from "@/types/gamePlay/gameState.ts";
+import { QuizQuestionExtension } from "@/types/QuizQuestionExtension.ts"
 
 interface GameStateData {
   buzzData: Buzz | null;
   quizState: QuizState | null;
   currentQuestionId: string | null;
+  currentQuestionExtensions: QuizQuestionExtension[] | null;
 }
 
 const initialState: GameStateData = {
   buzzData: null,
   quizState: null,
   currentQuestionId: null,
+  currentQuestionExtensions: null,
 };
 
 type Action =
   | { type: "SET_BUZZ_DATA"; payload: Buzz | null }
   | { type: "SET_QUIZ_STATE"; payload: QuizState | null }
-  | { type: "SET_CURRENT_QUESTION_ID"; payload: string | null };
+  | { type: "SET_CURRENT_QUESTION_ID"; payload: string | null }
+  | { type: "SET_CURRENT_QUESTION_EXTENSIONS"; payload: QuizQuestionExtension[] | null };
 
 function gameReducer(state: GameStateData, action: Action): GameStateData {
   switch (action.type) {
@@ -37,6 +41,8 @@ function gameReducer(state: GameStateData, action: Action): GameStateData {
       return { ...state, quizState: action.payload };
     case "SET_CURRENT_QUESTION_ID":
       return { ...state, currentQuestionId: action.payload };
+    case "SET_CURRENT_QUESTION_EXTENSIONS":
+      return { ...state, currentQuestionExtensions: action.payload };
     default:
       return state;
   }
@@ -173,6 +179,12 @@ export const GameProvider = ({ quizId, children }: GameProviderProps) => {
             id: stateRef.current.quizState.id,
           },
         });
+        dispatch(
+          {
+            type: "SET_CURRENT_QUESTION_EXTENSIONS",
+            payload: null,
+          }
+        )
       }
     });
 
@@ -195,6 +207,17 @@ export const GameProvider = ({ quizId, children }: GameProviderProps) => {
       dispatch({
         type: "SET_QUIZ_STATE",
         payload: data,
+      });
+    });
+
+    // the game Master shows a new quizQuestionExtension
+    onQuestionExtension((data) => {
+      console.log("resefing Extention", data.extension);
+      dispatch({
+        type: "SET_CURRENT_QUESTION_EXTENSIONS",
+        payload: stateRef.current.currentQuestionExtensions
+          ? [data.extension, ...stateRef.current.currentQuestionExtensions]
+          : [data.extension],
       });
     });
 
