@@ -1,3 +1,5 @@
+import { QuizQuestionExtension } from "@/types/QuizQuestionExtension.ts"
+
 export type QuizQuestionType = "buzzerquestion" | "estimationquestion"
 
 export type QuizQuestion = {
@@ -6,4 +8,5 @@ export type QuizQuestion = {
   answer: string
   quizId?: string
   type: QuizQuestionType
+  extensions: QuizQuestionExtension[]
 }

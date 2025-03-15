@@ -70,6 +70,14 @@ const resources = {
       e_category: "Category",
       e_ai_disclaimer: "Chat can make mistakes. Please review the question before saving.",
       e_error_adding_q: "Error adding question",
+      e_question_extensions: "Extensions",
+      // Question Extensions
+      ex_attachedImage: "Image Attachment",
+      ex_showImage: "Show Image",
+      ex_image: "Image",
+      ex_select_ex: "Add Extension",
+      ex_click_file_change: "Click to change image",
+      ex_click_drag_drop: "Click to upload or drag and drop",
 
       // Overview
       o_your_q: "Your Quizzes",
@@ -175,6 +183,13 @@ const resources = {
       e_category: "Kategorie",
       e_ai_disclaimer: "Chat kann Fehler machen. Bitte überprüfe die Frage, bevor du sie speicherst.",
       e_error_adding_q: "Fehler beim Hinzufügen der Frage",
+      e_question_extensions: "Erweiterungen",
+      // Question Extensions
+      ex_attachedImage: "Bild Anhang",
+      ex_showImage: "Bild anzeigen",
+      ex_image: "Bild",
+      ex_select_ex: "Erweiterung hinzufügen",
+
 
       // Overview
       o_your_q: "Deine Quizze",

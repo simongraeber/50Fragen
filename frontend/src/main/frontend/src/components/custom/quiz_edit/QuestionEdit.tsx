@@ -1,4 +1,4 @@
-import { useState } from "react"
+import React, { useState } from "react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -12,11 +12,24 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
-
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
+import { useTranslation } from "react-i18next"
+import QuestionTypeSelect from "@/components/custom/quiz_edit/QuestionTypeSelect.tsx"
+import {
+  QuizQuestionExtensionFactory
+} from "@/components/custom/QuizQuestionExtension/QuizQuestionExtensionFactory.tsx"
+import { QuizQuestionExtension } from "@/types/QuizQuestionExtension.ts"
+import {
+  QuizQuestionExtensionDropdown
+} from "@/components/custom/QuizQuestionExtension/QuizQuestionExtensionDropdown.tsx"
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card.tsx"
 import { QuizQuestion } from "@/types/QuizQuestion"
-
 import { MdEdit } from "react-icons/md"
-
 import { updateQuestion, deleteQuestion } from "@/api/questionCalls.ts"
 
 interface QuestionEditProps {
@@ -26,17 +39,26 @@ interface QuestionEditProps {
   removeQuestion: (questionId: string) => void
 }
 
-import { useTranslation } from "react-i18next"
-import QuestionTypeSelect from "@/components/custom/quiz_edit/QuestionTypeSelect.tsx"
-
 export function QuestionEdit(input: QuestionEditProps) {
-
   const [editedAnswer, setEditedAnswer] = useState<string>(input.question.answer)
   const [editedType, setEditedType] = useState<QuizQuestion["type"]>(input.question.type)
   const [loading, setLoading] = useState(false)
   const [editedQuestion, setEditedQuestion] = useState<string>(input.question.question)
+  const [questionExtensions, setQuestionExtensions] = useState<QuizQuestionExtension[]>(input.question.extensions || [])
   const [dialogOpen, setDialogOpen] = useState(false)
   const { t } = useTranslation()
+
+  const handleExtensionChange = (updatedExtension: QuizQuestionExtension) => {
+    setQuestionExtensions((prevExtensions) =>
+      prevExtensions.map((ext) =>
+        ext.id === updatedExtension.id ? updatedExtension : ext
+      )
+    );
+  };
+
+  const addExtension = (extension: QuizQuestionExtension) => {
+    setQuestionExtensions((prevExtensions) => [...prevExtensions, extension])
+  }
 
   const handleUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -49,6 +71,7 @@ export function QuestionEdit(input: QuestionEditProps) {
         answer: editedAnswer,
         type: editedType,
         quizId: input.quizId,
+        extensions: questionExtensions,
       }
       const new_question = await updateQuestion(updatedQuestion)
       input.updateQuestion(new_question)
@@ -94,7 +117,7 @@ export function QuestionEdit(input: QuestionEditProps) {
               </span>
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
+          <DialogContent className="sm:max-w-[425px] overflow-auto max-h-screen">
             <DialogHeader>
               <DialogTitle>{t("e_e_q")}</DialogTitle>
               <DialogDescription>
@@ -133,6 +156,43 @@ export function QuestionEdit(input: QuestionEditProps) {
                     <QuestionTypeSelect value={editedType} onValueChange={setEditedType} />
                   </div>
                 </div>
+                <Accordion type="single" collapsible className="w-full">
+                  <AccordionItem value="advanced-options">
+                    <AccordionTrigger>{t("e_question_extensions")}</AccordionTrigger>
+                    <AccordionContent>
+                      <QuizQuestionExtensionDropdown
+                        onAddExtension={addExtension} />
+                      <div className="grid grid-cols-1 gap-4 w-full pt-2">
+                        {questionExtensions.map((ext) => (
+                          <Card className="w-full" key={ext.id}>
+                            <CardContent>
+                              <CardHeader>
+                                {t(ext.extensionType)}
+                              </CardHeader>
+                              <QuizQuestionExtensionFactory
+                                extension={ext}
+                                displayType={"edit"}
+                                onExtensionChange={handleExtensionChange}
+                              />
+                            </CardContent>
+                            <CardFooter>
+                              <Button
+                                variant="destructive"
+                                onClick={() => {
+                                  setQuestionExtensions((prevExtensions) =>
+                                    prevExtensions.filter((e) => e.id !== ext.id)
+                                  )
+                                }}
+                              >
+                                {t("delete")}
+                              </Button>
+                            </CardFooter>
+                          </Card>
+                        ))}
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
               </div>
               <DialogFooter className="flex justify-between">
                 <Button

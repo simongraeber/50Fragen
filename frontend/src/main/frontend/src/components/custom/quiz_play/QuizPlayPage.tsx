@@ -20,6 +20,7 @@ import Page from "@/components/shared/Layout/Page.tsx"
 import HeadLine from "@/components/shared/Layout/HeadLine.tsx"
 import LoadingPage from "@/components/shared/LoadingPage.tsx"
 import { useTranslation } from "react-i18next"
+import QuestionExtensionDisplay from "@/components/custom/quiz_play/QuestionExtensionDisplay.tsx"
 
 function QuizPlayPage() {
   const quizId = useQuizIdFromUrl()
@@ -31,7 +32,7 @@ function QuizPlayPage() {
 
   // Consume global game state here.
   const { state } = useGame()
-  const { buzzData, quizState } = state
+  const { buzzData, quizState, currentQuestionExtensions } = state
   const { t } = useTranslation()
 
   // Try to load the quiz.
@@ -140,20 +141,25 @@ function QuizPlayPage() {
                   )}
                 </div>
               ) : (
-                <div className="lg:px-1 flex justify-center h-52">
-                  {state.quizState?.currentQuestionType === "estimationquestion" ? (
-                    <div className="mb-auto">
-                      <TextSubmission active={quizState?.active || false} quizId={quizId} />
-                    </div>
-                  ) : (
-                    <div className="py-6">
-                      <Round3DButton
-                        isActiv={quizState?.active || false}
-                        onClick={() => hitBuzz(quizId)}
-                      />
-                    </div>
+                <>
+                  <div className="lg:px-1 flex justify-center h-52">
+                    {state.quizState?.currentQuestionType === "estimationquestion" ? (
+                      <div className="mb-auto">
+                        <TextSubmission active={quizState?.active || false} quizId={quizId} />
+                      </div>
+                    ) : (
+                      <div className="py-6">
+                        <Round3DButton
+                          isActiv={quizState?.active || false}
+                          onClick={() => hitBuzz(quizId)}
+                        />
+                      </div>
+                    )}
+                  </div>
+                  {currentQuestionExtensions && currentQuestionExtensions.length > 0 && (
+                    <QuestionExtensionDisplay questionExtensions={currentQuestionExtensions} />
                   )}
-                </div>
+                </>
               )}
             </div>
 
