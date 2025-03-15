@@ -46,7 +46,9 @@ export const AttachedImageEdit: React.FC<EditProps> = ({
       if (onExtensionChange) {
         onExtensionChange({ ...extension, imageUrl: newImageUrl.fileURL });
       }
-      await deleteFile(oldImageUrl)
+      if (oldImageUrl !== "") {
+        await deleteFile(oldImageUrl)
+      }
     }
     setLoading(false);
   };

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -50,6 +50,8 @@ export function QuestionEdit(input: QuestionEditProps) {
   const [dialogOpen, setDialogOpen] = useState(false)
   const { t } = useTranslation()
 
+  const isInitialMount = useRef(true);
+
   const handleExtensionChange = (updatedExtension: QuizQuestionExtension) => {
     setQuestionExtensions((prevExtensions) =>
       prevExtensions.map((ext) =>
@@ -63,6 +65,10 @@ export function QuestionEdit(input: QuestionEditProps) {
   }
 
   useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
     handleUpdate();
   }, [questionExtensions, editedType]);
 
