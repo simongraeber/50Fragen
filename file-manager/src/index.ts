@@ -15,9 +15,10 @@ interface FileMetadata {
   fileName: string;
   originalName: string;
   uploadedAt: Date;
+  visibility: string;
 }
 
-const privateFileOwners: Map<string, FileMetadata> = new Map();
+const fileOwners: Map<string, FileMetadata> = new Map();
 
 const storage = multer.diskStorage({
   destination: (
@@ -45,10 +46,22 @@ const upload = multer({ storage });
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Only serve public files statically - no authentication required
+// Serve public files statically (no authentication required)
 app.use("/uploads/public", express.static(path.join(__dirname, "../uploads/public")));
 
-// Middleware to authenticate user for private file access
+// Middleware to require authentication for deletion (or any authenticated actions)
+const authenticateUser = (req: Request, res: Response, next: NextFunction): void => {
+  const userId = req.headers["x-user-id"] as string;
+  if (!userId) {
+    res.status(401).json({ error: "Authentication required" });
+    return;
+  }
+  // Store authenticated user id in the body for later use.
+  req.body.authenticatedUserId = userId;
+  next();
+};
+
+// Middleware to protect private file access
 const authenticatePrivateFileAccess = (req: Request, res: Response, next: NextFunction): void => {
   const userId = req.headers["x-user-id"] as string;
   const fileName = req.params.fileName;
@@ -58,20 +71,15 @@ const authenticatePrivateFileAccess = (req: Request, res: Response, next: NextFu
     return;
   }
 
-  // Get file ownership metadata
-  const fileMetadata = privateFileOwners.get(fileName);
-
-  // Check if file exists and belongs to the requesting user
+  const fileMetadata = fileOwners.get(fileName);
   if (!fileMetadata) {
     res.status(404).json({ error: "File not found" });
     return;
   }
-
   if (fileMetadata.userId !== userId) {
     res.status(403).json({ error: "You don't have permission to access this file" });
     return;
   }
-
   next();
 };
 
@@ -102,26 +110,51 @@ app.post("/upload", upload.single("file"), (req: Request, res: Response): void =
   const userName = req.headers["x-user-name"] as string;
   const userImage = req.headers["x-user-image"] as string;
 
-  if (visibility === "private") {
-    if (!userId) {
-      fs.unlinkSync(file.path);
-      res.status(401).json({ error: "Authentication required for private uploads" });
-      return;
-    }
+  if (visibility === "private" && !userId) {
+    fs.unlinkSync(file.path);
+    res.status(401).json({ error: "Authentication required for private uploads" });
+    return;
+  }
 
-    privateFileOwners.set(file.filename, {
+  if (userId) {
+    fileOwners.set(file.filename, {
       userId,
       userName,
       userImage,
       fileName: file.filename,
       originalName: file.originalname,
-      uploadedAt: new Date()
+      uploadedAt: new Date(),
+      visibility
     });
   }
+  const filePathForGateway = `/uploads/${visibility}/${file.filename}`;
+  res.json({ fileURL: filePathForGateway });
+});
 
-  const fileURL: string = `${req.protocol}://${req.get("host")}/uploads/${visibility}/${file.filename}`;
+app.delete("/uploads/:visibility/:fileName", authenticateUser, (req: Request, res: Response): void => {
+  const { visibility, fileName } = req.params;
+  const userId = req.body.authenticatedUserId;
+  const fileMetadata = fileOwners.get(fileName);
 
-  res.json({ fileURL });
+  if (!fileMetadata) {
+    res.status(404).json({ error: "File not found" });
+    return;
+  }
+
+  if (fileMetadata.userId !== userId) {
+    res.status(403).json({ error: "You don't have permission to delete this file" });
+    return;
+  }
+
+  const filePath = path.join(__dirname, "../uploads", visibility, fileName);
+  fs.unlink(filePath, (err) => {
+    if (err) {
+      res.status(500).json({ error: "Failed to delete file", details: err.message });
+      return;
+    }
+    fileOwners.delete(fileName);
+    res.json({ success: true, message: "File deleted" });
+  });
 });
 
 startEurekaClient();

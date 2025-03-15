@@ -1,4 +1,4 @@
-import { POST } from "@/lib/http"
+import { baseURL, DELETE, POST } from "@/lib/http"
 
 export const fileUploadedBasePath = '/file-manager'
 
@@ -21,8 +21,21 @@ export const uploadFile = async (
   const formData = new FormData();
   formData.append("file", file);
   const url = `${fileUploadedBasePath}/upload?visibility=${visibility}`;
-
-  return POST<UploadedFile, FormData>(
+  const uploadedFile = await POST<UploadedFile, FormData>(
     url, formData, {headers: { 'Content-Type': undefined }}
   );
+  uploadedFile.fileURL = baseURL + fileUploadedBasePath + uploadedFile.fileURL;
+  return uploadedFile
 };
+
+
+/**
+ * Deletes a file from the file service.
+ * Note: The gateway will remove the "/file-manager" prefix so the underlying service endpoint is actually "/delete".
+ *
+ * @param fileName The name of the file to be deleted.
+ */
+export const deleteFile = async (fileName: string): Promise<void> => {
+  console.log("Deleting file", fileName);
+  await DELETE(fileName);
+}

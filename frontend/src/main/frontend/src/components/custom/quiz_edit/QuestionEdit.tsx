@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -21,7 +21,8 @@ import {
 import { useTranslation } from "react-i18next"
 import QuestionTypeSelect from "@/components/custom/quiz_edit/QuestionTypeSelect.tsx"
 import {
-  QuizQuestionExtensionFactory
+  deleteExtension,
+  QuizQuestionExtensionFactory,
 } from "@/components/custom/QuizQuestionExtension/QuizQuestionExtensionFactory.tsx"
 import { QuizQuestionExtension } from "@/types/QuizQuestionExtension.ts"
 import {
@@ -31,6 +32,7 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card.
 import { QuizQuestion } from "@/types/QuizQuestion"
 import { MdEdit } from "react-icons/md"
 import { updateQuestion, deleteQuestion } from "@/api/questionCalls.ts"
+import { toast } from "@/hooks/use-toast.ts"
 
 interface QuestionEditProps {
   question: QuizQuestion
@@ -60,8 +62,16 @@ export function QuestionEdit(input: QuestionEditProps) {
     setQuestionExtensions((prevExtensions) => [...prevExtensions, extension])
   }
 
-  const handleUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+  useEffect(() => {
+    handleUpdate();
+  }, [questionExtensions, editedType]);
+
+  const handleUpdate = async (
+    e?: React.FormEvent<HTMLFormElement> | React.KeyboardEvent<HTMLInputElement> | React.FocusEvent<HTMLInputElement>
+  ) => {
+    if (e && "preventDefault" in e) {
+      e.preventDefault();
+    }
     setLoading(true)
     try {
       // Combine the updated fields into the question object
@@ -75,11 +85,21 @@ export function QuestionEdit(input: QuestionEditProps) {
       }
       const new_question = await updateQuestion(updatedQuestion)
       input.updateQuestion(new_question)
-      setDialogOpen(false)
+      toast({
+        title: t("e_q_updated"),
+        variant: "success",
+      })
     } catch (error) {
       console.error("Error updating question:", error)
     } finally {
       setLoading(false)
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleUpdate(e);
     }
   }
 
@@ -88,6 +108,9 @@ export function QuestionEdit(input: QuestionEditProps) {
       setLoading(true)
       try {
         await deleteQuestion({ id: input.question.id, quizId: input.question.quizId })
+        for (const ext of questionExtensions) {
+          await deleteExtension(ext)
+        }
         input.removeQuestion(input.question.id)
         setDialogOpen(false)
       } catch (error) {
@@ -95,6 +118,21 @@ export function QuestionEdit(input: QuestionEditProps) {
       } finally {
         setLoading(false)
       }
+    }
+  }
+
+  const handleDeleteExtension = async (extension: QuizQuestionExtension) => {
+    if (window.confirm(t("e_check_delete_extension"))) {
+      setLoading(true)
+      await deleteExtension(extension)
+      setQuestionExtensions((prevExtensions) =>
+        prevExtensions.filter((e) => e.id !== extension.id)
+      )
+      toast({
+        title: t("e_extension_deleted"),
+        variant: "success",
+      })
+      setLoading(false)
     }
   }
 
@@ -134,6 +172,8 @@ export function QuestionEdit(input: QuestionEditProps) {
                     id="question"
                     value={editedQuestion}
                     onChange={(e) => setEditedQuestion(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    onBlur={handleUpdate}
                     className="col-span-3"
                   />
                 </div>
@@ -145,6 +185,8 @@ export function QuestionEdit(input: QuestionEditProps) {
                     id="answer"
                     value={editedAnswer}
                     onChange={(e) => setEditedAnswer(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    onBlur={handleUpdate}
                     className="col-span-3"
                   />
                 </div>
@@ -160,8 +202,7 @@ export function QuestionEdit(input: QuestionEditProps) {
                   <AccordionItem value="advanced-options">
                     <AccordionTrigger>{t("e_question_extensions")}</AccordionTrigger>
                     <AccordionContent>
-                      <QuizQuestionExtensionDropdown
-                        onAddExtension={addExtension} />
+                      <QuizQuestionExtensionDropdown onAddExtension={addExtension} />
                       <div className="grid grid-cols-1 gap-4 w-full pt-2">
                         {questionExtensions.map((ext) => (
                           <Card className="w-full" key={ext.id}>
@@ -178,11 +219,8 @@ export function QuestionEdit(input: QuestionEditProps) {
                             <CardFooter>
                               <Button
                                 variant="destructive"
-                                onClick={() => {
-                                  setQuestionExtensions((prevExtensions) =>
-                                    prevExtensions.filter((e) => e.id !== ext.id)
-                                  )
-                                }}
+                                disabled={loading}
+                                onClick={() => handleDeleteExtension(ext)}
                               >
                                 {t("delete")}
                               </Button>
@@ -204,9 +242,13 @@ export function QuestionEdit(input: QuestionEditProps) {
                 >
                   {t("delete")}
                 </Button>
-                <Button type="submit" disabled={loading}>
-                  {t("save")}
+                <Button
+                onClick={()=> setDialogOpen(false)}
+                variant="secondary"
+                >
+                  {t("close")}
                 </Button>
+                <button type="submit" style={{ display: "none" }} />
               </DialogFooter>
             </form>
           </DialogContent>

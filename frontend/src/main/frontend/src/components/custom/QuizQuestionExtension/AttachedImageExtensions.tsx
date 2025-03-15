@@ -1,6 +1,6 @@
 import React, { useId, useState } from "react"
 import { QuizQuestionExtension, AttachedImageExtension } from '@/types/QuizQuestionExtension';
-import { uploadFile } from "@/api/fileUploaded.ts"
+import { deleteFile, uploadFile } from "@/api/fileUploaded.ts"
 import { Input } from "@/components/ui/input.tsx"
 import { LuUpload } from "react-icons/lu";
 import { Button } from "@/components/ui/button.tsx"
@@ -9,7 +9,19 @@ import { Card } from "@/components/ui/card.tsx"
 import { useTranslation } from "react-i18next"
 import { Skeleton } from "@/components/ui/skeleton.tsx"
 
-// TODO handle file deletion
+export const deleteAttachedImage = async (extension: QuizQuestionExtension) => {
+  const attachedExt = extension as AttachedImageExtension;
+  if (attachedExt.imageUrl) {
+    if (attachedExt.imageUrl !== "") {
+     try{
+      await deleteFile(attachedExt.imageUrl);
+     }
+     catch (e) {
+       console.error("Error deleting file", e);
+     }
+    }
+  }
+};
 
 export type EditProps = {
   extension: QuizQuestionExtension;
@@ -29,10 +41,12 @@ export const AttachedImageEdit: React.FC<EditProps> = ({
     setLoading(true);
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
+      const oldImageUrl = (extension as AttachedImageExtension).imageUrl;
       const newImageUrl = await uploadFile(file, "public");
       if (onExtensionChange) {
         onExtensionChange({ ...extension, imageUrl: newImageUrl.fileURL });
       }
+      await deleteFile(oldImageUrl)
     }
     setLoading(false);
   };
