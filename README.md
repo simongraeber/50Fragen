@@ -60,6 +60,15 @@ server {
     }
 }
 ```
+allow for larger file uploads: `/etc/nginx/nginx.conf`
+```nginx
+...
+http {
+    ...
+    client_max_body_size 50M;
+    ...
+}
+```
 and enable the site:
 ```bash
 sudo ln -s /etc/nginx/sites-available/50fragen.conf /etc/nginx/sites-enabled/

@@ -7,7 +7,6 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,16 +21,29 @@ public class UserController {
                 .flatMap(authentication -> {
                     OAuth2User principal = (OAuth2User) authentication.getPrincipal();
                     Map<String, Object> userInfo = new HashMap<>();
-                    userInfo.put("id", principal.getAttribute("id"));
-                    userInfo.put("name", principal.getAttribute("username"));
-                    // Combine the image URL
-                    String imageUrl = "https://cdn.discordapp.com/avatars/"
-                            + principal.getAttribute("id")
-                            + "/" + principal.getAttribute("avatar");
-                    userInfo.put("image", imageUrl);
+
+                    String userId;
+                    String userName;
+                    String userImage;
+
+                    if (principal.getAttributes().containsKey("id")) {
+                        // Discord login
+                        userId = principal.getAttribute("id");
+                        userName = principal.getAttribute("username");
+                        String avatar = principal.getAttribute("avatar");
+                        userImage = "https://cdn.discordapp.com/avatars/" + userId + "/" + avatar;
+                    } else {
+                        // Google login
+                        userId = principal.getAttribute("sub");
+                        userName = principal.getAttribute("name");
+                        userImage = principal.getAttribute("picture");
+                    }
+
+                    userInfo.put("id", userId);
+                    userInfo.put("name", userName);
+                    userInfo.put("image", userImage);
                     return Mono.just(ResponseEntity.ok(userInfo));
                 })
-                // If there is no authentication or principal then return 200 with a body of null.
                 .defaultIfEmpty(ResponseEntity.ok(null));
     }
 }

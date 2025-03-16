@@ -111,12 +111,14 @@ const resources = {
       p_no_active_game: "The Quiz is not active‼️",
 
       // Login
-      l_sign_discord: "Sign in with Discord",
+      l_sign_in: "Sign in:",
       l_now_logged_in: "You are now logged in",
       l_now_logged_out: "You are now logged out",
       l_error: "Login error: Failed to fetch user details",
       l_error2: "Authentication error occurred",
       l_unknown: "Unknown authentication state",
+      l_t_google: "Sign in with Google",
+      l_t_discord: "Sign in with Discord",
 
       // Errors
       er_error: "Error",
@@ -227,12 +229,14 @@ const resources = {
       p_no_active_game: "Das Quiz ist nicht aktiv‼️",
 
       // Login
-      l_sign_discord: "Mit Discord anmelden",
+      l_sign_in: "Anmelden:",
       l_now_logged_in: "Du bist jetzt angemeldet",
       l_now_logged_out: "Du bist jetzt abgemeldet",
       l_error: "Login-Fehler: Abrufen der Benutzerdaten fehlgeschlagen",
       l_error2: "Ein Authentifizierungsfehler ist aufgetreten",
       l_unknown: "Unbekannter Authentifizierungsstatus",
+      l_t_google: "Mit Google anmelden",
+      l_t_discord: "Mit Discord anmelden",
 
       // Errors
       er_error: "Fehler",
