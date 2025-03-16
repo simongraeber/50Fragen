@@ -76,7 +76,7 @@ const resources = {
       e_q_updated: "Question updated",
       e_extension_deleted: "Extension deleted",
       // Question Extensions
-      ex_attachedImage: "Image Attachment",
+      attachedImage: "Image Attachment",
       ex_showImage: "Show Image",
       ex_image: "Image",
       ex_select_ex: "Add Extension",
@@ -193,7 +193,7 @@ const resources = {
       e_q_updated: "Frage wurde aktualisiert",
       e_extension_deleted: "Erweiterung gelöscht",
       // Question Extensions
-      ex_attachedImage: "Bild Anhang",
+      attachedImage: "Bild Anhang",
       ex_showImage: "Bild anzeigen",
       ex_image: "Bild",
       ex_select_ex: "Erweiterung hinzufügen",

@@ -134,8 +134,10 @@ services:
     networks:
       - 50Fragen
     environment:
-      - EUREKA_SERVER=http://eureka:8761/eureka
-      - SERVER_PORT=4001
+      - PORT=4002
+      - HOST_IP=file-manager
+      - EUREKA_HOST=eureka
+      - EUREKA_PORT=8761
     depends_on:
       eureka:
         condition: service_healthy
@@ -145,7 +147,7 @@ services:
       timeout: 5s
       retries: 5
     ports:
-      - "4001:4001"
+      - "4002:4002"
     volumes:
       - file_manager_uploads:/app/uploads
 

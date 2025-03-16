@@ -77,6 +77,28 @@ services:
     ports:
       - "4001:4001"
 
+  file-manager:
+    image: simon1999/50fragen:file-manager-dev
+    networks:
+      - 50Fragen
+    environment:
+      - PORT=4002
+      - HOST_IP=file-manager
+      - EUREKA_HOST=eureka
+      - EUREKA_PORT=8761
+    depends_on:
+      eureka:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:4001 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "4002:4002"
+    volumes:
+      - file_manager_uploads:/app/uploads
+
   postgres:
     image: postgres:15-alpine
     environment:
@@ -139,26 +161,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-
-  file-manager:
-    image: simon1999/50fragen:file-manager-dev
-    networks:
-      - 50Fragen
-    environment:
-      - EUREKA_SERVER=http://eureka:8761/eureka
-      - SERVER_PORT=4001
-    depends_on:
-      eureka:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:4001 || exit 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    ports:
-      - "4001:4001"
-    volumes:
-      - file_manager_uploads:/app/uploads
 
 volumes:
   postgres_data:

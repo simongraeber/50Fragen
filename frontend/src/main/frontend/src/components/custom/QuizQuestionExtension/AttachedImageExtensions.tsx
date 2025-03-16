@@ -103,7 +103,7 @@ export const AttachedImageEdit: React.FC<EditProps> = ({
         {loading ? (
           <Skeleton className="w-full h-40" />
         ) : imageUrl ? (
-          <div className="flex flex-col items-center">
+          <div className="flex flex-col items-center min-h-40">
             <img
               src={imageUrl}
               alt="Uploaded preview"
