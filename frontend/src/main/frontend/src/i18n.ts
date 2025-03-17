@@ -124,7 +124,81 @@ const resources = {
       er_error: "Error",
       er_reload: "Reload Page",
       er_not_found: "Page not found",
-      er_unauthorized: "Unauthorized"
+      er_unauthorized: "Unauthorized",
+
+      // Legal
+      privacyPolicy: {
+        title: "Privacy Policy",
+        generalInformation: {
+          title: "1. General Information",
+          text: "This Privacy Policy explains how {{company}} (\"we\" or \"us\") collects, uses, and safeguards your personal data in compliance with the EU General Data Protection Regulation (GDPR), hosted in {{jurisdiction}}."
+        },
+        dataController: {
+          title: "2. Data Controller",
+          text: "Data Controller: {{company}}\nAddress: [Your Address in Nuremberg]\nEmail: 80-read-crewel@icloud.com"
+        },
+        dataCollection: {
+          title: "3. Data Collection",
+          text: "We collect data provided by you during registration, use of our services, or when contacting us. The data may include your name, email, and other voluntarily supplied information."
+        },
+        purposes: {
+          title: "4. Purposes of Processing",
+          text: "We process your data for the following purposes:",
+          list: [
+            "Providing and improving our services",
+            "Personalizing your experience",
+            "Sending you updates and offers",
+            "Compliance with legal obligations"
+          ]
+        },
+        userRights: {
+          title: "5. Your Rights",
+          text: "Under the GDPR, you have the right to access, rectify, or delete your personal data. You can also restrict or object to certain processing activities. To exercise these rights, please contact us at 80-read-crewel@icloud.com."
+        },
+        dataSecurity: {
+          title: "6. Data Security",
+          text: "We implement appropriate technical and organizational measures to protect your data."
+        },
+        policyChanges: {
+          title: "7. Changes to this Policy",
+          text: "We may update this Privacy Policy periodically. The latest version will always be available on our website."
+        },
+        contact: {
+          title: "8. Contact Us",
+          text: "If you have any questions regarding this Privacy Policy, please contact us at 80-read-crewel@icloud.com."
+        },
+      },
+      termsOfService: {
+        title: "Terms of Service",
+        acceptance: {
+          title: "1. Acceptance of Terms",
+          text: "By accessing or using our services, you agree to be bound by these Terms of Service. If you do not agree, please do not use our services."
+        },
+        modifications: {
+          title: "2. Modifications",
+          text: "We reserve the right to update these Terms of Service at any time. The latest version will be posted on our website."
+        },
+        usage: {
+          title: "3. Use of Services",
+          text: "You agree not to misuse our services or engage in any activities that might harm or disrupt them."
+        },
+        intellectualProperty: {
+          title: "4. Intellectual Property",
+          text: "All content on our platform is the property of {{company}} or our licensors. Unauthorized use is prohibited."
+        },
+        dataProtection: {
+          title: "5. Data Protection",
+          text: "Our handling of your data is governed by our Privacy Policy and complies with the GDPR."
+        },
+        limitation: {
+          title: "6. Limitation of Liability",
+          text: "Our services are provided \"as is,\" without warranties. {{company}} is not liable for any damages arising from your use."
+        },
+        governingLaw: {
+          title: "7. Governing Law",
+          text: "These Terms are governed by the laws of Germany and the jurisdiction of Nuremberg."
+        },
+      }
     },
   },
   de: {
@@ -242,7 +316,81 @@ const resources = {
       er_error: "Fehler",
       er_reload: "Seite neu laden",
       er_not_found: "Seite nicht gefunden",
-      er_unauthorized: "Nicht autorisiert"
+      er_unauthorized: "Nicht autorisiert",
+
+      // Legal
+      privacyPolicy: {
+        title: "Datenschutzerklärung",
+        generalInformation: {
+          title: "1. Allgemeine Informationen",
+          text: "Diese Datenschutzerklärung erklärt, wie {{company}} („wir“ oder „uns“) Ihre personenbezogenen Daten gemäß der EU-Datenschutz-Grundverordnung (DSGVO) verarbeitet, speichert und schützt. Diese Webseite wird in {{jurisdiction}} gehostet."
+        },
+        dataController: {
+          title: "2. Verantwortliche Stelle",
+          text: "Verantwortliche Stelle: {{company}}\nAdresse: [Ihre Adresse in Nürnberg]\nE-Mail: 80-read-crewel@icloud.com"
+        },
+        dataCollection: {
+          title: "3. Datenerhebung",
+          text: "Wir erheben die von Ihnen bereitgestellten Daten bei der Registrierung, der Nutzung unserer Dienste oder bei Kontaktaufnahmen. Dies kann Ihren Namen, Ihre E-Mail-Adresse und andere freiwillig angegebene Informationen umfassen."
+        },
+        purposes: {
+          title: "4. Zwecke der Verarbeitung",
+          text: "Wir verarbeiten Ihre Daten zu folgenden Zwecken:",
+          list: [
+            "Bereitstellung und Verbesserung unserer Dienste",
+            "Personalisierung Ihrer Nutzererfahrung",
+            "Versand von Updates und Angeboten",
+            "Erfüllung gesetzlicher Verpflichtungen"
+          ]
+        },
+        userRights: {
+          title: "5. Ihre Rechte",
+          text: "Gemäß der DSGVO haben Sie das Recht auf Auskunft, Berichtigung oder Löschung Ihrer personenbezogenen Daten. Sie können auch bestimmten Verarbeitungen widersprechen oder diese einschränken. Bitte kontaktieren Sie uns unter 80-read-crewel@icloud.com, um diese Rechte auszuüben."
+        },
+        dataSecurity: {
+          title: "6. Datensicherheit",
+          text: "Wir treffen angemessene technische und organisatorische Maßnahmen, um Ihre Daten zu schützen."
+        },
+        policyChanges: {
+          title: "7. Änderungen dieser Erklärung",
+          text: "Wir können diese Datenschutzerklärung von Zeit zu Zeit aktualisieren. Die aktuelle Version wird stets auf unserer Webseite veröffentlicht."
+        },
+        contact: {
+          title: "8. Kontakt",
+          text: "Wenn Sie Fragen zu dieser Datenschutzerklärung haben, kontaktieren Sie uns bitte unter 80-read-crewel@icloud.com."
+        },
+      },
+      termsOfService: {
+        title: "Nutzungsbedingungen",
+        acceptance: {
+          title: "1. Zustimmung zu den Bedingungen",
+          text: "Durch den Zugriff auf oder die Nutzung unserer Dienste stimmen Sie diesen Nutzungsbedingungen zu. Falls Sie nicht zustimmen, nutzen Sie unsere Dienste bitte nicht."
+        },
+        modifications: {
+          title: "2. Änderungen",
+          text: "Wir behalten uns das Recht vor, diese Nutzungsbedingungen jederzeit zu aktualisieren. Die aktuelle Version wird auf unserer Webseite veröffentlicht."
+        },
+        usage: {
+          title: "3. Nutzung der Dienste",
+          text: "Sie verpflichten sich, unsere Dienste nicht missbräuchlich zu verwenden oder Handlungen vorzunehmen, die den Betrieb stören oder gefährden."
+        },
+        intellectualProperty: {
+          title: "4. Geistiges Eigentum",
+          text: "Alle Inhalte auf unserer Plattform sind Eigentum von {{company}} oder unserer Lizenzgeber. Eine unerlaubte Nutzung ist untersagt."
+        },
+        dataProtection: {
+          title: "5. Datenschutz",
+          text: "Die Verarbeitung Ihrer Daten unterliegt unserer Datenschutzerklärung und entspricht der DSGVO."
+        },
+        limitation: {
+          title: "6. Haftungsbeschränkung",
+          text: "Unsere Dienste werden \"wie besehen\" bereitgestellt, ohne Gewährleistungen. {{company}} haftet nicht für Schäden, die aus der Nutzung entstehen."
+        },
+        governingLaw: {
+          title: "7. Anwendbares Recht",
+          text: "Diese Bedingungen unterliegen dem Recht der Bundesrepublik Deutschland und der Zuständigkeit Nürnbergs."
+        },
+      }
     }
   },
 };
@@ -260,5 +408,3 @@ i18n
       escapeValue: false,
     },
   });
-
-export default i18n;
