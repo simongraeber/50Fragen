@@ -1,10 +1,10 @@
-import i18n from "i18next";
-import { initReactI18next } from "react-i18next";
-import LanguageDetector from "i18next-browser-languagedetector";
+import i18n from "i18next"
+import { initReactI18next } from "react-i18next"
+import LanguageDetector from "i18next-browser-languagedetector"
 
 export const availableLanguages = {
   en: "🇬🇧 English",
-  de: "🇩🇪 Deutsch"
+  de: "🇩🇪 Deutsch",
 }
 
 const resources = {
@@ -131,75 +131,74 @@ const resources = {
         title: "Privacy Policy",
         generalInformation: {
           title: "1. General Information",
-          text: "This Privacy Policy explains how {{company}} (\"we\" or \"us\") collects, uses, and safeguards your personal data in compliance with the EU General Data Protection Regulation (GDPR), hosted in {{jurisdiction}}."
+          text: "This Privacy Policy explains how {{company}} ('we' or 'us') processes, stores, and protects your personal data in accordance with the EU General Data Protection Regulation (GDPR). This website is hosted in {{jurisdiction}}.",
         },
         dataController: {
           title: "2. Data Controller",
-          text: "Data Controller: {{company}}\nAddress: [Your Address in Nuremberg]\nEmail: 80-read-crewel@icloud.com"
+          text: "Data Controller: {{company}}\nAddress: Mitthenheimer Str. 6, 85764 Oberschleißheim, Germany\nE-Mail: 80-read-crewel@icloud.com",
         },
         dataCollection: {
           title: "3. Data Collection",
-          text: "We collect data provided by you during registration, use of our services, or when contacting us. The data may include your name, email, and other voluntarily supplied information."
+          text: "We collect the data you provide when you register, create a quiz, or participate in a quiz. For login purposes, we use an OAuth2 client that provides your unique user identifier ('sub'). Information such as your name and profile picture is processed only during the authentication process (gateway) and is not stored permanently – however, it may be visible to other participants during an active quiz session.",
         },
         purposes: {
           title: "4. Purposes of Processing",
           text: "We process your data for the following purposes:",
           list: [
-            "Providing and improving our services",
-            "Personalizing your experience",
-            "Sending you updates and offers",
-            "Compliance with legal obligations"
-          ]
+            "Providing and improving our quiz services",
+            "Functionally mapping quiz data to your user identifier",
+            "Compliance with legal obligations",
+          ],
         },
         userRights: {
           title: "5. Your Rights",
-          text: "Under the GDPR, you have the right to access, rectify, or delete your personal data. You can also restrict or object to certain processing activities. To exercise these rights, please contact us at 80-read-crewel@icloud.com."
+          text: "You have the right to access, rectify, or delete your personal data, to restrict processing, to data portability, and to object to the processing of your data. Please contact us at 80-read-crewel@icloud.com to exercise these rights.",
         },
         dataSecurity: {
           title: "6. Data Security",
-          text: "We implement appropriate technical and organizational measures to protect your data."
+          text: "We implement technical and organizational measures to protect your data, including SSL encryption. Our server is located in Germany.",
         },
         policyChanges: {
           title: "7. Changes to this Policy",
-          text: "We may update this Privacy Policy periodically. The latest version will always be available on our website."
+          text: "We reserve the right to update this Privacy Policy from time to time. The most current version will always be published on our website.",
         },
         contact: {
-          title: "8. Contact Us",
-          text: "If you have any questions regarding this Privacy Policy, please contact us at 80-read-crewel@icloud.com."
+          title: "8. Contact",
+          text: "If you have any questions regarding this Privacy Policy, please contact us at 80-read-crewel@icloud.com.",
         },
       },
-      termsOfService: {
-        title: "Terms of Service",
-        acceptance: {
-          title: "1. Acceptance of Terms",
-          text: "By accessing or using our services, you agree to be bound by these Terms of Service. If you do not agree, please do not use our services."
-        },
-        modifications: {
-          title: "2. Modifications",
-          text: "We reserve the right to update these Terms of Service at any time. The latest version will be posted on our website."
-        },
-        usage: {
-          title: "3. Use of Services",
-          text: "You agree not to misuse our services or engage in any activities that might harm or disrupt them."
-        },
-        intellectualProperty: {
-          title: "4. Intellectual Property",
-          text: "All content on our platform is the property of {{company}} or our licensors. Unauthorized use is prohibited."
-        },
-        dataProtection: {
-          title: "5. Data Protection",
-          text: "Our handling of your data is governed by our Privacy Policy and complies with the GDPR."
-        },
-        limitation: {
-          title: "6. Limitation of Liability",
-          text: "Our services are provided \"as is,\" without warranties. {{company}} is not liable for any damages arising from your use."
-        },
-        governingLaw: {
-          title: "7. Governing Law",
-          text: "These Terms are governed by the laws of Germany and the jurisdiction of Nuremberg."
-        },
-      }
     },
+    termsOfService: {
+      title: "Terms of Service",
+      acceptance: {
+        title: "1. Acceptance of Terms",
+        text: "By accessing or using our services, you agree to be bound by these Terms of Service. If you do not accept these terms, please refrain from using our services.",
+      },
+      modifications: {
+        title: "2. Modifications",
+        text: "We reserve the right to modify these Terms of Service at any time. The most current version will always be published on our website.",
+      },
+      usage: {
+        title: "3. Use of Services",
+        text: "You agree to use our services solely for their intended, lawful purposes. Any misuse that disrupts operation or compromises security is prohibited.",
+      },
+      intellectualProperty: {
+        title: "4. Intellectual Property",
+        text: "All content, trademarks, and other proprietary rights on this platform are owned by {{company}} or its licensors. Unauthorized use is strictly prohibited.",
+      },
+      dataProtection: {
+        title: "5. Data Protection",
+        text: "Your data is processed in accordance with our Privacy Policy, which complies with the GDPR.",
+      },
+      limitation: {
+        title: "6. Limitation of Liability",
+        text: "Our services are provided 'as is' without any warranty. {{company}} is not liable for any direct or indirect damages arising from the use of our services.",
+      },
+      governingLaw: {
+        title: "7. Governing Law",
+        text: "These Terms of Service are governed by the laws of the Federal Republic of Germany. Jurisdiction, if applicable by law, is the location of {{company}}'s registered office.",
+      },
+    }
   },
   de: {
     translation: {
@@ -323,77 +322,76 @@ const resources = {
         title: "Datenschutzerklärung",
         generalInformation: {
           title: "1. Allgemeine Informationen",
-          text: "Diese Datenschutzerklärung erklärt, wie {{company}} („wir“ oder „uns“) Ihre personenbezogenen Daten gemäß der EU-Datenschutz-Grundverordnung (DSGVO) verarbeitet, speichert und schützt. Diese Webseite wird in {{jurisdiction}} gehostet."
+          text: "Diese Datenschutzerklärung erklärt, wie {{company}} („wir“ oder „uns“) Ihre personenbezogenen Daten gemäß der EU-Datenschutz-Grundverordnung (DSGVO) verarbeitet, speichert und schützt. Diese Webseite wird in {{jurisdiction}} gehostet.",
         },
         dataController: {
           title: "2. Verantwortliche Stelle",
-          text: "Verantwortliche Stelle: {{company}}\nAdresse: [Ihre Adresse in Nürnberg]\nE-Mail: 80-read-crewel@icloud.com"
+          text: "Verantwortliche Stelle: {{company}}\nAdresse: Mitthenheimer Str. 6, 85764 Oberschleißheim, Germany\nE-Mail: 80-read-crewel@icloud.com",
         },
         dataCollection: {
           title: "3. Datenerhebung",
-          text: "Wir erheben die von Ihnen bereitgestellten Daten bei der Registrierung, der Nutzung unserer Dienste oder bei Kontaktaufnahmen. Dies kann Ihren Namen, Ihre E-Mail-Adresse und andere freiwillig angegebene Informationen umfassen."
+          text: "Wir erheben die von Ihnen bereitgestellten Daten, wenn Sie sich registrieren, ein Quiz erstellen oder an einem Quiz teilnehmen. Für den Login nutzen wir einen OAuth2‑Client, der Ihre eindeutige Benutzerkennung (sub) übermittelt. Informationen wie Ihr Name und Profilbild werden ausschließlich im Rahmen des Authentifizierungsprozesses (Gateway) verarbeitet und nicht dauerhaft gespeichert – sie können jedoch während eines aktiven Quizspiels für andere Teilnehmer sichtbar sein.",
         },
         purposes: {
           title: "4. Zwecke der Verarbeitung",
           text: "Wir verarbeiten Ihre Daten zu folgenden Zwecken:",
           list: [
-            "Bereitstellung und Verbesserung unserer Dienste",
-            "Personalisierung Ihrer Nutzererfahrung",
-            "Versand von Updates und Angeboten",
-            "Erfüllung gesetzlicher Verpflichtungen"
-          ]
+            "Bereitstellung und Verbesserung unserer Quiz-Dienste",
+            "Funktionsbezogene Zuordnung von Quiz-Daten zu Ihrer Nutzerkennung",
+            "Erfüllung gesetzlicher Verpflichtungen",
+          ],
         },
         userRights: {
           title: "5. Ihre Rechte",
-          text: "Gemäß der DSGVO haben Sie das Recht auf Auskunft, Berichtigung oder Löschung Ihrer personenbezogenen Daten. Sie können auch bestimmten Verarbeitungen widersprechen oder diese einschränken. Bitte kontaktieren Sie uns unter 80-read-crewel@icloud.com, um diese Rechte auszuüben."
+          text: "Sie haben das Recht auf Auskunft, Berichtigung oder Löschung Ihrer personenbezogenen Daten, auf Einschränkung der Verarbeitung, Datenübertragbarkeit sowie auf Widerspruch gegen die Verarbeitung. Bitte kontaktieren Sie uns unter 80-read-crewel@icloud.com, um diese Rechte auszuüben.",
         },
         dataSecurity: {
           title: "6. Datensicherheit",
-          text: "Wir treffen angemessene technische und organisatorische Maßnahmen, um Ihre Daten zu schützen."
+          text: "Wir setzen technische und organisatorische Maßnahmen ein, um Ihre Daten zu schützen – dazu gehört unter anderem die SSL‑Verschlüsselung. Unser Server befindet sich in Deutschland.",
         },
         policyChanges: {
           title: "7. Änderungen dieser Erklärung",
-          text: "Wir können diese Datenschutzerklärung von Zeit zu Zeit aktualisieren. Die aktuelle Version wird stets auf unserer Webseite veröffentlicht."
+          text: "Wir behalten uns vor, diese Datenschutzerklärung gelegentlich zu aktualisieren. Die jeweils aktuelle Version wird stets auf unserer Webseite veröffentlicht.",
         },
         contact: {
           title: "8. Kontakt",
-          text: "Wenn Sie Fragen zu dieser Datenschutzerklärung haben, kontaktieren Sie uns bitte unter 80-read-crewel@icloud.com."
+          text: "Für Fragen zum Datenschutz kontaktieren Sie uns bitte unter 80-read-crewel@icloud.com.",
         },
       },
       termsOfService: {
         title: "Nutzungsbedingungen",
         acceptance: {
           title: "1. Zustimmung zu den Bedingungen",
-          text: "Durch den Zugriff auf oder die Nutzung unserer Dienste stimmen Sie diesen Nutzungsbedingungen zu. Falls Sie nicht zustimmen, nutzen Sie unsere Dienste bitte nicht."
+          text: "Durch den Zugriff auf oder die Nutzung unserer Dienste erklären Sie sich mit diesen Nutzungsbedingungen einverstanden. Sollten Sie nicht zustimmen, nutzen Sie unsere Dienste bitte nicht.",
         },
         modifications: {
           title: "2. Änderungen",
-          text: "Wir behalten uns das Recht vor, diese Nutzungsbedingungen jederzeit zu aktualisieren. Die aktuelle Version wird auf unserer Webseite veröffentlicht."
+          text: "Wir behalten uns das Recht vor, diese Nutzungsbedingungen jederzeit zu ändern. Die aktuell gültige Version wird stets auf unserer Webseite veröffentlicht.",
         },
         usage: {
           title: "3. Nutzung der Dienste",
-          text: "Sie verpflichten sich, unsere Dienste nicht missbräuchlich zu verwenden oder Handlungen vorzunehmen, die den Betrieb stören oder gefährden."
+          text: "Sie verpflichten sich, unsere Dienste ausschließlich im vorgesehenen und rechtmäßigen Rahmen zu nutzen. Jegliche missbräuchliche Verwendung, die den Betrieb oder die Sicherheit beeinträchtigen könnte, ist untersagt.",
         },
         intellectualProperty: {
           title: "4. Geistiges Eigentum",
-          text: "Alle Inhalte auf unserer Plattform sind Eigentum von {{company}} oder unserer Lizenzgeber. Eine unerlaubte Nutzung ist untersagt."
+          text: "Alle Inhalte, Marken und sonstigen Urheberrechte auf dieser Plattform sind Eigentum von {{company}} oder unserer Lizenzgeber. Eine unerlaubte Nutzung ist strengstens untersagt.",
         },
         dataProtection: {
           title: "5. Datenschutz",
-          text: "Die Verarbeitung Ihrer Daten unterliegt unserer Datenschutzerklärung und entspricht der DSGVO."
+          text: "Die Verarbeitung Ihrer Daten erfolgt gemäß unserer Datenschutzerklärung, die den Anforderungen der DSGVO entspricht.",
         },
         limitation: {
           title: "6. Haftungsbeschränkung",
-          text: "Unsere Dienste werden \"wie besehen\" bereitgestellt, ohne Gewährleistungen. {{company}} haftet nicht für Schäden, die aus der Nutzung entstehen."
+          text: "Unsere Dienste werden 'wie besehen' bereitgestellt – ohne Gewährleistung. {{company}} haftet nicht für direkte oder indirekte Schäden, die aus der Nutzung entstehen.",
         },
         governingLaw: {
           title: "7. Anwendbares Recht",
-          text: "Diese Bedingungen unterliegen dem Recht der Bundesrepublik Deutschland und der Zuständigkeit Nürnbergs."
+          text: "Diese Bedingungen unterliegen dem Recht der Bundesrepublik Deutschland. Gerichtsstand ist, soweit gesetzlich zulässig, der Sitz von {{company}}.",
         },
-      }
-    }
+      },
+    },
   },
-};
+}
 
 i18n
   .use(LanguageDetector)
@@ -407,4 +405,4 @@ i18n
     interpolation: {
       escapeValue: false,
     },
-  });
+  })

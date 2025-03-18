@@ -14,7 +14,7 @@ function PrivacyPage() {
       <HeadLine>
         {t("privacy")}
       </HeadLine>
-      <main className="max-w-2xl mt-3 pt-4 mx-auto">
+      <main className="max-w-2xl mt-3 pt-4 mx-auto px-1">
         <h2>{t("privacyPolicy.generalInformation.title")}</h2>
         <p>
           {t("privacyPolicy.generalInformation.text", {
