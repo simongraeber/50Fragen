@@ -28,13 +28,13 @@ public class UserIdHeaderFilter implements GlobalFilter, Ordered {
                         if (user.getAttributes().containsKey("id")) {
                             // Discord login
                             userId = user.getAttribute("id");
-                            username = user.getAttribute("username");
+                            username = user.getAttribute("global_name");
                             String avatar = user.getAttribute("avatar");
                             imageUrl = "https://cdn.discordapp.com/avatars/" + userId + "/" + avatar;
                         } else {
                             // Google login
                             userId = user.getAttribute("sub");
-                            username = user.getAttribute("name");
+                            username = user.getAttribute("given_name");
                             imageUrl = user.getAttribute("picture");
                         }
 
