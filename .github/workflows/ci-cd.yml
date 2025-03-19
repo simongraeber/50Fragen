@@ -5,15 +5,18 @@ on:
     branches: [ "dev" ]
 
 jobs:
-  test:
+  integration-test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         # the node.js services
-        service: [file-manager]
+        service: [file-manager, ai-quiz]
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
+      - name: Set OPENAI_API_KEY for ai-quiz
+        if: matrix.service == 'ai-quiz'
+        run: echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> $GITHUB_ENV
       - name: Run tests for ${{ matrix.service }}
         run: |
           cd ${{ matrix.service }}
@@ -32,13 +35,13 @@ jobs:
       - name: Build images (no push)
         run: |
           docker compose build
-      # TODO: Add integration tests
+      # TODO: Add end to end tests
 
 
   deploy-dev:
     needs:
       - build-and-test
-      - test
+      - integration-test
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/dev'
     steps:

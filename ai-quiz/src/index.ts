@@ -20,10 +20,15 @@ app.use(cors({
 
 app.use(express.json())
 
-startEurekaClient()
+if (process.env.NODE_ENV !== "test") {
+  startEurekaClient();
+}
 
 app.use("/", routes)
 
-server.listen(PORT, () => {
-  console.log(`Session service running on http://localhost:${PORT}`)
-})
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`AI-Question service is listening on port ${PORT}`);
+  });
+}
+export default app;
