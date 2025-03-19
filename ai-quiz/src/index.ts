@@ -31,4 +31,3 @@ if (require.main === module) {
     console.log(`AI-Question service is listening on port ${PORT}`);
   });
 }
-export default app;
