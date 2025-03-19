@@ -11,10 +11,10 @@ function PrivacyPage() {
 
   return (
     <Page>
-      <HeadLine>
+      <HeadLine className="mt-4">
         {t("privacy")}
       </HeadLine>
-      <main className="max-w-2xl mt-3 pt-4 mx-auto px-2">
+      <main className="max-w-2xl mt-3 pt-6 mx-auto px-2">
         <h2>{t("privacyPolicy.generalInformation.title")}</h2>
         <p>
           {t("privacyPolicy.generalInformation.text", {
@@ -54,7 +54,7 @@ function PrivacyPage() {
         <p>{t("privacyPolicy.contact.text")}</p>
       </main>
       <Link to="/">
-        <Button className="mt-8">{t("go_home")}</Button>
+        <Button className="mt-10  mb-8">{t("go_home")}</Button>
       </Link>
     </Page>
   )

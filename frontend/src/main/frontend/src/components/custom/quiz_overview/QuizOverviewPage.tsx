@@ -31,11 +31,11 @@ function QuizOverviewPage() {
 
   return (
     <Page>
-      <HeadLine>
+      <HeadLine  className="mt-6">
         {t("o_your_q")}
       </HeadLine>
       <motion.section
-        className="w-full max-w-6xl px-4 mb-16"
+        className="w-full max-w-6xl pt-6 px-4 mb-16"
         variants={scrollAnimation}
         initial="hidden"
         whileInView="visible"

@@ -151,7 +151,7 @@ function QuizEditPage() {
         {t("edit")} {quiz?.name}
       </HeadLine>
       <motion.section
-        className="w-full max-w-6xl px-4 mb-16"
+        className="w-full max-w-6xl px-4 mb-16 pt-6"
         variants={scrollAnimation}
         initial="hidden"
         whileInView="visible"
@@ -191,7 +191,7 @@ function QuizEditPage() {
                             className="cursor-pointer text-lg mt-1 ml-2 pr-2 flex items-center"
                           >
                             &#x2630;
-                            <span className="text-lg font-bold ml-2 overflow-hidden w-0 sm:w-10">
+                            <span className="text-lg font-bold ml-2 hidden sm:inline sm:w-10 text-secondary-foreground">
                               # {index + 1}
                             </span>
                           </div>
@@ -210,7 +210,7 @@ function QuizEditPage() {
               )}
             </Droppable>
           </DragDropContext>
-          <CardFooter className="flex justify-between pt-2">
+          <CardFooter className="flex justify-between pt-6">
             <AIQuestion addQuestion={addQuestion} />
             <LoadingButton
               onClick={() => addQuestion(placeholderQuestion)}

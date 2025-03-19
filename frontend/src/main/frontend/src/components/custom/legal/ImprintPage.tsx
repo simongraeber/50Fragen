@@ -13,10 +13,10 @@ function ImprintPage() {
 
   return (
     <Page>
-      <HeadLine>{t("imprint")}</HeadLine>
+      <HeadLine className="mt-4">{t("imprint")}</HeadLine>
 
       <motion.section
-        className="w-full px-4 mb-16"
+        className="w-full px-4 pt-6 mb-16"
         variants={scrollAnimation}
         initial="hidden"
         whileInView="visible"

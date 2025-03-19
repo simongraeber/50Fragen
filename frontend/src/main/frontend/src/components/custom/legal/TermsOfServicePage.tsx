@@ -9,10 +9,10 @@ function TermsOfServicePage() {
 
   return (
     <Page>
-      <HeadLine>
+      <HeadLine className="mt-4">
         {t("terms_h")}
       </HeadLine>
-      <main className="max-w-2xl mt-3 pt-4 mx-auto px-2">
+      <main className="max-w-2xl mt-3 pt-6 mx-auto px-2">
         <h2>{t("termsOfService.acceptance.title")}</h2>
         <p>{t("termsOfService.acceptance.text")}</p>
 
@@ -47,7 +47,7 @@ function TermsOfServicePage() {
         </p>
       </main>
       <Link to="/">
-        <Button className="mt-8">{t("go_home")}</Button>
+        <Button className="mt-10  mb-8">{t("go_home")}</Button>
       </Link>
     </Page>
   )
