@@ -272,6 +272,8 @@ const resources = {
       ex_showImage: "Bild anzeigen",
       ex_image: "Bild",
       ex_select_ex: "Erweiterung hinzufügen",
+      ex_click_file_change: "Klicke, um das Bild zu ändern",
+      ex_click_drag_drop: "Klicke zum Hochladen oder Drag & Drop",
 
 
       // Overview

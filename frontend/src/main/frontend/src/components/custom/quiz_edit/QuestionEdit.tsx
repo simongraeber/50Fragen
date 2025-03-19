@@ -208,8 +208,7 @@ export function QuestionEdit(input: QuestionEditProps) {
                   <AccordionItem value="advanced-options">
                     <AccordionTrigger>{t("e_question_extensions")}</AccordionTrigger>
                     <AccordionContent>
-                      <QuizQuestionExtensionDropdown onAddExtension={addExtension} />
-                      <div className="grid grid-cols-1 gap-4 w-full pt-2">
+                      <div className="grid grid-cols-1 gap-4 w-full pb-2">
                         {questionExtensions.map((ext) => (
                           <Card className="w-full" key={ext.id}>
                             <CardContent>
@@ -234,6 +233,7 @@ export function QuestionEdit(input: QuestionEditProps) {
                           </Card>
                         ))}
                       </div>
+                      <QuizQuestionExtensionDropdown onAddExtension={addExtension} />
                     </AccordionContent>
                   </AccordionItem>
                 </Accordion>
