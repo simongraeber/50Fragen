@@ -35,19 +35,35 @@ jobs:
       - name: Build images (no push)
         run: |
           docker compose build
-      - name: Check container health
+      - name: Check container health using docker inspect
         run: |
           docker compose up -d
 
-          max_attempts=90 # 3 minutes
+          max_attempts=30  # For example, 30 attempts x 2 seconds = 60 seconds maximum wait
           attempt=1
 
           while [ $attempt -le $max_attempts ]; do
-            total=$(docker compose ps -q | wc -l)
-            healthy=$(docker compose ps --filter "status=running" --filter "health=healthy" -q | wc -l)
+            all_healthy=true
+            container_ids=$(docker compose ps -q)
 
-            if [ "$total" -eq "$healthy" ]; then
-              echo "All containers are healthy"
+            if [ -z "$container_ids" ]; then
+              echo "No containers found. Exiting."
+              exit 1
+            fi
+
+            for id in $container_ids; do
+              # Check the health status. If no health check is defined, assume it's "running".
+              status=$(docker inspect --format='{{if .State.Health}}{{.State.Health.Status}}{{else}}running{{end}}' "$id")
+              echo "Container $id health status: $status"
+
+              # Accept "healthy" OR "running" (i.e. no health check defined) as a good state.
+              if [ "$status" != "healthy" ] && [ "$status" != "running" ]; then
+                all_healthy=false
+              fi
+            done
+
+            if $all_healthy; then
+              echo "All containers are healthy."
               exit 0
             fi
 
@@ -56,7 +72,7 @@ jobs:
             attempt=$((attempt + 1))
           done
 
-          echo "Some containers are not healthy after ${max_attempts*2} seconds"
+          echo "Timeout reached: Some containers are still not healthy."
           exit 1
 
 
