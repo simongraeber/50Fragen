@@ -5,7 +5,7 @@ import fs from "fs";
 
 import { startEurekaClient } from "./eurekaConnection";
 
-const app = express();
+const index = express();
 const PORT: number | string = process.env.PORT || 4002;
 
 interface FileMetadata {
@@ -43,11 +43,11 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+index.use(express.json());
+index.use(express.urlencoded({ extended: true }));
 
 // Serve public files statically (no authentication required)
-app.use("/uploads/public", express.static(path.join(__dirname, "../uploads/public")));
+index.use("/uploads/public", express.static(path.join(__dirname, "../uploads/public")));
 
 // Middleware to require authentication for deletion (or any authenticated actions)
 const authenticateUser = (req: Request, res: Response, next: NextFunction): void => {
@@ -83,7 +83,7 @@ const authenticatePrivateFileAccess = (req: Request, res: Response, next: NextFu
   next();
 };
 
-app.get("/uploads/private/:fileName", authenticatePrivateFileAccess, (req: Request, res: Response): void => {
+index.get("/uploads/private/:fileName", authenticatePrivateFileAccess, (req: Request, res: Response): void => {
   const fileName = req.params.fileName;
   const filePath = path.join(__dirname, "../uploads/private", fileName);
 
@@ -94,11 +94,11 @@ app.get("/uploads/private/:fileName", authenticatePrivateFileAccess, (req: Reque
   });
 });
 
-app.get("/", (req: Request, res: Response): void => {
+index.get("/", (req: Request, res: Response): void => {
   res.send("File management service is running 🥳");
 });
 
-app.post("/upload", upload.single("file"), (req: Request, res: Response): void => {
+index.post("/upload", upload.single("file"), (req: Request, res: Response): void => {
   const file = req.file;
   if (!file) {
     res.status(400).json({ error: "No file uploaded" });
@@ -131,7 +131,7 @@ app.post("/upload", upload.single("file"), (req: Request, res: Response): void =
   res.json({ fileURL: filePathForGateway });
 });
 
-app.delete("/uploads/:visibility/:fileName", authenticateUser, (req: Request, res: Response): void => {
+index.delete("/uploads/:visibility/:fileName", authenticateUser, (req: Request, res: Response): void => {
   const { visibility, fileName } = req.params;
   const userId = req.body.authenticatedUserId;
   const fileMetadata = fileOwners.get(fileName);
@@ -157,8 +157,13 @@ app.delete("/uploads/:visibility/:fileName", authenticateUser, (req: Request, re
   });
 });
 
-startEurekaClient();
+if (process.env.NODE_ENV !== "test") {
+  startEurekaClient();
+}
 
-app.listen(PORT, (): void => {
-  console.log(`File management service is listening on port ${PORT}`);
-});
+if (require.main === module) {
+  index.listen(PORT, () => {
+    console.log(`File management service is listening on port ${PORT}`);
+  });
+}
+export default index;

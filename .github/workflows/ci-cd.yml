@@ -2,9 +2,24 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ "dev", "main" ]
+    branches: [ "dev" ]
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # the node.js services
+        service: [file-manager]
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+      - name: Run tests for ${{ matrix.service }}
+        run: |
+          cd ${{ matrix.service }}
+          npm install
+          npm run test
+
   build-and-test:
     runs-on: ubuntu-latest
     steps:
@@ -17,11 +32,13 @@ jobs:
       - name: Build images (no push)
         run: |
           docker compose build
-      # TODO: Add tests here
+      # TODO: Add integration tests
 
 
   deploy-dev:
-    needs: build-and-test
+    needs:
+      - build-and-test
+      - test
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/dev'
     steps:
