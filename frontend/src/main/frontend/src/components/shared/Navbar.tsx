@@ -18,8 +18,11 @@ function NavBar() {
   }, [theme])
 
   return (
-    <div className="sticky h-[64px] top-0 z-50 flex items-center justify-between p-4 bg-background shadow dark:border-b-2 dark:border-card'">
-      <div className="flex items-center gap-2">
+    <div
+      className="sticky h-[64px] top-0 z-50 flex items-center justify-between p-4 border-b bg-card shadow"
+      style={{ pointerEvents: "none" }}
+    >
+      <div className="flex items-center gap-2" style={{ pointerEvents: "auto" }}> {/* Re-enable pointer events for interactive elements */}
         <Link to="/">
           <img
             src={currentTheme === "dark" ? "/LogoDark.svg" : "/Logo.svg"}
@@ -28,9 +31,11 @@ function NavBar() {
           />
         </Link>
       </div>
-      <UserNav />
+      <div style={{ pointerEvents: "auto" }}> {/* Ensure UserNav remains interactive */}
+        <UserNav />
+      </div>
     </div>
-  )
+  );
 }
 
 export default NavBar

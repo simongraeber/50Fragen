@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button"
-import { Link, useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { Card, CardContent, CardTitle } from "@/components/ui/card"
 import Round3DButton from "@/components/custom/quiz_play/BuzzerButton"
 import { motion } from "framer-motion"
@@ -158,19 +158,6 @@ function HomePage() {
           </CardContent>
         </Card>
       </motion.section>
-
-      {/* Footer Spacer */}
-      <div className="h-16 z-0">
-        <Link to={"/imprint"} className="text-gray-500 dark:text-gray-400 p-4 pr-8">
-          {t("imprint")}
-        </Link>
-        <Link to={"/privacy"} className="text-gray-500 dark:text-gray-400 p-4">
-          {t("privacy")}
-        </Link>
-        <Link to={"/terms"} className="text-gray-500 dark:text-gray-400 p-4 pl-8">
-          {t("terms")}
-        </Link>
-      </div>
     </Page>
   )
 }

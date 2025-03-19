@@ -7,6 +7,8 @@ import { useEffect } from "react"
 import { useDispatch } from "react-redux"
 import { ThemeProvider } from "./providers/ThemeProvider.tsx"
 import "./i18n";
+import Footer from "@/components/shared/Footer.tsx"
+import ScrollToTop from "@/components/shared/Layout/ScrollToTop.tsx"
 
 function App() {
   const dispatch = useDispatch()
@@ -17,17 +19,17 @@ function App() {
 
   return (
     <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
-      <div className="h-screen w-full bg-background">
         <Router>
-          <div className="flex flex-col h-full">
+          <ScrollToTop />
+          <div className="flex min-h-screen w-full flex-col h-full">
             <NavBar />
             <div className="flex-grow overflow-auto">
               <RoutesComponent />
             </div>
+            <Footer />
           </div>
         </Router>
         <Toaster />
-      </div>
     </ThemeProvider>
   )
 }
