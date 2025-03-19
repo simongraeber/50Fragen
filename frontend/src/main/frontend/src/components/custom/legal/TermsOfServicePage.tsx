@@ -12,7 +12,7 @@ function TermsOfServicePage() {
       <HeadLine>
         {t("terms_h")}
       </HeadLine>
-      <main className="max-w-2xl mt-3 pt-4 mx-auto px-1">
+      <main className="max-w-2xl mt-3 pt-4 mx-auto px-2">
         <h2>{t("termsOfService.acceptance.title")}</h2>
         <p>{t("termsOfService.acceptance.text")}</p>
 
@@ -40,7 +40,11 @@ function TermsOfServicePage() {
         </p>
 
         <h2>{t("termsOfService.governingLaw.title")}</h2>
-        <p>{t("termsOfService.governingLaw.text")}</p>
+        <p>
+          {t("termsOfService.governingLaw.text", {
+            company: "50Fragen.com",
+          })}
+        </p>
       </main>
       <Link to="/">
         <Button className="mt-8">{t("go_home")}</Button>

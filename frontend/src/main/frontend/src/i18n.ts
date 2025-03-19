@@ -167,38 +167,38 @@ const resources = {
           text: "If you have any questions regarding this Privacy Policy, please contact us at 80-read-crewel@icloud.com.",
         },
       },
+      termsOfService: {
+        title: "Terms of Service",
+        acceptance: {
+          title: "1. Acceptance of Terms",
+          text: "By accessing or using our services, you agree to be bound by these Terms of Service. If you do not accept these terms, please refrain from using our services.",
+        },
+        modifications: {
+          title: "2. Modifications",
+          text: "We reserve the right to modify these Terms of Service at any time. The most current version will always be published on our website.",
+        },
+        usage: {
+          title: "3. Use of Services",
+          text: "You agree to use our services solely for their intended, lawful purposes. Any misuse that disrupts operation or compromises security is prohibited.",
+        },
+        intellectualProperty: {
+          title: "4. Intellectual Property",
+          text: "All content, trademarks, and other proprietary rights on this platform are owned by {{company}} or its licensors. Unauthorized use is strictly prohibited.",
+        },
+        dataProtection: {
+          title: "5. Data Protection",
+          text: "Your data is processed in accordance with our Privacy Policy, which complies with the GDPR.",
+        },
+        limitation: {
+          title: "6. Limitation of Liability",
+          text: "Our services are provided 'as is' without any warranty. {{company}} is not liable for any direct or indirect damages arising from the use of our services.",
+        },
+        governingLaw: {
+          title: "7. Governing Law",
+          text: "These Terms of Service are governed by the laws of the Federal Republic of Germany. Jurisdiction, if applicable by law, is the location of {{company}}'s registered office.",
+        },
+      },
     },
-    termsOfService: {
-      title: "Terms of Service",
-      acceptance: {
-        title: "1. Acceptance of Terms",
-        text: "By accessing or using our services, you agree to be bound by these Terms of Service. If you do not accept these terms, please refrain from using our services.",
-      },
-      modifications: {
-        title: "2. Modifications",
-        text: "We reserve the right to modify these Terms of Service at any time. The most current version will always be published on our website.",
-      },
-      usage: {
-        title: "3. Use of Services",
-        text: "You agree to use our services solely for their intended, lawful purposes. Any misuse that disrupts operation or compromises security is prohibited.",
-      },
-      intellectualProperty: {
-        title: "4. Intellectual Property",
-        text: "All content, trademarks, and other proprietary rights on this platform are owned by {{company}} or its licensors. Unauthorized use is strictly prohibited.",
-      },
-      dataProtection: {
-        title: "5. Data Protection",
-        text: "Your data is processed in accordance with our Privacy Policy, which complies with the GDPR.",
-      },
-      limitation: {
-        title: "6. Limitation of Liability",
-        text: "Our services are provided 'as is' without any warranty. {{company}} is not liable for any direct or indirect damages arising from the use of our services.",
-      },
-      governingLaw: {
-        title: "7. Governing Law",
-        text: "These Terms of Service are governed by the laws of the Federal Republic of Germany. Jurisdiction, if applicable by law, is the location of {{company}}'s registered office.",
-      },
-    }
   },
   de: {
     translation: {
