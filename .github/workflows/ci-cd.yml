@@ -23,7 +23,7 @@ jobs:
           npm install
           npm run test
 
-  build-and-test:
+  build-and-health-check:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
@@ -35,12 +35,34 @@ jobs:
       - name: Build images (no push)
         run: |
           docker compose build
-      # TODO: Add end to end tests
+      - name: Check container health
+        run: |
+          docker compose up -d
+
+          max_attempts=90 # 3 minutes
+          attempt=1
+
+          while [ $attempt -le $max_attempts ]; do
+            total=$(docker compose ps -q | wc -l)
+            healthy=$(docker compose ps --filter "status=running" --filter "health=healthy" -q | wc -l)
+
+            if [ "$total" -eq "$healthy" ]; then
+              echo "All containers are healthy"
+              exit 0
+            fi
+
+            echo "Waiting for containers to be healthy ($attempt/$max_attempts)..."
+            sleep 2
+            attempt=$((attempt + 1))
+          done
+
+          echo "Some containers are not healthy after ${max_attempts*2} seconds"
+          exit 1
 
 
   deploy-dev:
     needs:
-      - build-and-test
+      - build-and-health-check
       - integration-test
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/dev'
