@@ -14,7 +14,7 @@ WORKDIR /app
 
 RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 
-COPY --from=build /app/dist/src ./dist
+COPY --from=build /app/dist ./dist
 COPY --from=build /app/package*.json ./
 
 RUN npm install --only=production
