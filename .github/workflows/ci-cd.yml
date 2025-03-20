@@ -126,3 +126,8 @@ jobs:
             docker compose pull
             docker compose up -d
           EOF
+      - name: Remove old containers
+        run: |
+          ssh ${{ secrets.DEV_SERVER_USER }}@${{ secrets.DEV_SERVER_ADDRESS }} << EOF
+            docker container prune -f
+          EOF
