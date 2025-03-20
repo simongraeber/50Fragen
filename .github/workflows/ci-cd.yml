@@ -45,6 +45,7 @@ jobs:
           while [ $attempt -le $max_attempts ]; do
             all_healthy=true
             container_ids=$(docker compose ps -q)
+            docker ps --format "table {{.Names}}\t{{.ID}}" --filter id=$container_ids
 
             if [ -z "$container_ids" ]; then
               echo "No containers found. Exiting."
