@@ -7,9 +7,9 @@ COPY . .
 
 RUN mvn clean package -DskipTests
 
-RUN apt-get update && apt-get install -y curl
-
 FROM openjdk:21-jdk-slim
+
+RUN apt-get update && apt-get install -y curl
 
 COPY --from=build /app/target/*.jar app.jar
 
