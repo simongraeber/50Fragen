@@ -45,7 +45,6 @@ jobs:
           while [ $attempt -le $max_attempts ]; do
             all_healthy=true
             container_ids=$(docker compose ps -q)
-            docker ps
 
             if [ -z "$container_ids" ]; then
               echo "No containers found. Exiting."
@@ -54,9 +53,9 @@ jobs:
 
             for id in $container_ids; do
               # Check the health status. If no health check is defined, assume it's "running".
+              name=$(docker inspect --format='{{.Name}}' "$id" | sed 's|^/||')
               status=$(docker inspect --format='{{if .State.Health}}{{.State.Health.Status}}{{else}}running{{end}}' "$id")
-              echo "Container $id health status: $status"
-
+              echo "Container $name (ID: $id) health status: $status"
               # Accept "healthy" OR "running" (i.e. no health check defined) as a good state.
               if [ "$status" != "healthy" ] && [ "$status" != "running" ]; then
                 all_healthy=false
