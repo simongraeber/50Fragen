@@ -6,6 +6,8 @@ COPY . .
 
 RUN ulimit -c unlimited && mvn clean package -DskipTests
 
+RUN apt-get update && apt-get install -y curl
+
 FROM openjdk:17-jdk-slim
 
 COPY --from=build /app/target/*.jar app.jar
