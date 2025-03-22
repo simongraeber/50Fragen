@@ -1,7 +1,5 @@
 # 50Fragen
-A quiz game in the making.
-
-Try it on the [Dev server](https://dev.50fragen.com)
+Read more and ry it at [50Fragen.com](https://50fragen.com)
 
 ## Run on you own server
 You need docker and docker-compose installed on your server.
@@ -112,7 +110,7 @@ cd frontend
 mvn spring-boot:run
 ```
 #### For the AI-Quiz
-You need to set a open (AI API key)[https://platform.openai.com/account/api-keys]
+You need to set a [Open AI API key](https://platform.openai.com/account/api-keys)
 ```bash
 export OPENAI_API_KEY="your_api_key_here"
 ```
