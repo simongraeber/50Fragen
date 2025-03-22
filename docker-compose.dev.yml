@@ -16,7 +16,7 @@ services:
     networks:
       - 50Fragen-dev
     environment:
-      - EUREKA_SERVER=http://eureka:8761/eureka
+      - EUREKA_SERVER=http://eureka-dev:8761/eureka
       - SERVER_PORT=8081
       - APPLICATION_NAME=frontend
     depends_on:
@@ -34,8 +34,8 @@ services:
     image: simon1999/50fragen:quiz-session-dev
     environment:
       - PORT=4000
-      - HOST_IP=quiz-session
-      - EUREKA_HOST=eureka
+      - HOST_IP=quiz-session-dev
+      - EUREKA_HOST=eureka-dev
       - EUREKA_PORT=8761
       - DB_HOST=postgres
       - DB_PORT=5432
@@ -62,8 +62,8 @@ services:
       - 50Fragen-dev
     environment:
       - PORT=4001
-      - HOST_IP=ai-quiz
-      - EUREKA_HOST=eureka
+      - HOST_IP=ai-quiz-dev
+      - EUREKA_HOST=eureka-dev
       - EUREKA_PORT=8761
       - OPENAI_API_KEY=YOUR_OPENAI_API_KEY
     depends_on:
@@ -83,8 +83,8 @@ services:
       - 50Fragen-dev
     environment:
       - PORT=4002
-      - HOST_IP=file-manager
-      - EUREKA_HOST=eureka
+      - HOST_IP=file-manager-dev
+      - EUREKA_HOST=eureka-dev
       - EUREKA_PORT=8761
     depends_on:
       eureka-dev:
@@ -106,7 +106,7 @@ services:
       - db-net
     environment:
       - SERVER_PORT=8083
-      - EUREKA_SERVER=http://eureka:8761/eureka
+      - EUREKA_SERVER=http://eureka-dev:8761/eureka
       - SPRING_PROFILES_ACTIVE=prod
       - DB_URL=jdbc:postgresql://postgres:5432/quiz
       - DB_USERNAME=user_name
@@ -130,7 +130,7 @@ services:
     networks:
       - 50Fragen-dev
     environment:
-      - EUREKA_SERVER=http://eureka:8761/eureka
+      - EUREKA_SERVER=http://eureka-dev:8761/eureka
       - DISCORD_CLIENT_ID=your_discord_client_id
       - DISCORD_CLIENT_SECRET=your_discord_client_secret
       - GOOGLE_CLIENT_ID=Your_ID
