@@ -18,6 +18,7 @@ services:
     environment:
       - EUREKA_SERVER=http://eureka:8761/eureka
       - SERVER_PORT=8081
+      - APPLICATION_NAME=frontend-dev
     depends_on:
       eureka:
         condition: service_healthy
@@ -33,7 +34,7 @@ services:
     image: simon1999/50fragen:quiz-session-dev
     environment:
       - PORT=4000
-      - HOST_IP=quiz-session
+      - HOST_IP=quiz-session-dev
       - EUREKA_HOST=eureka
       - EUREKA_PORT=8761
       - DB_HOST=postgres
@@ -62,7 +63,7 @@ services:
       - 50Fragen
     environment:
       - PORT=4001
-      - HOST_IP=ai-quiz
+      - HOST_IP=ai-quiz-dev
       - EUREKA_HOST=eureka
       - EUREKA_PORT=8761
       - OPENAI_API_KEY=YOUR_OPENAI_API_KEY
@@ -83,7 +84,7 @@ services:
       - 50Fragen
     environment:
       - PORT=4002
-      - HOST_IP=file-manager
+      - HOST_IP=file-manager-dev
       - EUREKA_HOST=eureka
       - EUREKA_PORT=8761
     depends_on:
@@ -126,6 +127,7 @@ services:
       - DB_URL=jdbc:postgresql://postgres:5432/quiz
       - DB_USERNAME=user_name
       - DB_PASSWORD=password
+      - APPLICATION_NAME=quiz-database-dev
     depends_on:
       eureka:
         condition: service_healthy
@@ -151,6 +153,7 @@ services:
       - DISCORD_CLIENT_SECRET=your_discord_client_secret
       - GOOGLE_CLIENT_ID=Your_ID
       - GOOGLE_CLIENT_SECRET=Your_Secret
+      - APPLICATION_NAME=gateway-dev
     depends_on:
       eureka:
         condition: service_healthy

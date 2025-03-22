@@ -7,7 +7,7 @@ server:
 
 spring:
   application:
-    name: gateway
+    name: ${APPLICATION_NAME:gateway}
   cloud:
     gateway:
       discovery:

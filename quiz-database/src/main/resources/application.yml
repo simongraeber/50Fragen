@@ -1,6 +1,6 @@
 spring:
   application:
-    name: quiz-database
+    name: ${APPLICATION_NAME:quiz-database}
   datasource:
     url: ${DB_URL:jdbc:postgresql://localhost:5432/quiz}
     username: ${DB_USERNAME:admin}
