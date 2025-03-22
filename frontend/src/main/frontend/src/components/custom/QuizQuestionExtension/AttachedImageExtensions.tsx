@@ -162,13 +162,33 @@ type PlayProps = {
 };
 
 export const AttachedImagePlay: React.FC<PlayProps> = ({ extension }) => {
+  const [imgLoaded, setImgLoaded] = useState(false);
+  const [aspectRatio, setAspectRatio] = useState("100%");
+
+  const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    const img = e.target as HTMLImageElement;
+    const ratio = (img.naturalHeight / img.naturalWidth) * 100;
+    setAspectRatio(`${ratio}%`);
+    setImgLoaded(true);
+  };
+
   return (
-    <Card className="overflow-hidden">
-      <img
-        src={(extension as AttachedImageExtension).imageUrl}
-        alt="attached"
-        className="w-full h-auto object-cover"
-      />
+    <Card className="overflow-hidden bg-white">
+      <div
+        className="relative w-full"
+        style={{ paddingTop: aspectRatio }}
+      >
+        {!imgLoaded && (
+          <Skeleton className="absolute inset-0 w-full h-full" />
+        )}
+        <img
+          src={extension.imageUrl}
+          alt="attached"
+          onLoad={handleImageLoad}
+          className="absolute top-0 left-0 w-full h-full object-contain transition-opacity duration-500"
+          style={{ opacity: imgLoaded ? 1 : 0 }}
+        />
+      </div>
     </Card>
   );
 };

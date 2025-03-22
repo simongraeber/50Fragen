@@ -103,7 +103,7 @@ function GameMasterControls({ quiz }: GameMasterControlsProps) {
 
   return (
     <>
-      <Card className="relative overflow-hidden">
+      <Card className="relative overflow-hidden z-10">
         <div className="absolute bottom-0 -mx-2 left-0 right-0 flex items-center justify-between">
           <Progress value={progressPercent} className="flex-grow h-3" />
         </div>

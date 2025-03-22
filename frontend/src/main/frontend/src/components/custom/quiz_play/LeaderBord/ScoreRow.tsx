@@ -50,7 +50,7 @@ const ScoreRow: React.FC<ScoreRowProps> = ({ userScore, canEdit }) => {
               style={{
                 position: "absolute",
                 left: "-100%",
-                top: "50%",
+                top: delta > 0 ? "50%" : "-50%",
                 transform: "translateY(-50%)",
                 marginRight: "0.5rem",
                 color: delta > 0 ? "green" : "red",
