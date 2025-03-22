@@ -4,3 +4,4 @@
 github-actions-key
 github-actions-key.pub
 /docker-compose.dev.server.yml
+/docker-compose.prod.server.yml
