@@ -124,7 +124,7 @@ services:
   gateway:
     image: simon1999/50fragen:gateway
     ports:
-      - "8080:8088"
+      - "8088:8088"
     networks:
       - 50Fragen
     environment:
@@ -133,6 +133,7 @@ services:
       - DISCORD_CLIENT_SECRET=your_discord_client_secret
       - GOOGLE_CLIENT_ID=Your_ID
       - GOOGLE_CLIENT_SECRET=Your_Secret
+      - SERVER_PORT=8088
     depends_on:
       eureka:
         condition: service_healthy
