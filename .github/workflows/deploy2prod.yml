@@ -18,6 +18,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
       - name: Build and push Docker image for ${{ github.event.inputs.service }}
         run: |
           SERVICE="${{ github.event.inputs.service }}"
@@ -37,6 +43,14 @@ jobs:
             file-manager)
               docker build -f file-manager/Dockerfile -t simon1999/50fragen:file-manager file-manager
               docker push simon1999/50fragen:file-manager
+              ;;
+            eureka)
+              docker build -f eureka/Dockerfile -t simon1999/50fragen:eureka eureka
+              docker push simon1999/50fragen:eureka
+              ;;
+            gateway)
+              docker build -f gateway/Dockerfile -t simon1999/50fragen:gateway gateway
+              docker push simon1999/50fragen:gateway
               ;;
             *)
               echo "Service '$SERVICE' is not supported"
@@ -58,30 +72,34 @@ jobs:
             # Map variables based on the selected service
             case "$SERVICE" in
               frontend)
-                IMAGE="simon1999/50fragen:frontend-prod"
+                IMAGE="simon1999/50fragen:frontend"
                 CURRENT_CONTAINER="frontend"
                 NEW_CONTAINER="frontend-new"
                 # Use a default container port (can be overridden by environment variable on the host)
                 CONTAINER_PORT="${FRONTEND_CONTAINER_PORT:-8081}"
                 ;;
               ai-quiz)
-                IMAGE="simon1999/50fragen:ai-quiz-prod"
+                IMAGE="simon1999/50fragen:ai-quiz"
                 CURRENT_CONTAINER="ai-quiz"
                 NEW_CONTAINER="ai-quiz-new"
                 CONTAINER_PORT="${AI_CONTAINER_PORT:-4001}"
                 ;;
               quiz-session)
-                IMAGE="simon1999/50fragen:quiz-session-prod"
+                IMAGE="simon1999/50fragen:quiz-session"
                 CURRENT_CONTAINER="quiz-session"
                 NEW_CONTAINER="quiz-session-new"
                 CONTAINER_PORT="${SESSION_CONTAINER_PORT:-4000}"
                 ;;
               file-manager)
-                IMAGE="simon1999/50fragen:file-manager-prod"
+                IMAGE="simon1999/50fragen:file-manager"
                 CURRENT_CONTAINER="file-manager"
                 NEW_CONTAINER="file-manager-new"
                 CONTAINER_PORT="${FILE_CONTAINER_PORT:-4002}"
                 ;;
+                eureka)
+                IMAGE="simon1999/50fragen:eureka"
+                CURRENT_CONTAINER="eureka"
+                NEW_CONTAINER="eureka-new"
               *)
                 echo "Service '$SERVICE' is not supported"
                 exit 1
