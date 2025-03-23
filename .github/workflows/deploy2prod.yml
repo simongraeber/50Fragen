@@ -4,12 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       service:
-        description: 'Service to deploy (e.g., frontend, ai-quiz, quiz-session, file-manager)'
+        description: 'Service to deploy (e.g., frontend, ai-quiz, quiz-session, file-manager, quiz-database and gateway, eureka)'
         required: true
         default: frontend
-      new_port:
-        description: 'Temporary host port for the new container instance (if required)'
-        required: false
 
 jobs:
   deploy-service:
@@ -37,12 +34,16 @@ jobs:
               docker push simon1999/50fragen:ai-quiz
               ;;
             quiz-session)
-              docker build -f quiz-session/Dockerfile -t simon1999/50fragen:quiz-sessionquiz-session
+              docker build -f quiz-session/Dockerfile -t simon1999/50fragen:quiz-session quiz-session
               docker push simon1999/50fragen:quiz-session
               ;;
             file-manager)
               docker build -f file-manager/Dockerfile -t simon1999/50fragen:file-manager file-manager
               docker push simon1999/50fragen:file-manager
+              ;;
+            quiz-database)
+              docker build -f quiz-database/Dockerfile -t simon1999/50fragen:quiz-database quiz-database
+              docker push simon1999/50fragen:quiz-database
               ;;
             eureka)
               docker build -f eureka/Dockerfile -t simon1999/50fragen:eureka eureka
@@ -67,81 +68,64 @@ jobs:
           script: |
             set -e
             SERVICE="${{ github.event.inputs.service }}"
-            NEW_PORT="${{ github.event.inputs.new_port }}"
+            COMPOSE_FILE="/${{ secrets.PROD_SERVER_USER }}/docker-compose.prod.yml"
 
-            # Map variables based on the selected service
-            case "$SERVICE" in
-              frontend)
-                IMAGE="simon1999/50fragen:frontend"
-                CURRENT_CONTAINER="frontend"
-                NEW_CONTAINER="frontend-new"
-                # Use a default container port (can be overridden by environment variable on the host)
-                CONTAINER_PORT="${FRONTEND_CONTAINER_PORT:-8081}"
-                ;;
-              ai-quiz)
-                IMAGE="simon1999/50fragen:ai-quiz"
-                CURRENT_CONTAINER="ai-quiz"
-                NEW_CONTAINER="ai-quiz-new"
-                CONTAINER_PORT="${AI_CONTAINER_PORT:-4001}"
-                ;;
-              quiz-session)
-                IMAGE="simon1999/50fragen:quiz-session"
-                CURRENT_CONTAINER="quiz-session"
-                NEW_CONTAINER="quiz-session-new"
-                CONTAINER_PORT="${SESSION_CONTAINER_PORT:-4000}"
-                ;;
-              file-manager)
-                IMAGE="simon1999/50fragen:file-manager"
-                CURRENT_CONTAINER="file-manager"
-                NEW_CONTAINER="file-manager-new"
-                CONTAINER_PORT="${FILE_CONTAINER_PORT:-4002}"
-                ;;
-                eureka)
-                IMAGE="simon1999/50fragen:eureka"
-                CURRENT_CONTAINER="eureka"
-                NEW_CONTAINER="eureka-new"
-              *)
-                echo "Service '$SERVICE' is not supported"
+            if [ "$SERVICE" = "gateway" ] || [ "$SERVICE" = "eureka" ]; then
+              echo "WARNING: Updating ${SERVICE} will result in downtime. Restarting container instead."
+              docker-compose -f $COMPOSE_FILE pull ${SERVICE}
+              docker-compose -f $COMPOSE_FILE restart ${SERVICE}
+            else
+              echo "Deploying ${SERVICE} update with Blue/Green strategy via scaling"
+
+              # Pull the updated image
+              docker-compose -f $COMPOSE_FILE pull ${SERVICE}
+
+              echo "Scaling ${SERVICE} to 2 instances"
+              docker-compose -f $COMPOSE_FILE up -d --no-deps --scale ${SERVICE}=2 ${SERVICE}
+
+              # Identify the new container based on the creation time
+              ids=$(docker-compose -f $COMPOSE_FILE ps -q ${SERVICE})
+              echo "Detected container IDs for ${SERVICE}: $ids"
+
+              new_container=""
+              latest_time=0
+              for id in $ids; do
+                create_time=$(docker inspect --format='{{.Created}}' $id)
+                epoch=$(date -d "$create_time" +%s)
+                if [ $epoch -gt $latest_time ]; then
+                  latest_time=$epoch
+                  new_container=$id
+                fi
+              done
+
+              if [ -z "$new_container" ]; then
+                echo "No new container found for ${SERVICE}"
                 exit 1
-                ;;
-            esac
-
-            # Set up port mapping if NEW_PORT is provided
-            if [ -n "$NEW_PORT" ]; then
-              PORT_MAPPING="-p ${NEW_PORT}:${CONTAINER_PORT}"
-            else
-              # Otherwise, simply expose the container port as needed
-              PORT_MAPPING="--expose ${CONTAINER_PORT}"
-            fi
-
-            echo "Deploying $SERVICE with image $IMAGE using mapping: $PORT_MAPPING"
-            
-            # Run the new container in detached mode
-            docker run -d --name ${NEW_CONTAINER} ${PORT_MAPPING} ${IMAGE}
-
-            # Wait for the new container to be healthy (up to ~60 seconds)
-            ready=0
-            for i in {1..30}; do
-              status=$(docker inspect --format='{{if .State.Health}}{{.State.Health.Status}}{{else}}running{{end}}' ${NEW_CONTAINER} 2>/dev/null || echo "starting")
-              echo "Health check status for '$NEW_CONTAINER': $status"
-              if [[ "$status" == "healthy" || "$status" == "running" ]]; then
-                ready=1
-                break
               fi
-              sleep 2
-            done
 
-            if [ $ready -eq 1 ]; then
-              echo "New $SERVICE container is healthy; switching traffic..."
-            
-              # (Optional: update your reverse proxy/load-balancer settings here if needed)
-            
-              # Stop and remove the old container, then rename the new container to its name.
-              docker stop ${CURRENT_CONTAINER} || true
-              docker rm ${CURRENT_CONTAINER} || true
-              docker rename ${NEW_CONTAINER} ${CURRENT_CONTAINER}
-            else
-              echo "Error: The new $SERVICE container did not become healthy in time."
-              docker logs ${NEW_CONTAINER}
-              exit 1
+              echo "New container for ${SERVICE} is $new_container. Starting health check..."
+
+              max_attempts=30
+              attempt=1
+
+              while [ $attempt -le $max_attempts ]; do
+                status=$(docker inspect --format='{{if .State.Health}}{{.State.Health.Status}}{{else}}running{{end}}' $new_container)
+                echo "Health status of new container ($new_container): $status"
+                if [ "$status" = "healthy" ] || [ "$status" = "running" ]; then
+                  echo "New container is healthy."
+                  break
+                fi
+                echo "Waiting for new container to be healthy ($attempt/$max_attempts)..."
+                sleep 2
+                attempt=$((attempt + 1))
+              done
+
+              if [ $attempt -gt $max_attempts ]; then
+                echo "Timeout reached: New container for ${SERVICE} is still not healthy."
+                docker logs $new_container
+                exit 1
+              fi
+
+              echo "New container is healthy. Scaling ${SERVICE} down to 1 instance (removing the old container)."
+              docker-compose -f $COMPOSE_FILE up -d --no-deps --scale ${SERVICE}=1 ${SERVICE}
             fi
