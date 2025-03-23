@@ -1,6 +1,6 @@
 services:
   eureka:
-    image: simon1999/50fragen:eureka-dev
+    image: simon1999/50fragen:eureka
     networks:
       - 50Fragen
     healthcheck:
@@ -12,7 +12,7 @@ services:
       - "8761"
 
   frontend:
-    image: simon1999/50fragen:frontend-dev
+    image: simon1999/50fragen:frontend
     networks:
       - 50Fragen
     environment:
@@ -30,7 +30,7 @@ services:
       - "${FRONTEND_CONTAINER_PORT:-8081}"
 
   quiz-session:
-    image: simon1999/50fragen:quiz-session-dev
+    image: simon1999/50fragen:quiz-session
     environment:
       - PORT=${SESSION_CONTAINER_PORT:-4000}
       - HOST_IP=quiz-session
@@ -56,7 +56,7 @@ services:
       - "${SESSION_CONTAINER_PORT:-4000}"
 
   ai-quiz:
-    image: simon1999/50fragen:ai-quiz-dev
+    image: simon1999/50fragen:ai-quiz
     networks:
       - 50Fragen
     environment:
@@ -77,7 +77,7 @@ services:
       - "${AI_CONTAINER_PORT:-4001}"
 
   file-manager:
-    image: simon1999/50fragen:file-manager-dev
+    image: simon1999/50fragen:file-manager
     networks:
       - 50Fragen
     environment:
@@ -89,7 +89,7 @@ services:
       eureka:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:${FILE_CONTAINER_PORT:-4002} || exit 1"]
+      test: [ "CMD-SHELL", "curl -f http://localhost:${FILE_CONTAINER_PORT:-4002}/ || exit 1" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -99,7 +99,7 @@ services:
       - file_manager_uploads:/app/uploads
 
   quiz-database:
-    image: simon1999/50fragen:quiz-database-dev
+    image: simon1999/50fragen:quiz-database
     networks:
       - 50Fragen
       - db-net
@@ -122,9 +122,9 @@ services:
       - "${QDB_CONTAINER_PORT:-8083}"
 
   gateway:
-    image: simon1999/50fragen:gateway-dev
+    image: simon1999/50fragen:gateway
     ports:
-      - "8080:80"
+      - "8080:8088"
     networks:
       - 50Fragen
     environment:
@@ -141,7 +141,7 @@ services:
       quiz-session:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8080/ || exit 1"]
+      test: ["CMD-SHELL", "curl -f http://localhost:8088/ || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 5
