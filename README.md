@@ -1,5 +1,6 @@
 # 50Fragen
-Read more and ry it at [50Fragen.com](https://50fragen.com)
+A service based quiz game.
+Read more and try it at [50Fragen.com](https://50fragen.com).
 
 ## Run on you own server
 You need docker and docker-compose installed on your server.
