@@ -1,0 +1,12 @@
+spring:
+  application:
+    name:  ${APPLICATION_NAME:frontend}
+server:
+  port: ${SERVER_PORT:8081}
+eureka :
+  client :
+    serviceUrl :
+      defaultZone : ${EUREKA_SERVER:http://localhost:8761/eureka}
+  instance:
+    hostname: localhost
+    preferIpAddress: true

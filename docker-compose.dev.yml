@@ -1,0 +1,159 @@
+services:
+  eureka-dev:
+    image: simon1999/50fragen:eureka-dev
+    networks:
+      - 50Fragen-dev
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:8761/eureka/apps/ || (echo 'Health check failed'; exit 1)" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    expose:
+      - "8761"
+
+  frontend-dev:
+    image: simon1999/50fragen:frontend-dev
+    networks:
+      - 50Fragen-dev
+    environment:
+      - EUREKA_SERVER=http://eureka-dev:8761/eureka
+      - SERVER_PORT=8081
+      - APPLICATION_NAME=frontend
+    depends_on:
+      eureka-dev:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8081/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    expose:
+      - "8081"
+
+  quiz-session-dev:
+    image: simon1999/50fragen:quiz-session-dev
+    environment:
+      - PORT=4000
+      - HOST_IP=quiz-session-dev
+      - EUREKA_HOST=eureka-dev
+      - EUREKA_PORT=8761
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=quiz
+      - DB_USERNAME=user_name
+      - DB_PASSWORD=password
+    networks:
+      - 50Fragen-dev
+      - db-net
+    depends_on:
+      eureka-dev:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:4000/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    expose:
+      - "4000"
+
+  ai-quiz-dev:
+    image: simon1999/50fragen:ai-quiz-dev
+    networks:
+      - 50Fragen-dev
+    environment:
+      - PORT=4001
+      - HOST_IP=ai-quiz-dev
+      - EUREKA_HOST=eureka-dev
+      - EUREKA_PORT=8761
+      - OPENAI_API_KEY=YOUR_OPENAI_API_KEY
+    depends_on:
+      eureka-dev:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:4001/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    expose:
+      - "4001"
+
+  file-manager-dev:
+    image: simon1999/50fragen:file-manager-dev
+    networks:
+      - 50Fragen-dev
+    environment:
+      - PORT=4002
+      - HOST_IP=file-manager-dev
+      - EUREKA_HOST=eureka-dev
+      - EUREKA_PORT=8761
+    depends_on:
+      eureka-dev:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:4002 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    expose:
+      - "4002"
+    volumes:
+      - file_manager_uploads:/app/uploads
+
+  quiz-database-dev:
+    image: simon1999/50fragen:quiz-database-dev
+    networks:
+      - 50Fragen-dev
+      - db-net
+    environment:
+      - SERVER_PORT=8083
+      - EUREKA_SERVER=http://eureka-dev:8761/eureka
+      - SPRING_PROFILES_ACTIVE=prod
+      - DB_URL=jdbc:postgresql://postgres:5432/quiz
+      - DB_USERNAME=user_name
+      - DB_PASSWORD=password
+      - APPLICATION_NAME=quiz-database
+    depends_on:
+      eureka-dev:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8083 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    expose:
+      - "8083"
+
+  gateway-dev:
+    image: simon1999/50fragen:gateway-dev
+    ports:
+      - "8080:8080"
+    networks:
+      - 50Fragen-dev
+    environment:
+      - EUREKA_SERVER=http://eureka-dev:8761/eureka
+      - DISCORD_CLIENT_ID=your_discord_client_id
+      - DISCORD_CLIENT_SECRET=your_discord_client_secret
+      - GOOGLE_CLIENT_ID=Your_ID
+      - GOOGLE_CLIENT_SECRET=Your_Secret
+      - APPLICATION_NAME=gateway
+    depends_on:
+      eureka-dev:
+        condition: service_healthy
+      frontend-dev:
+        condition: service_healthy
+      quiz-session-dev:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  file_manager_uploads:
+
+networks:
+  50Fragen-dev:
+    driver: bridge
+  db-net:
+    driver: bridge

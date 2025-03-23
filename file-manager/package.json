@@ -1,0 +1,38 @@
+{
+  "name": "file-management",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "dev": "ts-node src/index.ts",
+    "build": "tsc",
+    "start": "node dist/src/index.js",
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "description": "",
+  "dependencies": {
+    "@jest/globals": "^29.7.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "eureka-js-client": "^4.5.0",
+    "express": "^4.21.2",
+    "multer": "^1.4.5-lts.1",
+    "supertest": "^7.0.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/eureka-js-client": "^4.5.9",
+    "@types/express": "^5.0.0",
+    "@types/jest": "^29.5.14",
+    "@types/multer": "^1.4.12",
+    "@types/node": "^22.13.10",
+    "@types/supertest": "^6.0.2",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.6",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.2"
+  }
+}

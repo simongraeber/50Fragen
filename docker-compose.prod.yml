@@ -1,0 +1,156 @@
+services:
+  eureka:
+    image: simon1999/50fragen:eureka-dev
+    networks:
+      - 50Fragen
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:8761/eureka/apps/ || (echo 'Health check failed'; exit 1)" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    expose:
+      - "8761"
+
+  frontend:
+    image: simon1999/50fragen:frontend-dev
+    networks:
+      - 50Fragen
+    environment:
+      - EUREKA_SERVER=http://eureka:8761/eureka
+      - SERVER_PORT=${FRONTEND_CONTAINER_PORT:-8081}
+    depends_on:
+      eureka:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:${FRONTEND_CONTAINER_PORT:-8081}/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    expose:
+      - "${FRONTEND_CONTAINER_PORT:-8081}"
+
+  quiz-session:
+    image: simon1999/50fragen:quiz-session-dev
+    environment:
+      - PORT=${SESSION_CONTAINER_PORT:-4000}
+      - HOST_IP=quiz-session
+      - EUREKA_HOST=eureka
+      - EUREKA_PORT=8761
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=quiz
+      - DB_USERNAME=user_name
+      - DB_PASSWORD=password
+    networks:
+      - 50Fragen
+      - db-net
+    depends_on:
+      eureka:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:${SESSION_CONTAINER_PORT:-4000}/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    expose:
+      - "${SESSION_CONTAINER_PORT:-4000}"
+
+  ai-quiz:
+    image: simon1999/50fragen:ai-quiz-dev
+    networks:
+      - 50Fragen
+    environment:
+      - PORT=${AI_CONTAINER_PORT:-4001}
+      - HOST_IP=ai-quiz
+      - EUREKA_HOST=eureka
+      - EUREKA_PORT=8761
+      - OPENAI_API_KEY=YOUR_OPENAI_API_KEY
+    depends_on:
+      eureka:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:${AI_CONTAINER_PORT:-4001}/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    expose:
+      - "${AI_CONTAINER_PORT:-4001}"
+
+  file-manager:
+    image: simon1999/50fragen:file-manager-dev
+    networks:
+      - 50Fragen
+    environment:
+      - PORT=${FILE_CONTAINER_PORT:-4002}
+      - HOST_IP=file-manager
+      - EUREKA_HOST=eureka
+      - EUREKA_PORT=8761
+    depends_on:
+      eureka:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:${FILE_CONTAINER_PORT:-4002} || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    expose:
+      - "${FILE_CONTAINER_PORT:-4002}"
+    volumes:
+      - file_manager_uploads:/app/uploads
+
+  quiz-database:
+    image: simon1999/50fragen:quiz-database-dev
+    networks:
+      - 50Fragen
+      - db-net
+    environment:
+      - SERVER_PORT=${QDB_CONTAINER_PORT:-8083}
+      - EUREKA_SERVER=http://eureka:8761/eureka
+      - SPRING_PROFILES_ACTIVE=prod
+      - DB_URL=jdbc:postgresql://postgres:5432/quiz
+      - DB_USERNAME=user_name
+      - DB_PASSWORD=password
+    depends_on:
+      eureka:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:${QDB_CONTAINER_PORT:-8083} || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    expose:
+      - "${QDB_CONTAINER_PORT:-8083}"
+
+  gateway:
+    image: simon1999/50fragen:gateway-dev
+    ports:
+      - "8080:80"
+    networks:
+      - 50Fragen
+    environment:
+      - EUREKA_SERVER=http://eureka:8761/eureka
+      - DISCORD_CLIENT_ID=your_discord_client_id
+      - DISCORD_CLIENT_SECRET=your_discord_client_secret
+      - GOOGLE_CLIENT_ID=Your_ID
+      - GOOGLE_CLIENT_SECRET=Your_Secret
+    depends_on:
+      eureka:
+        condition: service_healthy
+      frontend:
+        condition: service_healthy
+      quiz-session:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  file_manager_uploads:
+
+networks:
+  50Fragen:
+    driver: bridge
+  db-net:
+    driver: bridge

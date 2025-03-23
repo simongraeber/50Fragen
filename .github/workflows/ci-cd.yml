@@ -1,0 +1,136 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "dev" ]
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  integration-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # the node.js services
+        service: [file-manager, ai-quiz]
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+      - name: Set OPENAI_API_KEY for ai-quiz
+        if: matrix.service == 'ai-quiz'
+        run: echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> $GITHUB_ENV
+      - name: Run tests for ${{ matrix.service }}
+        run: |
+          cd ${{ matrix.service }}
+          npm install
+          npm run test
+
+  build-and-health-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build images (no push)
+        run: |
+          docker compose build
+      - name: Check container health using docker inspect
+        run: |
+          docker compose up -d
+
+          max_attempts=30  # For example, 30 attempts x 2 seconds = 60 seconds maximum wait
+          attempt=1
+
+          while [ $attempt -le $max_attempts ]; do
+            all_healthy=true
+            container_ids=$(docker compose ps -q)
+
+            if [ -z "$container_ids" ]; then
+              echo "No containers found. Exiting."
+              exit 1
+            fi
+
+            for id in $container_ids; do
+              # Check the health status. If no health check is defined, assume it's "running".
+              name=$(docker inspect --format='{{.Name}}' "$id" | sed 's|^/||')
+              status=$(docker inspect --format='{{if .State.Health}}{{.State.Health.Status}}{{else}}running{{end}}' "$id")
+              echo "Container $name (ID: $id) health status: $status"
+              # Accept "healthy" OR "running" (i.e. no health check defined) as a good state.
+              if [ "$status" != "healthy" ] && [ "$status" != "running" ]; then
+                all_healthy=false
+              fi
+            done
+
+            if $all_healthy; then
+              echo "All containers are healthy."
+              exit 0
+            fi
+
+            echo "Waiting for containers to be healthy ($attempt/$max_attempts)..."
+            sleep 2
+            attempt=$((attempt + 1))
+          done
+
+          echo "Timeout reached: Some containers are still not healthy."
+          exit 1
+
+
+  deploy-dev:
+    needs:
+      - build-and-health-check
+      - integration-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/dev'
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push image to Docker Hub
+        run: |
+          docker build -f eureka/Dockerfile -t simon1999/50fragen:eureka-dev eureka
+          docker push simon1999/50fragen:eureka-dev
+          docker build -f frontend/Dockerfile -t simon1999/50fragen:frontend-dev frontend
+          docker push simon1999/50fragen:frontend-dev
+          docker build -f gateway/Dockerfile -t simon1999/50fragen:gateway-dev gateway
+          docker push simon1999/50fragen:gateway-dev
+          docker build -f quiz-session/Dockerfile -t simon1999/50fragen:quiz-session-dev quiz-session
+          docker push simon1999/50fragen:quiz-session-dev
+          docker build -f quiz-database/Dockerfile -t simon1999/50fragen:quiz-database-dev quiz-database
+          docker push simon1999/50fragen:quiz-database-dev
+          docker build -f ai-quiz/Dockerfile -t simon1999/50fragen:ai-quiz-dev ai-quiz
+          docker push simon1999/50fragen:ai-quiz-dev
+          docker build -f file-manager/Dockerfile -t simon1999/50fragen:file-manager-dev file-manager
+          docker push simon1999/50fragen:file-manager-dev
+
+      - name: Add server to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ secrets.DEV_SERVER_ADDRESS }} >> ~/.ssh/known_hosts || true
+      - name: Add SSH Key
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY_DEV }}
+
+      - name: Deploy to Dev environment
+        run: |
+          echo "Deploying to Dev environment..."
+          ssh ${{ secrets.DEV_SERVER_USER }}@${{ secrets.DEV_SERVER_ADDRESS }} << EOF
+            cd ${{ secrets.DEV_SERVER_PROJECT_PATH }}
+            docker compose pull
+            docker compose -f docker-compos.dev.yml up -d
+          EOF
+      - name: Remove old containers
+        run: |
+          ssh ${{ secrets.DEV_SERVER_USER }}@${{ secrets.DEV_SERVER_ADDRESS }} << EOF
+            docker container prune -f
+          EOF
