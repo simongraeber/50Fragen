@@ -127,7 +127,7 @@ jobs:
           ssh ${{ secrets.DEV_SERVER_USER }}@${{ secrets.DEV_SERVER_ADDRESS }} << EOF
             cd ${{ secrets.DEV_SERVER_PROJECT_PATH }}
             docker compose pull
-            docker compose -f docker-compose.dev.yml up -d
+            docker compose -f docker-composeq.dev.yml up -d
           EOF
       - name: Remove old containers
         run: |
