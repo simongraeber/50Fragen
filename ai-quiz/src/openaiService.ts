@@ -1,6 +1,6 @@
 import OpenAI from "openai";
 const openai = new OpenAI();
-import { string, z } from "zod"
+import { z } from "zod"
 import { zodResponseFormat } from "openai/helpers/zod";
 import { QuizQuestionType } from "./types/QuizQuestion"
 
@@ -17,7 +17,7 @@ export const generateQuestion = async (category: string, language: string, quest
       "The question should be in " + language + " and the answer should be a number eg in kg, km, a year etc.";
  } else {
     prompt = "Generate a quiz question for the category " + category + "." +
-      "The question should be in " + language + ".";
+      "The question should be in " + language + ". The answer should be a single word or a short phrase.";
   }
   const completion = await openai.chat.completions.create({
     model: "gpt-4o",
