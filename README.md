@@ -33,6 +33,11 @@ sudo docker compose up -d
 ```
 call the server in your browser: http://your-server-ip:8080
 
+### CI deployment after a server migration
+Update the GitHub Actions secrets `DEV_SERVER_ADDRESS` and `PROD_SERVER_ADDRESS` for the new hosts, and verify the corresponding server users and SSH keys. For dev deployments, `DEV_SERVER_PROJECT_PATH` must point to a directory containing the server's configured `docker-compose.dev.yml`.
+
+Verify DNS records, SSH access, Docker Compose installation, and firewall rules on the new server. CI builds run on GitHub-hosted runners before deployment; missing container base-image tags are unrelated to the deployment server's IP. Java runtime images use Eclipse Temurin, matching the Java 17 or 21 version of each service's build stage.
+
 #### Optional: Add a reverse proxy and SSL
 If you want to run the server on port 80, you can use a reverse proxy like nginx.
 ```bash
@@ -111,6 +116,8 @@ cd frontend
 mvn spring-boot:run
 ```
 #### For the AI-Quiz
+Quiz generation uses `gpt-6-luna` through the OpenAI Responses API with low reasoning effort, standard mode, and automatic reasoning summaries. Responses retain the structured `question` and `answer` JSON format.
+
 You need to set a [Open AI API key](https://platform.openai.com/account/api-keys)
 ```bash
 export OPENAI_API_KEY="your_api_key_here"

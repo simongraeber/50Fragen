@@ -72,8 +72,8 @@ jobs:
 
             if [ "$SERVICE" = "gateway" ] || [ "$SERVICE" = "eureka" ]; then
               echo "WARNING: Updating ${SERVICE} will result in downtime. Restarting container instead."
-              docker-compose -f $COMPOSE_FILE pull ${SERVICE}
-              docker-compose -f $COMPOSE_FILE restart ${SERVICE}
+              docker compose -f $COMPOSE_FILE pull ${SERVICE}
+              docker compose -f $COMPOSE_FILE restart ${SERVICE}
             else
               echo "Deploying ${SERVICE} update with Blue/Green strategy via scaling"
 
