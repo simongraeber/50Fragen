@@ -20,7 +20,7 @@
     "express": "^4.21.2",
     "i18next": "^24.2.2",
     "i18next-browser-languagedetector": "^8.0.3",
-    "openai": "^4.85.2",
+    "openai": "^6.49.0",
     "pg": "^8.13.3",
     "react-i18next": "^15.4.1",
     "supertest": "^7.0.0",

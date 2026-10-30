@@ -111,6 +111,8 @@ cd frontend
 mvn spring-boot:run
 ```
 #### For the AI-Quiz
+Quiz generation uses `gpt-6-luna` through the OpenAI Responses API with low reasoning effort, standard mode, and automatic reasoning summaries. Responses retain the structured `question` and `answer` JSON format.
+
 You need to set a [Open AI API key](https://platform.openai.com/account/api-keys)
 ```bash
 export OPENAI_API_KEY="your_api_key_here"
