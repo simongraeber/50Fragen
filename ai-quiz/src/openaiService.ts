@@ -1,7 +1,7 @@
 import OpenAI from "openai";
 const openai = new OpenAI();
 import { z } from "zod"
-import { zodResponseFormat } from "openai/helpers/zod";
+import { zodTextFormat } from "openai/helpers/zod";
 import { QuizQuestionType } from "./types/QuizQuestion"
 
 
@@ -19,16 +19,32 @@ export const generateQuestion = async (category: string, language: string, quest
     prompt = "Generate a quiz question for the category " + category + "." +
       "The question should be in " + language + ". The answer should be a single word or a short phrase.";
   }
-  const completion = await openai.chat.completions.create({
-    model: "gpt-4o",
-    messages: [
+  const response = await openai.responses.create({
+    model: "gpt-6-luna",
+    service_tier: "default",
+    input: [
       {
         role: "user",
         content: prompt
       }
     ],
-    response_format: zodResponseFormat(quizQuestion, "question"),
+    text: {
+      format: zodTextFormat(quizQuestion, "question"),
+    },
+    reasoning: {
+      effort: "low",
+      mode: "standard",
+      summary: "auto",
+    },
   });
 
-  return completion.choices[0].message.content
+  if (response.status !== "completed") {
+    throw new Error(response.error?.message ??
+      `Question generation did not complete: ${response.incomplete_details?.reason ?? response.status}`);
+  }
+  if (!response.output_text) {
+    throw new Error("Question generation returned no text");
+  }
+
+  return response.output_text
 }

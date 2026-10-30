@@ -5,3 +5,22 @@ github-actions-key
 github-actions-key.pub
 /docker-compose.dev.server.yml
 /docker-compose.prod.server.yml
+
+# Dependencies and build output
+node_modules/
+dist/
+target/
+/frontend/src/main/frontend/node/
+
+# Local editor and OS files
+.idea/
+*.iml
+.DS_Store
+
+# Local configuration, logs, and runtime uploads
+.env
+.env.*
+!.env.example
+!.env.sample
+*.log
+/file-manager/uploads/
